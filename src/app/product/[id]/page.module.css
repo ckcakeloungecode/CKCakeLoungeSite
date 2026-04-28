@@ -1,0 +1,154 @@
+.main {
+  min-height: 100vh;
+  padding: 6rem 0;
+}
+
+.productContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.backLink {
+  margin-bottom: 2rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.productLayout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  padding: 3rem;
+}
+
+.imageColumn {
+  width: 100%;
+}
+
+.imagePlaceholder {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--rose) 0%, var(--accent-light) 100%);
+}
+
+.detailsColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.description {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 2rem;
+  line-height: 1.8;
+}
+
+/* Selector Styles */
+.selectorContainer {
+  margin-top: auto;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+.price {
+  font-size: 2rem;
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+}
+
+.perUnit {
+  font-size: 1rem;
+  color: #888;
+  font-weight: normal;
+}
+
+.optionsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.optionGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.optionGroup label {
+  font-weight: 600;
+  font-family: var(--font-heading);
+  color: var(--text-dark);
+}
+
+.dropdown {
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(0,0,0,0.1);
+  background: rgba(255,255,255,0.8);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.dropdown:focus {
+  border-color: var(--primary);
+}
+
+.actionRow {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.quantityControl {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.8);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.quantityControl button {
+  background: none;
+  border: none;
+  padding: 0.8rem 1.2rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.quantityControl button:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+.quantityControl span {
+  padding: 0 1rem;
+  font-weight: 600;
+}
+
+.addToCartBtn {
+  flex-grow: 1;
+}
+
+.warning {
+  color: #d9534f;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .productLayout {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+  }
+}
