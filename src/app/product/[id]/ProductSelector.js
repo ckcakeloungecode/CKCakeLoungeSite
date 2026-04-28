@@ -3,7 +3,11 @@
 import { useState, useMemo } from 'react';
 import styles from './page.module.css';
 
+import { useCart } from '../../context/CartContext';
+
 export default function ProductSelector({ product, variants }) {
+  const { addToCart } = useCart();
+  
   // If there are no variants, just use the base product info
   const hasVariants = variants && variants.length > 0;
   
@@ -33,9 +37,9 @@ export default function ProductSelector({ product, variants }) {
   const displayPrice = currentVariant ? currentVariant.price : product.base_price;
   const total = displayPrice * quantity;
 
-  // Placeholder function for Add to Cart
+  // Real function for Add to Cart
   const handleAddToCart = () => {
-    alert(`Added ${quantity}x ${product.name} (${selectedSize} - ${selectedFlavor}) to cart for $${total}!`);
+    addToCart(product, currentVariant, quantity);
   };
 
   return (

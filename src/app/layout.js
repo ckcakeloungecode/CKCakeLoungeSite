@@ -15,11 +15,16 @@ export const metadata = {
   title: "CK Cake Lounge",
   description: "Artisan cakes and pastries delivered fresh.",
 };
+import { Providers } from '../context/Providers';
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
-      <body>{children}</body>
+      <body>
+        <Providers>
+          {children}
+        </Providers>
+      </body>
     </html>
   );
 }
