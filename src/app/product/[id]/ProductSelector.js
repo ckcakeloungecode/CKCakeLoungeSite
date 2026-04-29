@@ -3,11 +3,7 @@
 import { useState, useMemo } from 'react';
 import styles from './page.module.css';
 
-import { useCart } from '../../context/CartContext';
-
 export default function ProductSelector({ product, variants }) {
-  const { addToCart } = useCart();
-  
   // If there are no variants, just use the base product info
   const hasVariants = variants && variants.length > 0;
   
@@ -25,7 +21,9 @@ export default function ProductSelector({ product, variants }) {
   // State to hold the user's current selections. Default to the first available option.
   const [selectedSize, setSelectedSize] = useState(uniqueSizes[0] || '');
   const [selectedFlavor, setSelectedFlavor] = useState(uniqueFlavors[0] || '');
-  const [quantity, setQuantity] = useState(1);
+  
+  const minQty = product.min_quantity || 1;
+  const [quantity, setQuantity] = useState(minQty);
 
   // Find the exact variant based on current selections
   const currentVariant = useMemo(() => {
@@ -34,17 +32,20 @@ export default function ProductSelector({ product, variants }) {
   }, [selectedSize, selectedFlavor, variants, hasVariants]);
 
   // Determine final display price
-  const displayPrice = currentVariant ? currentVariant.price : product.base_price;
+  const displayPrice = currentVariant ? currentVariant.price : product.price;
   const total = displayPrice * quantity;
+  
+  const formattedDisplayPrice = Number(displayPrice).toFixed(2);
+  const formattedTotal = Number(total).toFixed(2);
 
-  // Real function for Add to Cart
+  // Placeholder function for Add to Cart
   const handleAddToCart = () => {
-    addToCart(product, currentVariant, quantity);
+    alert(`Added ${quantity}x ${product.name} (${selectedSize} - ${selectedFlavor}) to cart for $${formattedTotal}!`);
   };
 
   return (
     <div className={styles.selectorContainer}>
-      <h2 className={styles.price}>${displayPrice} <span className={styles.perUnit}>each</span></h2>
+      <h2 className={styles.price}>${formattedDisplayPrice} <span className={styles.perUnit}>each</span></h2>
 
       {hasVariants && (
         <div className={styles.optionsGrid}>
@@ -87,7 +88,7 @@ export default function ProductSelector({ product, variants }) {
 
       <div className={styles.actionRow}>
         <div className={styles.quantityControl}>
-          <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</button>
+          <button onClick={() => setQuantity(Math.max(minQty, quantity - 1))}>-</button>
           <span>{quantity}</span>
           <button onClick={() => setQuantity(quantity + 1)}>+</button>
         </div>
@@ -97,7 +98,7 @@ export default function ProductSelector({ product, variants }) {
           onClick={handleAddToCart}
           disabled={hasVariants && !currentVariant}
         >
-          Add to Cart - ${total}
+          Add to Cart - ${formattedTotal}
         </button>
       </div>
     </div>
