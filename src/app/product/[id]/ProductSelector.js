@@ -24,6 +24,8 @@ export default function ProductSelector({ product, variants }) {
   
   const minQty = product.min_quantity || 1;
   const [quantity, setQuantity] = useState(minQty);
+  
+  const [isPhotoCake, setIsPhotoCake] = useState(false);
 
   // Find the exact variant based on current selections
   const currentVariant = useMemo(() => {
@@ -32,24 +34,43 @@ export default function ProductSelector({ product, variants }) {
   }, [selectedSize, selectedFlavor, variants, hasVariants]);
 
   // Determine final display price
-  const displayPrice = currentVariant ? currentVariant.price : product.price;
+  const baseDisplayPrice = currentVariant ? currentVariant.price : product.price;
+  const displayPrice = baseDisplayPrice + (isPhotoCake ? 25 : 0);
   const total = displayPrice * quantity;
   
   const formattedDisplayPrice = Number(displayPrice).toFixed(2);
   const formattedTotal = Number(total).toFixed(2);
 
+  // Determine dynamic image based on selected flavor variant
+  const displayImage = (currentVariant && currentVariant.image_url) ? currentVariant.image_url : product.image_url;
+
   // Placeholder function for Add to Cart
   const handleAddToCart = () => {
-    alert(`Added ${quantity}x ${product.name} (${selectedSize} - ${selectedFlavor}) to cart for $${formattedTotal}!`);
+    alert(`Added ${quantity}x ${product.name} (${selectedSize} - ${selectedFlavor})${isPhotoCake ? ' [Photo Added]' : ''} to cart for $${formattedTotal}!`);
   };
 
   return (
-    <div className={styles.selectorContainer}>
+    <>
+      {/* Left Side: Image (Dynamically changes based on flavor!) */}
+      <div className={styles.imageColumn}>
+         <div 
+           className={styles.imagePlaceholder}
+           style={{ backgroundImage: displayImage ? `url(${displayImage})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}
+         >
+         </div>
+      </div>
+
+      {/* Right Side: Details & Selectors */}
+      <div className={styles.detailsColumn}>
+        <h1 className={styles.title}>{product.name}</h1>
+        <p className={styles.description}>{product.description}</p>
+        
+        <div className={styles.selectorContainer}>
       <h2 className={styles.price}>${formattedDisplayPrice} <span className={styles.perUnit}>each</span></h2>
 
       {hasVariants && (
         <div className={styles.optionsGrid}>
-          {uniqueSizes.length > 0 && (
+          {uniqueSizes.length > 1 && (
             <div className={styles.optionGroup}>
               <label>Size</label>
               <select 
@@ -81,6 +102,19 @@ export default function ProductSelector({ product, variants }) {
         </div>
       )}
 
+      {product.allows_photo && (
+        <div className={styles.photoToggle}>
+          <label>
+            <input 
+              type="checkbox" 
+              checked={isPhotoCake} 
+              onChange={(e) => setIsPhotoCake(e.target.checked)} 
+            />
+            <span> 📷 Make it a Photo Cake (+$25.00)</span>
+          </label>
+        </div>
+      )}
+
       {/* Warning if a specific combination isn't found in the database */}
       {hasVariants && !currentVariant && (
         <p className={styles.warning}>This specific combination is not available.</p>
@@ -102,5 +136,7 @@ export default function ProductSelector({ product, variants }) {
         </button>
       </div>
     </div>
+    </div>
+    </>
   );
 }

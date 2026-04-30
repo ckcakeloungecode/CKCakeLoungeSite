@@ -42,19 +42,8 @@ export default async function ProductPage({ params }) {
         <Link href="/menu" className={styles.backLink}>&larr; Back to Menu</Link>
         
         <div className={`glass-panel ${styles.productLayout}`}>
-          {/* Left Side: Image */}
-          <div className={styles.imageColumn}>
-             <div className={styles.imagePlaceholder}></div>
-          </div>
-
-          {/* Right Side: Details & Selectors */}
-          <div className={styles.detailsColumn}>
-            <h1 className={styles.title}>{product.name}</h1>
-            <p className={styles.description}>{product.description}</p>
-            
-            {/* We pass the fetched variants to a Client Component because selecting dropdowns requires React State (user interaction) */}
-            <ProductSelector product={product} variants={variants || []} />
-          </div>
+          {/* We pass the fetched variants to a Client Component which now manages both the image and the dropdowns */}
+          <ProductSelector product={product} variants={variants || []} />
         </div>
       </div>
     </main>

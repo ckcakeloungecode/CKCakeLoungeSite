@@ -1,0 +1,55 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 250, 245, 0.85); /* Warm cream glassmorphism */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 1rem 0;
+}
+
+.navContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-family: var(--font-playfair);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--deep-cocoa);
+  text-decoration: none;
+}
+
+.navLinks {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.navLink {
+  font-weight: 600;
+  color: var(--text-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+  font-size: 1.1rem;
+}
+
+.navLink:hover {
+  color: var(--accent);
+}
+
+.specialLink {
+  color: var(--rose);
+  padding: 0.5rem 1rem;
+  background: rgba(255, 182, 193, 0.1);
+  border-radius: 50px;
+  border: 1px solid rgba(255, 182, 193, 0.3);
+}
+
+.specialLink:hover {
+  background: var(--rose);
+  color: white;
+}
