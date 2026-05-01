@@ -85,7 +85,7 @@ export default function ProductSelector({ product, variants }) {
             </div>
           )}
 
-          {uniqueFlavors.length > 0 && (
+          {uniqueFlavors.length > 0 && (uniqueFlavors.length > 1 || product.category === 'Cakes') && (
             <div className={styles.optionGroup}>
               <label>Flavor</label>
               <select 

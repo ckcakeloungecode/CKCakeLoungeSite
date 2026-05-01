@@ -25,6 +25,7 @@ export default async function Cakes() {
           <Link href="/menu" className={styles.tab}>Everyday Treats</Link>
           <Link href="/cakes" className={styles.activeTab}>Custom Cakes</Link>
           <Link href="/special-cakes" className={styles.tab}>Special Cakes</Link>
+          <Link href="/international-flavors" className={styles.tab}>International Flavors</Link>
         </div>
 
         <div className={styles.grid}>

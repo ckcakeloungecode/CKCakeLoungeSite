@@ -9,7 +9,8 @@ export default async function Menu() {
     .select('*')
     .eq('is_available', true)
     .eq('is_special_cake', false)
-    .neq('category', 'Cakes');
+    .neq('category', 'Cakes')
+    .neq('category', 'International Flavors');
 
   if (error) {
     console.error("Error fetching products:", error);
@@ -26,6 +27,7 @@ export default async function Menu() {
           <Link href="/menu" className={styles.activeTab}>Everyday Treats</Link>
           <Link href="/cakes" className={styles.tab}>Custom Cakes</Link>
           <Link href="/special-cakes" className={styles.tab}>Special Cakes</Link>
+          <Link href="/international-flavors" className={styles.tab}>International Flavors</Link>
         </div>
 
         <div className={styles.grid}>
