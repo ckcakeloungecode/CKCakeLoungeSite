@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useCart } from '../../../context/CartContext';
 import styles from './page.module.css';
 
 export default function ProductSelector({ product, variants }) {
@@ -44,9 +45,22 @@ export default function ProductSelector({ product, variants }) {
   // Determine dynamic image based on selected flavor variant
   const displayImage = (currentVariant && currentVariant.image_url) ? currentVariant.image_url : product.image_url;
 
-  // Placeholder function for Add to Cart
+  const { addToCart } = useCart();
+
   const handleAddToCart = () => {
-    alert(`Added ${quantity}x ${product.name} (${selectedSize} - ${selectedFlavor})${isPhotoCake ? ' [Photo Added]' : ''} to cart for $${formattedTotal}!`);
+    const item = {
+      productId: product.id,
+      variantId: currentVariant ? currentVariant.id : null,
+      name: product.name,
+      size: selectedSize || 'Standard',
+      flavor: selectedFlavor || 'Original',
+      price: displayPrice,
+      quantity: quantity,
+      isPhotoCake: isPhotoCake,
+      displayImage: displayImage
+    };
+    
+    addToCart(item);
   };
 
   return (

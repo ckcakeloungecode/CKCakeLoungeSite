@@ -1,4 +1,6 @@
 import { Inter, Outfit } from "next/font/google";
+import { CartProvider } from "../context/CartContext";
+import FloatingCart from "../components/FloatingCart";
 import "./globals.css";
 
 const inter = Inter({
@@ -20,7 +22,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
       <body>
-        {children}
+        <CartProvider>
+          {children}
+          <FloatingCart />
+        </CartProvider>
       </body>
     </html>
   );
