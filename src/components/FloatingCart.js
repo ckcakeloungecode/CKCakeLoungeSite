@@ -3,8 +3,10 @@
 import { useCart } from '../context/CartContext';
 import styles from './FloatingCart.module.css';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function FloatingCart() {
+  const router = useRouter();
   const { 
     cartItems, 
     isCartOpen, 
@@ -91,13 +93,13 @@ export default function FloatingCart() {
             <span>Subtotal</span>
             <span>${cartTotal.toFixed(2)}</span>
           </div>
-          {/* Temporary placeholder for the checkout action */}
+          {/* Checkout action */}
           <button 
             className={`btn-primary ${styles.checkoutBtn}`} 
             disabled={cartItems.length === 0}
             onClick={() => {
               toggleCart();
-              alert("Awesome! We will be building the secure Checkout page in the very next step!");
+              router.push('/checkout');
             }}
           >
             Checkout
