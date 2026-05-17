@@ -1,0 +1,142 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(43, 31, 26, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal {
+  background: #fdfaf9;
+  padding: 2.5rem 2rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.closeBtn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #8b7d77;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.closeBtn:hover {
+  color: #ef4444;
+}
+
+.title {
+  color: #4a3f39;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.subtitle {
+  color: #8b7d77;
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.inputGroup label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6b5a52;
+}
+
+.inputGroup input {
+  padding: 0.8rem;
+  border: 1px solid #d4c8c1;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: white;
+  width: 100%;
+  box-sizing: border-box;
+}
+.inputGroup input:focus {
+  outline: none;
+  border-color: #8b7d77;
+  box-shadow: 0 0 0 2px rgba(139, 125, 119, 0.2);
+}
+
+.error {
+  background: #fef2f2;
+  color: #ef4444;
+  padding: 0.8rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  border: 1px solid #fca5a5;
+  text-align: center;
+}
+
+.submitBtn {
+  background: #4a3f39;
+  color: white;
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 0.5rem;
+}
+.submitBtn:hover:not(:disabled) {
+  background: #362e2a;
+}
+.submitBtn:disabled {
+  background: #a39690;
+  cursor: not-allowed;
+}
+
+.toggleText {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #6b5a52;
+}
+
+.toggleBtn {
+  background: none;
+  border: none;
+  color: #c98c6b;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0;
+}
+.toggleBtn:hover {
+  text-decoration: underline;
+}

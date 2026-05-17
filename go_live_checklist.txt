@@ -1,0 +1,61 @@
+# 🚀 The CK Cake Lounge "Go Live" Checklist
+
+This document is your step-by-step master plan for Launch Day. When you are ready to take the bakery live to the public internet, follow these exact steps in order.
+
+---
+
+## Step 1: Secure Your Domain
+Before anything else, you need the official web address.
+- [ ] Purchase your official domain name (e.g., `www.ckcakelounge.com`) via a registrar like GoDaddy, Namecheap, or Google Domains.
+
+---
+
+## Step 2: Hosting Deployment (Vercel)
+We recommend using **Vercel** to host the site, as they created Next.js and it provides the absolute fastest performance.
+- [ ] Create a free account on Vercel.com using your GitHub account.
+- [ ] Push your `ckcakelounge` code to a private repository on your GitHub account.
+- [ ] In Vercel, click "Add New Project" and import your GitHub repository.
+- [ ] **Stop before you click Deploy!** Go to the "Environment Variables" section in Vercel. Open your local `.env.local` file and copy/paste every single key into Vercel. 
+- [ ] Click **Deploy**. Vercel will now build your website and put it on the internet!
+- [ ] In the Vercel dashboard, go to the "Domains" tab and link the official domain you bought in Step 1.
+
+---
+
+## Step 3: Switch Square to "Production"
+Right now, the website is using fake "Sandbox" credit cards. We need to start charging real money.
+- [ ] Log into your Square Developer Dashboard.
+- [ ] At the top of the screen, flip the toggle from **Sandbox** to **Production**.
+- [ ] Copy the new **Production Application ID**.
+- [ ] Copy the new **Production Access Token**.
+- [ ] Go back to your Vercel Environment Variables dashboard and update `NEXT_PUBLIC_SQUARE_APP_ID` and `SQUARE_ACCESS_TOKEN` with the new production values.
+
+---
+
+## Step 4: Verify Your Domain in Resend
+To prevent emails from going to spam, Resend requires you to prove you own the website.
+- [ ] Log into your Resend Dashboard.
+- [ ] Click on **Domains** and click "Add Domain". Type in your official domain (`ckcakelounge.com`).
+- [ ] Resend will give you a list of "DNS Records" (TXT and MX records). 
+- [ ] Copy those records into your domain registrar (GoDaddy, etc.) or Vercel (wherever your DNS is managed).
+- [ ] Wait a few minutes and click "Verify" in Resend. Once it turns green, you can officially send emails from `orders@ckcakelounge.com`!
+
+---
+
+## Step 5: Implement the Customer Email
+Once your Resend domain is verified (Step 4), we will drop in the code we deferred earlier.
+- [ ] Ask me (Antigravity) to implement the Customer Order Confirmation Email! It will take me 5 minutes to add the second email dispatch.
+
+---
+
+## Step 6: The Final $1 Test
+Never launch an e-commerce site without doing a real transaction first.
+- [ ] Go to your live website (e.g., `www.ckcakelounge.com`).
+- [ ] Temporarily change the price of a cupcake to `$1.00` in your Supabase dashboard.
+- [ ] Add the cupcake to your cart and check out using your **real, personal credit card**.
+- [ ] **Verify 3 things:**
+  1. Did your credit card actually get charged $1? (Check your Square Dashboard).
+  2. Did the Bakery receive the WhatsApp link and the Order Alert Email?
+  3. Did your personal email receive the Customer Order Confirmation?
+- [ ] If all 3 are YES, change the cupcake price back to normal.
+
+🎉 **CONGRATULATIONS! YOU ARE OFFICIALLY LIVE!** 🎉

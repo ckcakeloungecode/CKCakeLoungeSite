@@ -1,5 +1,6 @@
 import { Inter, Outfit } from "next/font/google";
 import { CartProvider } from "../context/CartContext";
+import { AuthProvider } from "../context/AuthContext";
 import FloatingCart from "../components/FloatingCart";
 import "./globals.css";
 
@@ -22,10 +23,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
       <body>
-        <CartProvider>
-          {children}
-          <FloatingCart />
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            {children}
+            <FloatingCart />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

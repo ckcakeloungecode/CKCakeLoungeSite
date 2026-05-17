@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useCart } from '../../../context/CartContext';
+import { supabase } from '../../../utils/supabaseClient';
 import styles from './page.module.css';
 
 export default function ProductSelector({ product, variants }) {
@@ -27,6 +28,8 @@ export default function ProductSelector({ product, variants }) {
   const [quantity, setQuantity] = useState(minQty);
   
   const [isPhotoCake, setIsPhotoCake] = useState(false);
+  const [photoFile, setPhotoFile] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   // Find the exact variant based on current selections
   const currentVariant = useMemo(() => {
@@ -47,7 +50,30 @@ export default function ProductSelector({ product, variants }) {
 
   const { addToCart } = useCart();
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
+    let finalPhotoUrl = null;
+
+    if (isPhotoCake && photoFile) {
+      setIsUploading(true);
+      
+      const fileExt = photoFile.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const { data, error } = await supabase.storage
+        .from('cake_photos')
+        .upload(fileName, photoFile);
+        
+      if (error) {
+        alert("Failed to upload photo! Please try again.");
+        setIsUploading(false);
+        return;
+      }
+      
+      // Get the permanent public URL
+      const { data: publicData } = supabase.storage.from('cake_photos').getPublicUrl(fileName);
+      finalPhotoUrl = publicData.publicUrl;
+      setIsUploading(false);
+    }
+
     const item = {
       productId: product.id,
       variantId: currentVariant ? currentVariant.id : null,
@@ -57,10 +83,15 @@ export default function ProductSelector({ product, variants }) {
       price: displayPrice,
       quantity: quantity,
       isPhotoCake: isPhotoCake,
+      photoUrl: finalPhotoUrl,
       displayImage: displayImage
     };
     
     addToCart(item);
+    
+    // Reset state after adding
+    setPhotoFile(null);
+    setIsPhotoCake(false);
   };
 
   return (
@@ -122,10 +153,27 @@ export default function ProductSelector({ product, variants }) {
             <input 
               type="checkbox" 
               checked={isPhotoCake} 
-              onChange={(e) => setIsPhotoCake(e.target.checked)} 
+              onChange={(e) => {
+                setIsPhotoCake(e.target.checked);
+                if (!e.target.checked) setPhotoFile(null);
+              }} 
             />
             <span> 📷 Make it a Photo Cake (+$25.00)</span>
           </label>
+          
+          {isPhotoCake && (
+            <div style={{ marginTop: '10px', padding: '12px', border: '1px dashed #c4b6b0', borderRadius: '8px', background: 'rgba(255,255,255,0.5)' }}>
+              <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: '#6b5a52', fontWeight: 'bold' }}>
+                Upload High-Res Photo (Required)
+              </label>
+              <input 
+                type="file" 
+                accept="image/*" 
+                onChange={(e) => setPhotoFile(e.target.files[0])}
+                style={{ fontSize: '0.85rem', width: '100%' }}
+              />
+            </div>
+          )}
         </div>
       )}
 
@@ -144,9 +192,9 @@ export default function ProductSelector({ product, variants }) {
         <button 
           className={`btn-primary ${styles.addToCartBtn}`}
           onClick={handleAddToCart}
-          disabled={hasVariants && !currentVariant}
+          disabled={(hasVariants && !currentVariant) || isUploading || (isPhotoCake && !photoFile)}
         >
-          Add to Cart - ${formattedTotal}
+          {isUploading ? "Uploading Photo..." : `Add to Cart - $${formattedTotal}`}
         </button>
       </div>
     </div>

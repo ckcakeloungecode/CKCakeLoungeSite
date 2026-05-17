@@ -3,7 +3,7 @@
 import { PaymentForm, CreditCard } from 'react-square-web-payments-sdk';
 import { useState } from 'react';
 
-export default function SquarePaymentForm({ amount, onSuccess, onCancel }) {
+export default function SquarePaymentForm({ amount, couponCode, discountAmount, formData, cartItems, orderType, onSuccess, onCancel }) {
   const [error, setError] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -39,13 +39,18 @@ export default function SquarePaymentForm({ amount, onSuccess, onCancel }) {
               body: JSON.stringify({
                 sourceId: token.token,
                 amount: amount,
+                couponCode: couponCode,
+                discountAmount: discountAmount,
+                formData: formData,
+                cartItems: cartItems,
+                orderType: orderType
               }),
             });
 
             const data = await res.json();
             
             if (res.ok && data.success) {
-              onSuccess(); // Triggers cart clear & redirect
+              onSuccess(data.receiptId); // Triggers cart clear & redirect
             } else {
               setError(data.error || 'Payment failed. Please try again.');
             }
