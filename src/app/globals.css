@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Outfit:wght@100..900&family=Inter:wght@100..900&display=swap');
+
 :root {
   /* Color Palette */
   --bg-color: #fdfbf7;      /* Warm Cream */
@@ -6,14 +8,16 @@
   --accent: #d98a4b;        /* Caramel */
   --accent-light: #f5dabb;  /* Soft Caramel */
   --rose: #e2ac9e;          /* Soft Rose/Strawberry */
+  --rose-light: #fdf1ef;    /* Creamy Pink */
 
   /* Glassmorphism */
-  --glass-bg: rgba(253, 251, 247, 0.85);
-  --glass-border: rgba(255, 255, 255, 0.5);
-  --glass-shadow: 0 8px 32px 0 rgba(42, 27, 20, 0.08);
+  --glass-bg: rgba(255, 251, 247, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --glass-shadow: 0 10px 40px -10px rgba(89, 53, 46, 0.12);
 
   /* Typography */
   --font-heading: 'Outfit', sans-serif;
+  --font-playfair: 'Playfair Display', serif;
   --font-body: 'Inter', sans-serif;
 
   /* Spacing & Sizes */

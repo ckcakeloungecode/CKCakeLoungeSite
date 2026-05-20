@@ -27,6 +27,27 @@ export default function CheckoutPage() {
   
   // Professional Fallback: Manual Distance Selection until a paid API Key is provided
   const [distanceKm, setDistanceKm] = useState(0);
+
+  // Database-Driven Calendar Blockouts
+  const [blockedDates, setBlockedDates] = useState([]);
+  const [isBlockedDatesLoading, setIsBlockedDatesLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBlockedDates = async () => {
+      try {
+        const res = await fetch('/api/blocked-dates');
+        const data = res.ok ? await res.json() : null;
+        if (data && data.success) {
+          setBlockedDates(data.blockedDates || []);
+        }
+      } catch (err) {
+        console.error("Failed to load blocked dates:", err);
+      } finally {
+        setIsBlockedDatesLoading(false);
+      }
+    };
+    fetchBlockedDates();
+  }, []);
   
   // Form Data State
   const [formData, setFormData] = useState({
@@ -41,6 +62,21 @@ export default function CheckoutPage() {
     date: '',
     time: ''
   });
+
+  // --- Date & Time Constraints ---
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  const minDateString = `${year}-${month}-${day}`;
+
+  const oneHourFromNow = new Date(today.getTime() + 60 * 60 * 1000);
+  const hours = String(oneHourFromNow.getHours()).padStart(2, '0');
+  const minutes = String(oneHourFromNow.getMinutes()).padStart(2, '0');
+  const dynamicMinTimeString = `${hours}:${minutes}`;
+  
+  // Only apply min time restrict to the HTML input if the selected date is today
+  const minTimeString = formData.date === minDateString ? dynamicMinTimeString : "";
 
   // Auto-fill contact info when the user logs in
   useEffect(() => {
@@ -107,15 +143,66 @@ export default function CheckoutPage() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+
+    if (name === 'date') {
+      let newDate = value;
+      // Calendar Blockout Check
+      if (blockedDates.includes(value)) {
+        alert("This date is fully booked or unavailable for orders. Please select another date.");
+        newDate = '';
+      }
+      
+      setFormData(prev => {
+        let newTime = prev.time;
+        // Verify time constraint for today's orders
+        if (newDate === minDateString && prev.time && prev.time < dynamicMinTimeString) {
+          newTime = dynamicMinTimeString;
+        }
+        return {
+          ...prev,
+          date: newDate,
+          time: newTime
+        };
+      });
+      return;
+    }
+
+    if (name === 'time') {
+      let newTime = value;
+      if (formData.date === minDateString && value < dynamicMinTimeString) {
+        alert(`For today's orders, the earliest available time is ${dynamicMinTimeString} to allow for preparation.`);
+        newTime = dynamicMinTimeString;
+      }
+      setFormData(prev => ({
+        ...prev,
+        time: newTime
+      }));
+      return;
+    }
+
+    // Default handler for all other text inputs (firstName, lastName, email, phone, address, notes)
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const handlePlaceOrder = (e) => {
     e.preventDefault();
     
     // Validate minimal required fields
-    if (!formData.firstName || !formData.email || !formData.phone || !formData.date) {
+    if (!formData.firstName || !formData.email || !formData.phone || !formData.date || !formData.time) {
       alert("Please fill out all required fields.");
+      return;
+    }
+
+    if (blockedDates.includes(formData.date)) {
+      alert("The selected date is fully booked or unavailable. Please choose another date.");
+      return;
+    }
+
+    if (formData.date === minDateString && formData.time < dynamicMinTimeString) {
+      alert(`For today's orders, the earliest available time is ${dynamicMinTimeString}.`);
       return;
     }
 
@@ -310,11 +397,25 @@ export default function CheckoutPage() {
             <div className={styles.inputRow}>
               <div className={styles.inputGroup}>
                 <label>Requested Date *</label>
-                <input type="date" name="date" required value={formData.date} onChange={handleInputChange} />
+                <input 
+                  type="date" 
+                  name="date" 
+                  required 
+                  min={minDateString}
+                  value={formData.date} 
+                  onChange={handleInputChange} 
+                />
               </div>
               <div className={styles.inputGroup}>
                 <label>Requested Time *</label>
-                <input type="time" name="time" required value={formData.time} onChange={handleInputChange} />
+                <input 
+                  type="time" 
+                  name="time" 
+                  required 
+                  min={minTimeString}
+                  value={formData.time} 
+                  onChange={handleInputChange} 
+                />
               </div>
             </div>
             <div className={styles.inputGroup}>
@@ -449,6 +550,7 @@ export default function CheckoutPage() {
               formData={formData}
               cartItems={cartItems}
               orderType={orderType}
+              distanceKm={distanceKm}
               onSuccess={handlePaymentSuccess}
               onCancel={handlePaymentCancel}
             />

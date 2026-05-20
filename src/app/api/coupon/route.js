@@ -1,9 +1,63 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '../../../utils/supabaseAdmin';
 
+// In-Memory Rate Limiter Map for Coupon Route
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
+const MAX_ATTEMPTS_PER_WINDOW = 10;
+const ipRequestCounts = new Map();
+
+const isProduction = process.env.NODE_ENV === 'production';
+
 export async function POST(request) {
   try {
     const { code, cartTotal, email } = await request.json();
+
+    // --- CORS & ORIGIN PROTECTION ---
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'https://ckcakelounge.com',
+      'https://www.ckcakelounge.com'
+    ];
+    const origin = request.headers.get('origin');
+    const referer = request.headers.get('referer');
+
+    const isOriginAllowed = (url) => {
+      if (!url) return false;
+      if (allowedOrigins.some(allowed => url.startsWith(allowed))) return true;
+      if (url.includes('.vercel.app')) return true;
+      return false;
+    };
+
+    if (isProduction) {
+      const sourceUrl = origin || referer;
+      if (!sourceUrl || !isOriginAllowed(sourceUrl)) {
+        console.warn(`SECURITY ALERT: Blocked coupon request from unauthorized origin: ${sourceUrl}`);
+        return NextResponse.json({ error: 'Security Block: Request origin not allowed.' }, { status: 403 });
+      }
+    }
+
+    // --- RATE LIMITER: Brute Force Protection ---
+    const ip = request.headers.get('x-forwarded-for') || 'unknown_ip';
+    const now = Date.now();
+    
+    for (const [key, value] of ipRequestCounts.entries()) {
+      if (now - value.timestamp > RATE_LIMIT_WINDOW_MS) ipRequestCounts.delete(key);
+    }
+
+    if (ip !== 'unknown_ip') {
+      const record = ipRequestCounts.get(ip) || { count: 0, timestamp: now };
+      if (now - record.timestamp > RATE_LIMIT_WINDOW_MS) {
+        record.count = 1;
+        record.timestamp = now;
+      } else {
+        record.count++;
+      }
+      ipRequestCounts.set(ip, record);
+
+      if (record.count > MAX_ATTEMPTS_PER_WINDOW) {
+        return NextResponse.json({ error: 'Too many coupon attempts. Please wait a minute.' }, { status: 429 });
+      }
+    }
 
     if (!code) {
       return NextResponse.json({ error: 'Please enter a coupon code.' }, { status: 400 });

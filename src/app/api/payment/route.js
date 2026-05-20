@@ -8,38 +8,198 @@ import { Resend } from 'resend';
 const isProduction = process.env.NODE_ENV === 'production';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// In-Memory Rate Limiter Map
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
+const MAX_ATTEMPTS_PER_WINDOW = 5;
+const ipRequestCounts = new Map();
+
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { sourceId, amount, couponCode, discountAmount, formData, cartItems, orderType } = body;
+    const { sourceId, amount, couponCode, discountAmount, formData, cartItems, orderType, distanceKm } = body;
+
+    if (!formData || !cartItems) {
+      return NextResponse.json({ success: false, error: 'Bad Request: Missing order details.' }, { status: 400 });
+    }
+
+    // --- CORS & ORIGIN PROTECTION ---
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'https://ckcakelounge.com',
+      'https://www.ckcakelounge.com'
+    ];
+    const origin = req.headers.get('origin');
+    const referer = req.headers.get('referer');
+
+    const isOriginAllowed = (url) => {
+      if (!url) return false;
+      if (allowedOrigins.some(allowed => url.startsWith(allowed))) return true;
+      if (url.includes('.vercel.app')) return true;
+      return false;
+    };
+
+    if (isProduction) {
+      const sourceUrl = origin || referer;
+      if (!sourceUrl || !isOriginAllowed(sourceUrl)) {
+        console.warn(`SECURITY ALERT: Blocked payment request from unauthorized origin: ${sourceUrl}`);
+        return NextResponse.json({ success: false, error: 'Security Block: Request origin not allowed.' }, { status: 403 });
+      }
+    }
 
     if (!process.env.SQUARE_ACCESS_TOKEN || process.env.SQUARE_ACCESS_TOKEN.includes('YOUR_SANDBOX')) {
         return NextResponse.json({ success: false, error: 'Square Access Token is missing or invalid on the server.' }, { status: 500 });
     }
 
-    // 🚨 Pre-Charge Security Check 🚨
-    // Ensure the user hasn't bypassed the frontend UI to use a one-time code twice
+    // --- RATE LIMITER: Card Testing Protection ---
+    const ip = req.headers.get('x-forwarded-for') || 'unknown_ip';
+    const now = Date.now();
+    
+    for (const [key, value] of ipRequestCounts.entries()) {
+      if (now - value.timestamp > RATE_LIMIT_WINDOW_MS) ipRequestCounts.delete(key);
+    }
+
+    if (ip !== 'unknown_ip') {
+      const record = ipRequestCounts.get(ip) || { count: 0, timestamp: now };
+      if (now - record.timestamp > RATE_LIMIT_WINDOW_MS) {
+        record.count = 1;
+        record.timestamp = now;
+      } else {
+        record.count++;
+      }
+      ipRequestCounts.set(ip, record);
+
+      if (record.count > MAX_ATTEMPTS_PER_WINDOW) {
+        return NextResponse.json({ success: false, error: 'Too many payment attempts. Please wait a minute before trying again.' }, { status: 429 });
+      }
+    }
+
+    // 🚨 1. SERVER-SIDE PRICE VERIFICATION 🚨
+    let serverCartTotal = 0;
+    
+    for (const item of cartItems) {
+      let truePrice = 0;
+      if (item.variantId) {
+        const { data: variant } = await supabaseAdmin.from('product_variants').select('price').eq('id', item.variantId).single();
+        if (variant) truePrice = variant.price;
+      } else {
+        const { data: product } = await supabaseAdmin.from('products').select('price').eq('id', item.productId).single();
+        if (product) truePrice = product.price;
+      }
+      
+      if (item.isPhotoCake) truePrice += 25;
+      
+      serverCartTotal += (truePrice * item.quantity);
+    }
+
+    // 🚨 2. SERVER-SIDE COUPON VERIFICATION 🚨
+    let serverDiscountAmount = 0;
     if (couponCode) {
       const { data: coupon } = await supabaseAdmin
         .from('store_coupons')
-        .select('is_one_time_use')
+        .select('*')
         .eq('code', couponCode)
         .single();
         
-      if (coupon?.is_one_time_use) {
-        const { data: pastOrders } = await supabaseAdmin
-          .from('store_orders')
-          .select('id')
-          .eq('email', formData.email)
-          .eq('coupon_code', couponCode);
-          
-        if (pastOrders && pastOrders.length > 0) {
-          return NextResponse.json(
-            { error: 'Security Block: You have already used this coupon on a previous order.' }, 
-            { status: 403 }
-          );
+      if (coupon) {
+        if (coupon.discount_type === 'fixed') {
+          serverDiscountAmount = coupon.discount_value;
+        } else if (coupon.discount_type === 'percentage') {
+          serverDiscountAmount = serverCartTotal * (coupon.discount_value / 100);
+        }
+        
+        if (serverDiscountAmount > serverCartTotal) serverDiscountAmount = serverCartTotal;
+
+        if (coupon.is_one_time_use) {
+          const { data: pastOrders } = await supabaseAdmin
+            .from('store_orders')
+            .select('id')
+            .eq('email', formData.email)
+            .eq('coupon_code', couponCode);
+            
+          if (pastOrders && pastOrders.length > 0) {
+            return NextResponse.json({ error: 'Security Block: You have already used this coupon.' }, { status: 403 });
+          }
         }
       }
+    }
+
+    // 🚨 3. SERVER-SIDE DELIVERY FEE VERIFICATION 🚨
+    let serverDeliveryFee = 0;
+    if (orderType === 'delivery' && distanceKm && distanceKm > 0) {
+      if (distanceKm > 5) {
+        const roundedKm = Math.ceil(distanceKm);
+        if (roundedKm === 6) {
+          serverDeliveryFee = 4.99;
+        } else {
+          serverDeliveryFee = 4.99 + (roundedKm - 6);
+        }
+      }
+    }
+
+    // 🚨 4. THE MASTER MATH VERIFICATION 🚨
+    const serverDiscountedSubtotal = Math.max(0, serverCartTotal - serverDiscountAmount);
+    const serverHstTax = (serverDiscountedSubtotal + serverDeliveryFee) * 0.13;
+    const serverGrandTotal = serverDiscountedSubtotal + serverDeliveryFee + serverHstTax;
+
+    if (Math.abs(serverGrandTotal - amount) > 0.05) {
+      console.warn(`SECURITY ALERT: Client amount ${amount} did not match server amount ${serverGrandTotal}`);
+      return NextResponse.json({ success: false, error: 'Security Block: Price manipulation detected. Please refresh and try again.' }, { status: 403 });
+    }
+
+    // --- ESCAPE HTML HELPER ---
+    function escapeHTML(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>'"]/g, tag => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+        '"': '&quot;'
+      }[tag]));
+    }
+
+    const safeFirstName = escapeHTML(formData.firstName);
+    const safeLastName = escapeHTML(formData.lastName);
+    const safeEmail = escapeHTML(formData.email);
+    const safePhone = escapeHTML(formData.phone);
+    const safeAddress = escapeHTML(formData.address);
+    const safeCity = escapeHTML(formData.city);
+    const safePostalCode = escapeHTML(formData.postalCode);
+    const safeNotes = escapeHTML(formData.notes);
+
+    // 🚨 5. TWO-PHASE COMMIT: Insert "Processing" Order 🚨
+    let receiptId = null;
+    let orderIdempotencyKey = crypto.randomUUID();
+
+    try {
+      const { data: insertedData, error: dbError } = await supabaseAdmin
+        .from('store_orders')
+        .insert([
+          {
+            payment_id: `processing_${orderIdempotencyKey}`,
+            customer_name: `${safeFirstName} ${safeLastName}`.trim(),
+            email: safeEmail,
+            phone: safePhone,
+            order_type: orderType,
+            delivery_address: orderType === 'delivery' ? `${safeAddress}, ${safeCity}, ${safePostalCode}` : null,
+            delivery_date: formData.date,
+            delivery_time: formData.time,
+            notes: safeNotes,
+            cart_items: cartItems,
+            total_amount: amount,
+            coupon_code: couponCode || null,
+            discount_amount: discountAmount || 0,
+            status: 'processing'
+          }
+        ])
+        .select()
+        .single();
+        
+      if (dbError) throw dbError;
+      if (insertedData) receiptId = insertedData.id;
+    } catch (e) {
+      console.error("Failed to insert processing ticket:", e);
+      return NextResponse.json({ success: false, error: 'Database error before charging.' }, { status: 500 });
     }
 
     // Convert amount to cents for Square
@@ -50,70 +210,36 @@ export async function POST(req) {
       environment: isProduction ? SquareEnvironment.Production : SquareEnvironment.Sandbox,
     });
 
-    const response = await client.payments.create({
-      sourceId: sourceId,
-      idempotencyKey: crypto.randomUUID(),
-      amountMoney: {
-        amount: BigInt(amountInCents),
-        currency: 'CAD', // Ensuring Canadian Dollars
-      },
-    });
-
-    // The payment is successful!
-    // We safely extract the ID depending on how the v44 SDK shapes the response
-    const paymentId = response?.result?.payment?.id || response?.payment?.id || 'sandbox_success_id';
+    let paymentId = 'sandbox_success_id';
     
-    // --- 1. SAVE TO SUPABASE TICKETING SYSTEM ---
-    let receiptId = null;
-    if (formData && cartItems) {
-      try {
-        // Use the Admin client to bypass RLS and insert the row
-        const { data: insertedData, error: dbError } = await supabaseAdmin
-          .from('store_orders')
-          .insert([
-            {
-              payment_id: paymentId,
-              customer_name: `${formData.firstName} ${formData.lastName}`.trim(),
-              email: formData.email,
-              phone: formData.phone,
-              order_type: orderType,
-              delivery_address: orderType === 'delivery' ? `${formData.address}, ${formData.city}, ${formData.postalCode}` : null,
-              delivery_date: formData.date,
-              delivery_time: formData.time,
-              notes: formData.notes || '',
-              cart_items: cartItems,
-              total_amount: amount,
-              coupon_code: couponCode || null,
-              discount_amount: discountAmount || 0,
-              status: 'pending'
-            }
-          ])
-          .select()
-          .single();
-          
-        if (dbError) {
-          console.error("Supabase Insert Error:", dbError);
-        } else if (couponCode) {
-          // Increment the usage limit on the coupon
-          const { data: cData } = await supabaseAdmin
-            .from('store_coupons')
-            .select('id, times_used')
-            .eq('code', couponCode)
-            .single();
-            
-          if (cData) {
-            await supabaseAdmin
-              .from('store_coupons')
-              .update({ times_used: cData.times_used + 1 })
-              .eq('id', cData.id);
-          }
-          receiptId = insertedData.id;
-        } else if (insertedData) {
-          receiptId = insertedData.id;
-        }
-      } catch (e) {
-        console.error("Failed to insert ticket into database:", e);
+    try {
+      const response = await client.payments.create({
+        sourceId: sourceId,
+        idempotencyKey: orderIdempotencyKey,
+        amountMoney: {
+          amount: BigInt(amountInCents),
+          currency: 'CAD',
+        },
+      });
+      paymentId = response?.result?.payment?.id || response?.payment?.id || paymentId;
+    } catch (squareError) {
+      // 🚨 SQUARE FAILED: Mark order as failed 🚨
+      await supabaseAdmin.from('store_orders').update({ status: 'failed', payment_id: `failed_${orderIdempotencyKey}` }).eq('id', receiptId);
+      throw squareError;
+    }
+
+    // 🚨 SQUARE SUCCEEDED: Mark order as paid 🚨
+    await supabaseAdmin.from('store_orders').update({ status: 'paid', payment_id: paymentId }).eq('id', receiptId);
+
+    // Update coupon usage atomically
+    if (couponCode) {
+      const { error: rpcError } = await supabaseAdmin.rpc('increment_coupon_usage', { coupon_code_param: couponCode });
+      if (rpcError) {
+        console.error("Failed to increment coupon usage atomically:", rpcError);
       }
+    }
+    
+
 
       // --- 2. FIRE AUTOMATED EMAIL VIA RESEND ---
       try {
@@ -148,23 +274,23 @@ export async function POST(req) {
           await resend.emails.send({
             from: 'Orders <onboarding@resend.dev>', // Free tier Resend sender
             to: bakeryEmail,
-            subject: `🎂 New Order: ${formData.firstName} ${formData.lastName} - $${amount}`,
+            subject: `🎂 New Order: ${safeFirstName} ${safeLastName} - $${amount}`,
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
                 <h2 style="color: #4a3f39;">New Bakery Order Received!</h2>
                 <p><strong>Payment ID:</strong> ${paymentId}</p>
                 
                 <h3 style="border-bottom: 2px solid #e0d5ce; padding-bottom: 10px; color: #4a3f39;">Customer Details</h3>
-                <p><strong>Name:</strong> ${formData.firstName} ${formData.lastName}</p>
-                <p><strong>Email:</strong> <a href="mailto:${formData.email}">${formData.email}</a></p>
-                <p><strong>Phone:</strong> ${formData.phone}</p>
+                <p><strong>Name:</strong> ${safeFirstName} ${safeLastName}</p>
+                <p><strong>Email:</strong> <a href="mailto:${safeEmail}">${safeEmail}</a></p>
+                <p><strong>Phone:</strong> ${safePhone}</p>
 
                 <h3 style="border-bottom: 2px solid #e0d5ce; padding-bottom: 10px; color: #4a3f39;">Fulfillment Details</h3>
                 <p><strong>Type:</strong> ${orderType.toUpperCase()}</p>
-                ${orderType === 'delivery' ? `<p><strong>Address:</strong> ${formData.address}, ${formData.city}, ${formData.postalCode}</p>` : ''}
+                ${orderType === 'delivery' ? `<p><strong>Address:</strong> ${safeAddress}, ${safeCity}, ${safePostalCode}</p>` : ''}
                 <p><strong>Date Needed:</strong> ${formData.date}</p>
                 <p><strong>Time Needed:</strong> ${formData.time}</p>
-                <p><strong>Notes:</strong> ${formData.notes || 'None'}</p>
+                <p><strong>Notes:</strong> ${safeNotes || 'None'}</p>
 
                 <h3 style="border-bottom: 2px solid #e0d5ce; padding-bottom: 10px; color: #4a3f39;">Order Items</h3>
                 <ul style="list-style: none; padding: 0;">
@@ -184,9 +310,8 @@ export async function POST(req) {
       } catch (e) {
         console.error("Failed to send Resend email:", e);
       }
-    }
 
-    return NextResponse.json({ success: true, paymentId, receiptId }, { status: 200 });
+      return NextResponse.json({ success: true, paymentId, receiptId }, { status: 200 });
 
   } catch (error) {
     console.error("Square Payment Error:", error);
