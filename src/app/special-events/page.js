@@ -9,7 +9,7 @@ export default function SpecialEventsPage() {
   const router = useRouter();
   const fileInputRef = useRef(null);
 
-  const [orderType, setOrderType] = useState('pickup'); // 'pickup' or 'delivery'
+  const orderType = 'pickup';
   const [photoFile, setPhotoFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -22,10 +22,7 @@ export default function SpecialEventsPage() {
     occasion: 'wedding', // wedding, baby shower, anniversary, retirement, others
     date: '',
     time: '',
-    notes: '',
-    address: '',
-    city: 'London',
-    postalCode: ''
+    notes: ''
   });
 
   // Calculate 2-day lead time constraint
@@ -70,10 +67,7 @@ export default function SpecialEventsPage() {
       return;
     }
 
-    if (orderType === 'delivery' && (!formData.address || !formData.postalCode)) {
-      alert("Please provide your delivery address details.");
-      return;
-    }
+    // Enforced Store Pickup Only
 
     setIsSubmitting(true);
     let finalPhotoUrl = null;
@@ -270,70 +264,11 @@ export default function SpecialEventsPage() {
         {/* Fulfillment Section */}
         <div className={`glass-panel ${styles.formSection}`}>
           <h2>Fulfillment</h2>
-          <div className={styles.toggleContainer}>
-            <button 
-              type="button" 
-              className={`${styles.toggleOption} ${orderType === 'pickup' ? styles.active : ''}`}
-              onClick={() => setOrderType('pickup')}
-            >
-              <span className={styles.toggleIcon}>🏪</span>
-              Pickup at Lounge
-            </button>
-            <button 
-              type="button" 
-              className={`${styles.toggleOption} ${orderType === 'delivery' ? styles.active : ''}`}
-              onClick={() => setOrderType('delivery')}
-            >
-              <span className={styles.toggleIcon}>🚚</span>
-              Delivery
-            </button>
+          <p style={{ fontWeight: '600', color: '#4a3f39', marginBottom: '0.8rem' }}>Store Pickup Only</p>
+          <div className={styles.infoBox}>
+            <strong>Pickup Location:</strong>
+            <span>CK Cake Lounge, Evans Blvd, London, ON N6M 0A8</span>
           </div>
-
-          {orderType === 'pickup' ? (
-            <div className={styles.infoBox}>
-              <strong>Store Pickup Address:</strong>
-              <span>CK Cake Lounge, Evans Blvd, London, ON N6M 0A8</span>
-            </div>
-          ) : (
-            <div>
-              <div className={styles.inputGroup}>
-                <label>Street Address *</label>
-                <input 
-                  type="text" 
-                  name="address" 
-                  required={orderType === 'delivery'}
-                  placeholder="e.g. 123 Baker St" 
-                  value={formData.address} 
-                  onChange={handleInputChange} 
-                />
-              </div>
-              <div className={styles.inputRow}>
-                <div className={styles.inputGroup}>
-                  <label>City</label>
-                  <input 
-                    type="text" 
-                    name="city" 
-                    disabled 
-                    value={formData.city} 
-                  />
-                </div>
-                <div className={styles.inputGroup}>
-                  <label>Postal Code *</label>
-                  <input 
-                    type="text" 
-                    name="postalCode" 
-                    required={orderType === 'delivery'}
-                    placeholder="e.g. N6A 1A1" 
-                    value={formData.postalCode} 
-                    onChange={handleInputChange} 
-                  />
-                </div>
-              </div>
-              <div className={styles.infoBox} style={{ background: '#fef3c7', borderColor: '#d97706' }}>
-                <span>ℹ️ <strong>Note:</strong> Delivery fees for special events will be calculated and appended in your final quote depending on the exact location address.</span>
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Scheduling Section */}
@@ -341,7 +276,7 @@ export default function SpecialEventsPage() {
           <h2>Scheduling Details</h2>
           <div className={styles.inputRow}>
             <div className={styles.inputGroup}>
-              <label>Requested Date Needed *</label>
+              <label>Requested Pickup Date *</label>
               <input 
                 type="date" 
                 name="date" 
@@ -352,7 +287,7 @@ export default function SpecialEventsPage() {
               />
             </div>
             <div className={styles.inputGroup}>
-              <label>Requested Delivery/Pickup Time *</label>
+              <label>Requested Pickup Time *</label>
               <input 
                 type="time" 
                 name="time" 
