@@ -34,7 +34,7 @@
 }
 
 body {
-  background-image: url('/hearts_bg.jpg');
+  background-image: linear-gradient(rgba(253, 241, 239, 0.82), rgba(253, 241, 239, 0.82)), url('/hearts_bg.jpg');
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
