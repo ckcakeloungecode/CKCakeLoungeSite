@@ -64,9 +64,9 @@ export default function CustomQuotePage() {
   const day = String(today.getDate()).padStart(2, '0');
   const minDateString = `${year}-${month}-${day}`;
 
-  const oneHourFromNow = new Date(today.getTime() + 60 * 60 * 1000);
-  const hours = String(oneHourFromNow.getHours()).padStart(2, '0');
-  const minutes = String(oneHourFromNow.getMinutes()).padStart(2, '0');
+  const threeHoursFromNow = new Date(today.getTime() + 3 * 60 * 60 * 1000);
+  const hours = String(threeHoursFromNow.getHours()).padStart(2, '0');
+  const minutes = String(threeHoursFromNow.getMinutes()).padStart(2, '0');
   const dynamicMinTimeString = `${hours}:${minutes}`;
   const minTimeString = formData.date === minDateString ? dynamicMinTimeString : "";
 
@@ -97,7 +97,7 @@ export default function CustomQuotePage() {
     if (name === 'time') {
       let newTime = value;
       if (formData.date === minDateString && value < dynamicMinTimeString) {
-        alert(`For today's orders, the earliest available time is ${dynamicMinTimeString} to allow for preparation.`);
+        alert(`For today's orders, the earliest available time is ${dynamicMinTimeString} to allow for preparation (3 hours advance notice).`);
         newTime = dynamicMinTimeString;
       }
       setFormData(prev => ({
@@ -129,7 +129,7 @@ export default function CustomQuotePage() {
     }
 
     if (formData.date === minDateString && formData.time < dynamicMinTimeString) {
-      alert(`For today's orders, the earliest available time is ${dynamicMinTimeString}.`);
+      alert(`For today's orders, the earliest available time is ${dynamicMinTimeString} (3 hours advance notice).`);
       return;
     }
 

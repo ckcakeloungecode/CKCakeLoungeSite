@@ -15,8 +15,8 @@ export default function CheckoutPage() {
   const router = useRouter();
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [orderType, setOrderType] = useState('pickup');
-  const [postalCode, setPostalCode] = useState('');
+  const orderType = 'pickup';
+  const distanceKm = 0;
   const [isReadyToPay, setIsReadyToPay] = useState(false);
   
   // Coupon State
@@ -28,8 +28,7 @@ export default function CheckoutPage() {
 
   const isQuoteOnly = cartItems.some(item => item.category === 'Cakes');
   
-  // Professional Fallback: Manual Distance Selection until a paid API Key is provided
-  const [distanceKm, setDistanceKm] = useState(0);
+
 
   // Database-Driven Calendar Blockouts
   const [blockedDates, setBlockedDates] = useState([]);
@@ -67,18 +66,25 @@ export default function CheckoutPage() {
   });
 
   // --- Date & Time Constraints ---
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate()).padStart(2, '0');
-  const minDateString = `${year}-${month}-${day}`;
+  const getMinDateAndTime = () => {
+    const today = new Date();
+    // 5 hours lead time for Ready to Go Cakes, 3 hours for Everyday Treats / other items
+    const requiredHours = cartItems.some(item => item.category === 'Ready to Go Cakes') ? 5 : 3;
+    const earliestTime = new Date(today.getTime() + requiredHours * 60 * 60 * 1000);
 
-  const oneHourFromNow = new Date(today.getTime() + 60 * 60 * 1000);
-  const hours = String(oneHourFromNow.getHours()).padStart(2, '0');
-  const minutes = String(oneHourFromNow.getMinutes()).padStart(2, '0');
-  const dynamicMinTimeString = `${hours}:${minutes}`;
-  
-  // Only apply min time restrict to the HTML input if the selected date is today
+    const y = earliestTime.getFullYear();
+    const m = String(earliestTime.getMonth() + 1).padStart(2, '0');
+    const d = String(earliestTime.getDate()).padStart(2, '0');
+    const minDate = `${y}-${m}-${d}`;
+
+    const hr = String(earliestTime.getHours()).padStart(2, '0');
+    const min = String(earliestTime.getMinutes()).padStart(2, '0');
+    const minTime = `${hr}:${min}`;
+
+    return { minDate, minTime, requiredHours };
+  };
+
+  const { minDate: minDateString, minTime: dynamicMinTimeString, requiredHours } = getMinDateAndTime();
   const minTimeString = formData.date === minDateString ? dynamicMinTimeString : "";
 
   // Auto-fill contact info when the user logs in
@@ -94,14 +100,7 @@ export default function CheckoutPage() {
     }
   }, [user]);
 
-  const deliveryFee = (() => {
-    if (orderType !== 'delivery' || distanceKm <= 0) return 0;
-    if (distanceKm <= 5) return 0;
-    
-    const roundedKm = Math.ceil(distanceKm);
-    if (roundedKm === 6) return 4.99;
-    return 4.99 + (roundedKm - 6);
-  })();
+  const deliveryFee = 0;
 
   const handleApplyCoupon = async () => {
     if (!couponInput.trim()) return;
@@ -172,8 +171,9 @@ export default function CheckoutPage() {
 
     if (name === 'time') {
       let newTime = value;
+      // If date is today, block ordering items in the past
       if (formData.date === minDateString && value < dynamicMinTimeString) {
-        alert(`For today's orders, the earliest available time is ${dynamicMinTimeString} to allow for preparation.`);
+        alert(`For today's orders, the earliest available time is ${dynamicMinTimeString} to allow for preparation (${requiredHours} hours advance notice).`);
         newTime = dynamicMinTimeString;
       }
       setFormData(prev => ({
@@ -205,12 +205,7 @@ export default function CheckoutPage() {
     }
 
     if (formData.date === minDateString && formData.time < dynamicMinTimeString) {
-      alert(`For today's orders, the earliest available time is ${dynamicMinTimeString}.`);
-      return;
-    }
-
-    if (orderType === 'delivery' && (!formData.address || !postalCode)) {
-      alert("Please provide a full delivery address and postal code.");
+      alert(`For today's orders, the earliest available time is ${dynamicMinTimeString} (${requiredHours} hours advance notice).`);
       return;
     }
 
@@ -341,91 +336,12 @@ export default function CheckoutPage() {
 
           <div className={styles.formSection}>
             <h2>Fulfillment Method</h2>
-            <div className={styles.radioGroup}>
-              <label className={styles.radioOption}>
-                <input 
-                  type="radio" 
-                  name="orderType" 
-                  value="pickup" 
-                  checked={orderType === 'pickup'} 
-                  onChange={() => setOrderType('pickup')} 
-                />
-                Store Pickup
-              </label>
-              <label className={styles.radioOption}>
-                <input 
-                  type="radio" 
-                  name="orderType" 
-                  value="delivery" 
-                  checked={orderType === 'delivery'} 
-                  onChange={() => setOrderType('delivery')} 
-                />
-                Local Delivery
-              </label>
+            <p style={{ fontWeight: '600', color: '#4a3f39', marginBottom: '0.8rem' }}>Store Pickup Only</p>
+            <div className={styles.mockDistanceBox}>
+              <strong>Pickup Location:</strong><br />
+              CK Cake Lounge<br />
+              Evans Blvd, London, ON N6M 0A8
             </div>
-
-            {orderType === 'pickup' ? (
-              <div className={styles.mockDistanceBox}>
-                <strong>Pickup Location:</strong><br />
-                CK Cake Lounge<br />
-                Evans Blvd, London, ON N6M 0A8
-              </div>
-            ) : (
-              <div className="animate-in">
-                <div className={styles.inputGroup}>
-                  <label>Street Address *</label>
-                  <input type="text" name="address" required={orderType === 'delivery'} value={formData.address} onChange={handleInputChange} />
-                </div>
-                <div className={styles.inputRow}>
-                  <div className={styles.inputGroup}>
-                    <label>City</label>
-                    <input type="text" name="city" value={formData.city} readOnly />
-                  </div>
-                  <div className={styles.inputGroup}>
-                    <label>Postal Code *</label>
-                    <input 
-                      type="text" 
-                      name="postalCode" 
-                      placeholder="e.g. N6M 1A1" 
-                      required={orderType === 'delivery'} 
-                      value={postalCode} 
-                      onChange={(e) => setPostalCode(e.target.value)} 
-                    />
-                  </div>
-                </div>
-                
-                <div className={styles.inputGroup}>
-                  <label>Estimated Distance from Bakery (Evans Blvd) *</label>
-                  <select 
-                    required={orderType === 'delivery'} 
-                    value={distanceKm} 
-                    onChange={(e) => setDistanceKm(Number(e.target.value))}
-                  >
-                    <option value={0}>Select distance...</option>
-                    <option value={5}>0 - 5 km (Free)</option>
-                    <option value={6}>6 km ($4.99)</option>
-                    <option value={7}>7 km ($5.99)</option>
-                    <option value={8}>8 km ($6.99)</option>
-                    <option value={9}>9 km ($7.99)</option>
-                    <option value={10}>10 km ($8.99)</option>
-                    <option value={15}>10+ km (Calculated upon review)</option>
-                  </select>
-                </div>
-                
-                {/* Delivery UI Feedback */}
-                {distanceKm > 0 && (
-                  <div className={styles.mockDistanceBox}>
-                    {distanceKm <= 5 ? (
-                      <span style={{color: 'green'}}>You qualify for FREE delivery! 🎉</span>
-                    ) : distanceKm >= 15 ? (
-                      <span>That's a bit far! We will contact you with a custom delivery quote.</span>
-                    ) : (
-                      <span>Delivery Fee: ${deliveryFee.toFixed(2)}</span>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
           </div>
 
           <div className={styles.formSection}>
