@@ -66,6 +66,9 @@ export default function Navbar() {
             <Link href="/menu" className={styles.navLink}>
               Everyday Treats
             </Link>
+            <Link href="/ready-to-go-cakes" className={styles.navLink}>
+              Ready to Go Cakes
+            </Link>
             <Link href="/cakes" className={styles.navLink}>
               Custom Cakes
             </Link>

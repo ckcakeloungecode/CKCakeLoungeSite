@@ -16,7 +16,7 @@ const ipRequestCounts = new Map();
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { sourceId, amount, couponCode, discountAmount, formData, cartItems, orderType, distanceKm } = body;
+    const { sourceId, amount, couponCode, discountAmount, formData, cartItems, orderType, distanceKm, isQuoteOnly, isCustomQuoteRequest } = body;
 
     if (!formData || !cartItems) {
       return NextResponse.json({ success: false, error: 'Bad Request: Missing order details.' }, { status: 400 });
@@ -86,7 +86,7 @@ export async function POST(req) {
         if (product) truePrice = product.price;
       }
       
-      if (item.isPhotoCake) truePrice += 25;
+      if (item.isPhotoCake && item.category !== 'Cakes') truePrice += 25;
       
       serverCartTotal += (truePrice * item.quantity);
     }
@@ -176,7 +176,7 @@ export async function POST(req) {
         .from('store_orders')
         .insert([
           {
-            payment_id: `processing_${orderIdempotencyKey}`,
+            payment_id: isQuoteOnly ? `quote_${orderIdempotencyKey}` : `processing_${orderIdempotencyKey}`,
             customer_name: `${safeFirstName} ${safeLastName}`.trim(),
             email: safeEmail,
             phone: safePhone,
@@ -189,7 +189,7 @@ export async function POST(req) {
             total_amount: amount,
             coupon_code: couponCode || null,
             discount_amount: discountAmount || 0,
-            status: 'processing'
+            status: isQuoteOnly ? 'pending_quote' : 'processing'
           }
         ])
         .select()
@@ -202,40 +202,53 @@ export async function POST(req) {
       return NextResponse.json({ success: false, error: 'Database error before charging.' }, { status: 500 });
     }
 
-    // Convert amount to cents for Square
-    const amountInCents = Math.round(amount * 100);
+    let paymentId = isQuoteOnly ? `quote_${orderIdempotencyKey}` : 'sandbox_success_id';
 
-    const client = new SquareClient({
-      token: process.env.SQUARE_ACCESS_TOKEN,
-      environment: isProduction ? SquareEnvironment.Production : SquareEnvironment.Sandbox,
-    });
+    if (isQuoteOnly) {
+      // Bypassed Square checkout for custom quote requests
+      // Update coupon usage atomically
+      if (couponCode) {
+        const { error: rpcError } = await supabaseAdmin.rpc('increment_coupon_usage', { coupon_code_param: couponCode });
+        if (rpcError) {
+          console.error("Failed to increment coupon usage atomically:", rpcError);
+        }
+      }
+    } else {
+      // Convert amount to cents for Square
+      const amountInCents = Math.round(amount * 100);
 
-    let paymentId = 'sandbox_success_id';
-    
-    try {
-      const response = await client.payments.create({
-        sourceId: sourceId,
-        idempotencyKey: orderIdempotencyKey,
-        amountMoney: {
-          amount: BigInt(amountInCents),
-          currency: 'CAD',
-        },
+      const client = new SquareClient({
+        token: process.env.SQUARE_ACCESS_TOKEN,
+        environment: isProduction ? SquareEnvironment.Production : SquareEnvironment.Sandbox,
       });
-      paymentId = response?.result?.payment?.id || response?.payment?.id || paymentId;
-    } catch (squareError) {
-      // 🚨 SQUARE FAILED: Mark order as failed 🚨
-      await supabaseAdmin.from('store_orders').update({ status: 'failed', payment_id: `failed_${orderIdempotencyKey}` }).eq('id', receiptId);
-      throw squareError;
-    }
 
-    // 🚨 SQUARE SUCCEEDED: Mark order as paid 🚨
-    await supabaseAdmin.from('store_orders').update({ status: 'paid', payment_id: paymentId }).eq('id', receiptId);
+      paymentId = 'sandbox_success_id';
+      
+      try {
+        const response = await client.payments.create({
+          sourceId: sourceId,
+          idempotencyKey: orderIdempotencyKey,
+          amountMoney: {
+            amount: BigInt(amountInCents),
+            currency: 'CAD',
+          },
+        });
+        paymentId = response?.result?.payment?.id || response?.payment?.id || paymentId;
+      } catch (squareError) {
+        // 🚨 SQUARE FAILED: Mark order as failed 🚨
+        await supabaseAdmin.from('store_orders').update({ status: 'failed', payment_id: `failed_${orderIdempotencyKey}` }).eq('id', receiptId);
+        throw squareError;
+      }
 
-    // Update coupon usage atomically
-    if (couponCode) {
-      const { error: rpcError } = await supabaseAdmin.rpc('increment_coupon_usage', { coupon_code_param: couponCode });
-      if (rpcError) {
-        console.error("Failed to increment coupon usage atomically:", rpcError);
+      // 🚨 SQUARE SUCCEEDED: Mark order as paid 🚨
+      await supabaseAdmin.from('store_orders').update({ status: 'paid', payment_id: paymentId }).eq('id', receiptId);
+
+      // Update coupon usage atomically
+      if (couponCode) {
+        const { error: rpcError } = await supabaseAdmin.rpc('increment_coupon_usage', { coupon_code_param: couponCode });
+        if (rpcError) {
+          console.error("Failed to increment coupon usage atomically:", rpcError);
+        }
       }
     }
     
@@ -274,11 +287,14 @@ export async function POST(req) {
           await resend.emails.send({
             from: 'Orders <onboarding@resend.dev>', // Free tier Resend sender
             to: bakeryEmail,
-            subject: `🎂 New Order: ${safeFirstName} ${safeLastName} - $${amount}`,
+            subject: isCustomQuoteRequest
+              ? `🎂 Custom Cake Quote Needed: ${safeFirstName} ${safeLastName}`
+              : `🎂 New Order: ${safeFirstName} ${safeLastName} - $${amount}`,
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-                <h2 style="color: #4a3f39;">New Bakery Order Received!</h2>
-                <p><strong>Payment ID:</strong> ${paymentId}</p>
+                <h2 style="color: #4a3f39;">${isCustomQuoteRequest ? "Custom Cake Quote Request!" : "New Bakery Order Received!"}</h2>
+                <p><strong>Request Type:</strong> ${isCustomQuoteRequest ? "Bespoke Custom Cake Quote" : "Paid Order"}</p>
+                <p><strong>Payment/Quote ID:</strong> ${paymentId}</p>
                 
                 <h3 style="border-bottom: 2px solid #e0d5ce; padding-bottom: 10px; color: #4a3f39;">Customer Details</h3>
                 <p><strong>Name:</strong> ${safeFirstName} ${safeLastName}</p>
@@ -299,9 +315,11 @@ export async function POST(req) {
                 
                 ${discountHtml}
 
-                <h2 style="text-align: right; color: #4a3f39; margin-top: 20px;">Total Paid: $${amount}</h2>
+                <h2 style="text-align: right; color: #4a3f39; margin-top: 20px;">
+                  ${isCustomQuoteRequest ? `Estimated Base Price: $${amount}` : `Total Paid: $${amount}`}
+                </h2>
                 <p style="text-align: center; color: #888; font-size: 12px; margin-top: 40px;">
-                  This is an automated message from the CK Cake Lounge Secure Checkout System.
+                  This is an automated message from the CK Cake Lounge Secure Quote/Checkout System.
                 </p>
               </div>
             `

@@ -12,7 +12,8 @@ export default async function Menu({ searchParams }) {
     .eq('is_available', true)
     .eq('is_special_cake', false)
     .neq('category', 'Cakes')
-    .neq('category', 'International Flavors');
+    .neq('category', 'International Flavors')
+    .neq('category', 'Ready to Go Cakes');
 
   if (search) {
     query = query.ilike('name', `%${search}%`);
@@ -33,9 +34,10 @@ export default async function Menu({ searchParams }) {
 
         <div className={styles.tabs}>
           <Link href="/menu" className={styles.activeTab}>Everyday Treats</Link>
+          <Link href="/ready-to-go-cakes" className={styles.tab}>Ready to Go Cakes</Link>
           <Link href="/cakes" className={styles.tab}>Custom Cakes</Link>
-          <Link href="/special-cakes" className={styles.tab}>Special Cakes</Link>
           <Link href="/international-flavors" className={styles.tab}>International Flavors</Link>
+          <Link href="/special-cakes" className={styles.tab}>Special Cakes</Link>
         </div>
 
         {search && (

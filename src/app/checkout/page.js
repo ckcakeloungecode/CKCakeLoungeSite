@@ -24,6 +24,9 @@ export default function CheckoutPage() {
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponError, setCouponError] = useState('');
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+  const [isSubmittingQuote, setIsSubmittingQuote] = useState(false);
+
+  const isQuoteOnly = cartItems.some(item => item.category === 'Cakes');
   
   // Professional Fallback: Manual Distance Selection until a paid API Key is provided
   const [distanceKm, setDistanceKm] = useState(0);
@@ -226,8 +229,41 @@ export default function CheckoutPage() {
     };
     sessionStorage.setItem('lastOrderTicket', JSON.stringify(orderTicket));
 
-    // Transition to the secure Square payment form instead of instantly completing
-    setIsReadyToPay(true);
+    if (isQuoteOnly) {
+      setIsSubmittingQuote(true);
+      fetch('/api/payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          isQuoteOnly: true,
+          amount: grandTotal,
+          couponCode: appliedCoupon ? appliedCoupon.code : null,
+          discountAmount,
+          formData,
+          cartItems,
+          orderType,
+          distanceKm
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          handlePaymentSuccess(data.receiptId);
+        } else {
+          alert(data.error || "Failed to submit quote request. Please try again.");
+        }
+      })
+      .catch(err => {
+        console.error("Quote submit error:", err);
+        alert("Network error submitting quote request.");
+      })
+      .finally(() => {
+        setIsSubmittingQuote(false);
+      });
+    } else {
+      // Transition to the secure Square payment form instead of instantly completing
+      setIsReadyToPay(true);
+    }
   };
 
   const handlePaymentSuccess = (receiptId) => {
@@ -532,7 +568,20 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {!isReadyToPay ? (
+          {isQuoteOnly ? (
+            <>
+              <button 
+                type="submit" 
+                className={`btn-primary ${styles.placeOrderBtn}`} 
+                disabled={isSubmittingQuote}
+              >
+                {isSubmittingQuote ? 'Submitting Request...' : 'Submit Quote Request'}
+              </button>
+              <p style={{textAlign: 'center', fontSize: '0.8rem', color: '#16a34a', marginTop: '1rem', fontWeight: 'bold'}}>
+                ✓ Custom quote request. You will not be charged anything at this stage.
+              </p>
+            </>
+          ) : !isReadyToPay ? (
             <>
               <button type="submit" className={`btn-primary ${styles.placeOrderBtn}`}>
                 Proceed to Payment

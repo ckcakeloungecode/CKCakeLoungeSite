@@ -3,9 +3,11 @@
 import { useState, useMemo } from 'react';
 import { useCart } from '../../../context/CartContext';
 import { supabase } from '../../../utils/supabaseClient';
+import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
 
 export default function ProductSelector({ product, variants }) {
+  const router = useRouter();
   // If there are no variants, just use the base product info
   const hasVariants = variants && variants.length > 0;
   
@@ -39,7 +41,8 @@ export default function ProductSelector({ product, variants }) {
 
   // Determine final display price
   const baseDisplayPrice = currentVariant ? currentVariant.price : product.price;
-  const displayPrice = baseDisplayPrice + (isPhotoCake ? 25 : 0);
+  const isCustomCake = product.category === 'Cakes';
+  const displayPrice = baseDisplayPrice + ((isPhotoCake && !isCustomCake) ? 25 : 0);
   const total = displayPrice * quantity;
   
   const formattedDisplayPrice = Number(displayPrice).toFixed(2);
@@ -84,10 +87,16 @@ export default function ProductSelector({ product, variants }) {
       quantity: quantity,
       isPhotoCake: isPhotoCake,
       photoUrl: finalPhotoUrl,
-      displayImage: displayImage
+      displayImage: displayImage,
+      category: product.category
     };
     
-    addToCart(item);
+    if (isCustomCake) {
+      sessionStorage.setItem('pendingQuoteItem', JSON.stringify(item));
+      router.push('/custom-quote');
+    } else {
+      addToCart(item);
+    }
     
     // Reset state after adding
     setPhotoFile(null);
@@ -111,7 +120,11 @@ export default function ProductSelector({ product, variants }) {
         <p className={styles.description}>{product.description}</p>
         
         <div className={styles.selectorContainer}>
-      <h2 className={styles.price}>${formattedDisplayPrice} <span className={styles.perUnit}>each</span></h2>
+      <h2 className={styles.price}>
+        {isCustomCake 
+          ? `Starts from $${Number(product.price).toFixed(2)}` 
+          : `$${formattedDisplayPrice} each`}
+      </h2>
 
       {hasVariants && (
         <div className={styles.optionsGrid}>
@@ -158,7 +171,11 @@ export default function ProductSelector({ product, variants }) {
                 if (!e.target.checked) setPhotoFile(null);
               }} 
             />
-            <span> 📷 Make it a Photo Cake (+$25.00)</span>
+            <span>
+              {isCustomCake 
+                ? " 📷 Upload reference design photo (Free)" 
+                : " 📷 Make it a Photo Cake (+$25.00)"}
+            </span>
           </label>
           
           {isPhotoCake && (
@@ -194,7 +211,7 @@ export default function ProductSelector({ product, variants }) {
           onClick={handleAddToCart}
           disabled={(hasVariants && !currentVariant) || isUploading || (isPhotoCake && !photoFile)}
         >
-          {isUploading ? "Uploading Photo..." : `Add to Cart - $${formattedTotal}`}
+          {isUploading ? "Uploading Photo..." : isCustomCake ? "Get Quote" : `Add to Cart - $${formattedTotal}`}
         </button>
       </div>
     </div>

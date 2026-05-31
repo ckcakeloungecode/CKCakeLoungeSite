@@ -31,9 +31,10 @@ export default async function Cakes({ searchParams }) {
 
         <div className={styles.tabs}>
           <Link href="/menu" className={styles.tab}>Everyday Treats</Link>
+          <Link href="/ready-to-go-cakes" className={styles.tab}>Ready to Go Cakes</Link>
           <Link href="/cakes" className={styles.activeTab}>Custom Cakes</Link>
-          <Link href="/special-cakes" className={styles.tab}>Special Cakes</Link>
           <Link href="/international-flavors" className={styles.tab}>International Flavors</Link>
+          <Link href="/special-cakes" className={styles.tab}>Special Cakes</Link>
         </div>
 
         {search && (
@@ -57,7 +58,7 @@ export default async function Cakes({ searchParams }) {
                 <h2>{product.name}</h2>
                 <p>{product.description}</p>
                 <Link href={`/product/${product.id}`} className="btn-primary" style={{ background: 'var(--rose)', borderColor: 'var(--rose)' }}>
-                  View Options
+                  Starts at ${product.price}
                 </Link>
               </div>
             </div>

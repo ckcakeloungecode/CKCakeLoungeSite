@@ -19,15 +19,19 @@ export default async function ReceiptPage({ params }) {
     notFound();
   }
 
+  const isQuote = ticket.status === 'pending_quote';
+
   // Render the un-editable, secure digital ticket
   return (
     <main className="container" style={{ padding: '4rem 1rem', minHeight: 'calc(100vh - 80px)' }}>
       <div className={styles.receiptPaper}>
         <div className={styles.receiptHeader}>
           <h1>CK Cake Lounge</h1>
-          <p>Official Digital Order Ticket</p>
+          <p>{isQuote ? 'Official Digital Quote Request' : 'Official Digital Order Ticket'}</p>
           <div className={styles.ticketId}>TICKET ID: {ticket.id}</div>
-          <div className={styles.ticketStatus}>{ticket.status.toUpperCase()}</div>
+          <div className={styles.ticketStatus}>
+            {isQuote ? 'PENDING QUOTE' : ticket.status.toUpperCase()}
+          </div>
         </div>
 
         <div className={styles.receiptBody}>
@@ -81,13 +85,15 @@ export default async function ReceiptPage({ params }) {
           </div>
 
           <div className={styles.totals}>
-            <h2>Total Paid: ${Number(ticket.total_amount).toFixed(2)}</h2>
-            <p className={styles.paymentId}>Square Payment ID: {ticket.payment_id}</p>
+            <h2>{isQuote ? 'Estimated Base Price' : 'Total Paid'}: ${Number(ticket.total_amount).toFixed(2)}</h2>
+            <p className={styles.paymentId}>
+              {isQuote ? 'Quote Reference ID' : 'Square Payment ID'}: {ticket.payment_id}
+            </p>
           </div>
         </div>
         
         <div className={styles.printAction}>
-          <p>🔒 This is a secure, read-only digital receipt generated directly from the CK Cake Lounge database.</p>
+          <p>🔒 This is a secure, read-only digital {isQuote ? 'quote request' : 'receipt'} generated directly from the CK Cake Lounge database.</p>
         </div>
       </div>
     </main>
