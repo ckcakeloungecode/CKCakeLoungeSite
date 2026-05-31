@@ -35,9 +35,10 @@
 
 body {
   background-image: url('/hearts_bg.jpg');
-  background-repeat: repeat;
+  background-repeat: no-repeat;
   background-attachment: fixed;
-  background-size: 300px;
+  background-size: cover;
+  background-position: center;
   background-color: #fdf1ef; /* fallback soft creamy pink */
   color: var(--text-dark);
   font-family: var(--font-body);
