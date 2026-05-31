@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useCart } from '../../../context/CartContext';
 import { supabase } from '../../../utils/supabaseClient';
 import { useRouter } from 'next/navigation';
@@ -39,10 +39,35 @@ export default function ProductSelector({ product, variants }) {
     return variants.find(v => v.size === selectedSize && v.flavor === selectedFlavor);
   }, [selectedSize, selectedFlavor, variants, hasVariants]);
 
+  const isCustomCake = product.category === 'Cakes';
+
+  // Photo option is only eligible for 1 Pound and 2 Pound sizes
+  const isPhotoEligible = useMemo(() => {
+    if (!product.allows_photo) return false;
+    const lowerSize = (selectedSize || '').toLowerCase();
+    return lowerSize.includes('1 pound') || lowerSize.includes('2 pound');
+  }, [product.allows_photo, selectedSize]);
+
+  // Dynamic photo fee: +$15.00 for 1 Pound, +$20.00 for 2 Pound
+  const photoFee = useMemo(() => {
+    if (!isPhotoCake || isCustomCake) return 0;
+    const lowerSize = (selectedSize || '').toLowerCase();
+    if (lowerSize.includes('1 pound')) return 15;
+    if (lowerSize.includes('2 pound')) return 20;
+    return 0;
+  }, [isPhotoCake, isCustomCake, selectedSize]);
+
+  // Auto-reset photo checkbox if selected size changes to an ineligible one
+  useEffect(() => {
+    if (!isPhotoEligible) {
+      setIsPhotoCake(false);
+      setPhotoFile(null);
+    }
+  }, [isPhotoEligible]);
+
   // Determine final display price
   const baseDisplayPrice = currentVariant ? currentVariant.price : product.price;
-  const isCustomCake = product.category === 'Cakes';
-  const displayPrice = baseDisplayPrice + ((isPhotoCake && !isCustomCake) ? 25 : 0);
+  const displayPrice = baseDisplayPrice + photoFee;
   const total = displayPrice * quantity;
   
   const formattedDisplayPrice = Number(displayPrice).toFixed(2);
@@ -160,7 +185,7 @@ export default function ProductSelector({ product, variants }) {
         </div>
       )}
 
-      {product.allows_photo && (
+      {isPhotoEligible && (
         <div className={styles.photoToggle}>
           <label>
             <input 
@@ -174,7 +199,7 @@ export default function ProductSelector({ product, variants }) {
             <span>
               {isCustomCake 
                 ? " 📷 Upload reference design photo (Free)" 
-                : " 📷 Make it a Photo Cake (+$25.00)"}
+                : ` 📷 Make it a Photo Cake (+$${(selectedSize || '').toLowerCase().includes('1 pound') ? '15.00' : '20.00'})`}
             </span>
           </label>
           

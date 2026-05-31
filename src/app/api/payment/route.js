@@ -86,7 +86,16 @@ export async function POST(req) {
         if (product) truePrice = product.price;
       }
       
-      if (item.isPhotoCake && item.category !== 'Cakes') truePrice += 25;
+      if (item.isPhotoCake && item.category !== 'Cakes') {
+        const lowerSize = (item.size || '').toLowerCase();
+        if (lowerSize.includes('1 pound')) {
+          truePrice += 15;
+        } else if (lowerSize.includes('2 pound')) {
+          truePrice += 20;
+        } else {
+          truePrice += 25;
+        }
+      }
       
       serverCartTotal += (truePrice * item.quantity);
     }
