@@ -57,16 +57,17 @@ export default function CustomQuotePage() {
     fetchBlockedDates();
   }, []);
 
-  // Date and Time Constraints
+  // Date and Time Constraints: Custom cakes require at least a 12-hour lead time.
   const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate()).padStart(2, '0');
+  const twelveHoursFromNow = new Date(today.getTime() + 12 * 60 * 60 * 1000);
+  
+  const year = twelveHoursFromNow.getFullYear();
+  const month = String(twelveHoursFromNow.getMonth() + 1).padStart(2, '0');
+  const day = String(twelveHoursFromNow.getDate()).padStart(2, '0');
   const minDateString = `${year}-${month}-${day}`;
 
-  const threeHoursFromNow = new Date(today.getTime() + 3 * 60 * 60 * 1000);
-  const hours = String(threeHoursFromNow.getHours()).padStart(2, '0');
-  const minutes = String(threeHoursFromNow.getMinutes()).padStart(2, '0');
+  const hours = String(twelveHoursFromNow.getHours()).padStart(2, '0');
+  const minutes = String(twelveHoursFromNow.getMinutes()).padStart(2, '0');
   const dynamicMinTimeString = `${hours}:${minutes}`;
   const minTimeString = formData.date === minDateString ? dynamicMinTimeString : "";
 
@@ -97,7 +98,7 @@ export default function CustomQuotePage() {
     if (name === 'time') {
       let newTime = value;
       if (formData.date === minDateString && value < dynamicMinTimeString) {
-        alert(`For today's orders, the earliest available time is ${dynamicMinTimeString} to allow for preparation (3 hours advance notice).`);
+        alert(`For today's orders, the earliest available time is ${dynamicMinTimeString} to allow for preparation (12 hours advance notice).`);
         newTime = dynamicMinTimeString;
       }
       setFormData(prev => ({
@@ -129,7 +130,7 @@ export default function CustomQuotePage() {
     }
 
     if (formData.date === minDateString && formData.time < dynamicMinTimeString) {
-      alert(`For today's orders, the earliest available time is ${dynamicMinTimeString} (3 hours advance notice).`);
+      alert(`For today's orders, the earliest available time is ${dynamicMinTimeString} (12 hours advance notice).`);
       return;
     }
 
