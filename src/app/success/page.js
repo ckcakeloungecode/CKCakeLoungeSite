@@ -50,8 +50,8 @@ export default function SuccessPage() {
           msg += `(This is an automated, tamper-proof notification)`;
         }
 
-        // WhatsApp number: 14379864080
-        setWaLink(`https://wa.me/14379864080?text=${msg}`);
+        // WhatsApp number: 16478643713
+        setWaLink(`https://wa.me/16478643713?text=${msg}`);
       } catch (e) {
         console.error('Error parsing order/quote ticket', e);
       }
