@@ -11,6 +11,7 @@ export default function Navbar() {
   const { toggleCart, cartCount, isLoaded } = useCart();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -63,20 +64,45 @@ export default function Navbar() {
           </form>
 
           <div className={styles.navLinks}>
-            <Link href="/menu" className={styles.navLink}>
-              Everyday Treats
+            <Link href="/" className={styles.navLink}>
+              Home
             </Link>
-            <Link href="/ready-to-go-cakes" className={styles.navLink}>
-              Ready to Go Cakes
+
+            <div 
+              className={styles.dropdown}
+              onMouseEnter={() => setDropdownOpen(true)}
+              onMouseLeave={() => setDropdownOpen(false)}
+            >
+              <button 
+                className={`${styles.navLink} ${styles.dropdownTrigger}`}
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                aria-expanded={dropdownOpen}
+                type="button"
+              >
+                Our Products <span className={styles.dropdownArrow}>▼</span>
+              </button>
+              <div className={`${styles.dropdownMenu} ${dropdownOpen ? styles.showDropdown : ''}`}>
+                <Link href="/menu" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                  Everyday Treats
+                </Link>
+                <Link href="/ready-to-go-cakes" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                  Ready to Go Cakes
+                </Link>
+                <Link href="/cakes" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                  Custom Cakes
+                </Link>
+                <Link href="/international-flavors" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                  International Flavors
+                </Link>
+              </div>
+            </div>
+
+            <Link href="/about" className={styles.navLink}>
+              About Us
             </Link>
-            <Link href="/cakes" className={styles.navLink}>
-              Custom Cakes
-            </Link>
-            <Link href="/international-flavors" className={styles.navLink}>
-              International Flavors
-            </Link>
-            <Link href="/special-cakes" className={`${styles.navLink} ${styles.specialLink}`}>
-              Special Cakes
+
+            <Link href="/special-events" className={`${styles.navLink} ${styles.specialLink}`}>
+              Events
             </Link>
             
             {/* Cart Icon */}

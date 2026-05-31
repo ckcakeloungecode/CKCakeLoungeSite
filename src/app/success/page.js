@@ -20,7 +20,10 @@ export default function SuccessPage() {
         let msg = '';
         if (order.isQuote) {
           const receiptId = order.receiptId;
-          msg = `🎂 *New Custom Cake Quote Request!* 🎂%0A%0A`;
+          const isSpecialEvent = order.isSpecialEvent;
+          msg = isSpecialEvent
+            ? `🎉 *New Special Event Quote Request!* 🎉%0A%0A`
+            : `🎂 *New Custom Cake Quote Request!* 🎂%0A%0A`;
           msg += `*Customer:* ${order.firstName} ${order.lastName}%0A`;
           msg += `*Phone:* ${order.phone}%0A%0A`;
 
@@ -31,7 +34,7 @@ export default function SuccessPage() {
           } else {
             msg += `(Error: Quote ID missing. Please check email for full details.)%0A%0A`;
           }
-          msg += `Please provide me with a custom quote for this order. Thank you!%0A%0A`;
+          msg += `Please provide me with a custom quote for this request. Thank you!%0A%0A`;
           msg += `(This is an automated, tamper-proof notification)`;
         } else {
           // Standard order

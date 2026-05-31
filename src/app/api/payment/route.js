@@ -16,7 +16,8 @@ const ipRequestCounts = new Map();
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { sourceId, amount, couponCode, discountAmount, formData, cartItems, orderType, distanceKm, isQuoteOnly, isCustomQuoteRequest } = body;
+    const { sourceId, amount, couponCode, discountAmount, formData, cartItems, orderType, distanceKm, isQuoteOnly: clientIsQuoteOnly, isCustomQuoteRequest, isSpecialEventQuoteRequest } = body;
+    const isQuoteOnly = clientIsQuoteOnly || isSpecialEventQuoteRequest;
 
     if (!formData || !cartItems) {
       return NextResponse.json({ success: false, error: 'Bad Request: Missing order details.' }, { status: 400 });
@@ -76,33 +77,35 @@ export async function POST(req) {
     // 🚨 1. SERVER-SIDE PRICE VERIFICATION 🚨
     let serverCartTotal = 0;
     
-    for (const item of cartItems) {
-      let truePrice = 0;
-      if (item.variantId) {
-        const { data: variant } = await supabaseAdmin.from('product_variants').select('price').eq('id', item.variantId).single();
-        if (variant) truePrice = variant.price;
-      } else {
-        const { data: product } = await supabaseAdmin.from('products').select('price').eq('id', item.productId).single();
-        if (product) truePrice = product.price;
-      }
-      
-      if (item.isPhotoCake && item.category !== 'Cakes') {
-        const lowerSize = (item.size || '').toLowerCase();
-        if (lowerSize.includes('1 pound')) {
-          truePrice += 15;
-        } else if (lowerSize.includes('2 pound')) {
-          truePrice += 20;
+    if (!isSpecialEventQuoteRequest) {
+      for (const item of cartItems) {
+        let truePrice = 0;
+        if (item.variantId) {
+          const { data: variant } = await supabaseAdmin.from('product_variants').select('price').eq('id', item.variantId).single();
+          if (variant) truePrice = variant.price;
         } else {
-          truePrice += 25;
+          const { data: product } = await supabaseAdmin.from('products').select('price').eq('id', item.productId).single();
+          if (product) truePrice = product.price;
         }
+        
+        if (item.isPhotoCake && item.category !== 'Cakes') {
+          const lowerSize = (item.size || '').toLowerCase();
+          if (lowerSize.includes('1 pound')) {
+            truePrice += 15;
+          } else if (lowerSize.includes('2 pound')) {
+            truePrice += 20;
+          } else {
+            truePrice += 25;
+          }
+        }
+        
+        serverCartTotal += (truePrice * item.quantity);
       }
-      
-      serverCartTotal += (truePrice * item.quantity);
     }
 
     // 🚨 2. SERVER-SIDE COUPON VERIFICATION 🚨
     let serverDiscountAmount = 0;
-    if (couponCode) {
+    if (couponCode && !isSpecialEventQuoteRequest) {
       const { data: coupon } = await supabaseAdmin
         .from('store_coupons')
         .select('*')
@@ -150,7 +153,7 @@ export async function POST(req) {
     const serverHstTax = 0;
     const serverGrandTotal = serverDiscountedSubtotal + serverDeliveryFee;
 
-    if (Math.abs(serverGrandTotal - amount) > 0.05) {
+    if (!isSpecialEventQuoteRequest && Math.abs(serverGrandTotal - amount) > 0.05) {
       console.warn(`SECURITY ALERT: Client amount ${amount} did not match server amount ${serverGrandTotal}`);
       return NextResponse.json({ success: false, error: 'Security Block: Price manipulation detected. Please refresh and try again.' }, { status: 403 });
     }
@@ -293,16 +296,36 @@ export async function POST(req) {
             ? `<div style="color: #16a34a; font-weight: bold; font-size: 16px; margin-top: 15px;">Discount Applied (${couponCode}): -$${discountAmount.toFixed(2)}</div>`
             : '';
 
+          const subjectLine = isSpecialEventQuoteRequest
+            ? `🎉 Special Event Quote Needed: ${safeFirstName} ${safeLastName}`
+            : isCustomQuoteRequest
+              ? `🎂 Custom Cake Quote Needed: ${safeFirstName} ${safeLastName}`
+              : `🎂 New Order: ${safeFirstName} ${safeLastName} - $${amount}`;
+
+          const requestTypeLabel = isSpecialEventQuoteRequest
+            ? "Special Event Cake Quote Request"
+            : isCustomQuoteRequest
+              ? "Bespoke Custom Cake Quote"
+              : "Paid Order";
+
+          const headerTitle = isSpecialEventQuoteRequest
+            ? "Special Event Cake Quote Request!"
+            : isCustomQuoteRequest
+              ? "Custom Cake Quote Request!"
+              : "New Bakery Order Received!";
+
+          const priceFooterLabel = isSpecialEventQuoteRequest || isCustomQuoteRequest
+            ? `Estimated Base Price: $${amount}`
+            : `Total Paid: $${amount}`;
+
           await resend.emails.send({
             from: 'Orders <onboarding@resend.dev>', // Free tier Resend sender
             to: bakeryEmail,
-            subject: isCustomQuoteRequest
-              ? `🎂 Custom Cake Quote Needed: ${safeFirstName} ${safeLastName}`
-              : `🎂 New Order: ${safeFirstName} ${safeLastName} - $${amount}`,
+            subject: subjectLine,
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-                <h2 style="color: #4a3f39;">${isCustomQuoteRequest ? "Custom Cake Quote Request!" : "New Bakery Order Received!"}</h2>
-                <p><strong>Request Type:</strong> ${isCustomQuoteRequest ? "Bespoke Custom Cake Quote" : "Paid Order"}</p>
+                <h2 style="color: #4a3f39;">${headerTitle}</h2>
+                <p><strong>Request Type:</strong> ${requestTypeLabel}</p>
                 <p><strong>Payment/Quote ID:</strong> ${paymentId}</p>
                 
                 <h3 style="border-bottom: 2px solid #e0d5ce; padding-bottom: 10px; color: #4a3f39;">Customer Details</h3>
@@ -317,7 +340,7 @@ export async function POST(req) {
                 <p><strong>Time Needed:</strong> ${formData.time}</p>
                 <p><strong>Notes:</strong> ${safeNotes || 'None'}</p>
 
-                <h3 style="border-bottom: 2px solid #e0d5ce; padding-bottom: 10px; color: #4a3f39;">Order Items</h3>
+                <h3 style="border-bottom: 2px solid #e0d5ce; padding-bottom: 10px; color: #4a3f39;">Order/Quote Specifications</h3>
                 <ul style="list-style: none; padding: 0;">
                   ${itemsHtml}
                 </ul>
@@ -325,7 +348,7 @@ export async function POST(req) {
                 ${discountHtml}
 
                 <h2 style="text-align: right; color: #4a3f39; margin-top: 20px;">
-                  ${isCustomQuoteRequest ? `Estimated Base Price: $${amount}` : `Total Paid: $${amount}`}
+                  ${priceFooterLabel}
                 </h2>
                 <p style="text-align: center; color: #888; font-size: 12px; margin-top: 40px;">
                   This is an automated message from the CK Cake Lounge Secure Quote/Checkout System.

@@ -1,0 +1,165 @@
+.aboutContainer {
+  padding: 6rem 2rem;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  min-height: calc(100vh - 80px);
+}
+
+.titleSection {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.title {
+  font-family: var(--font-playfair);
+  font-size: 3.5rem;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  font-size: 1.15rem;
+  color: #6b5a52;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Story Section */
+.storySection {
+  margin-bottom: 5rem;
+}
+
+.storyCard {
+  padding: 3rem;
+  border-radius: var(--radius-lg);
+}
+
+.storyContent h2 {
+  font-family: var(--font-playfair);
+  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.storyText {
+  color: var(--text-dark);
+  font-size: 1.05rem;
+  line-height: 1.8;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Core Commitments Section */
+.commitmentsSection {
+  margin-bottom: 5rem;
+}
+
+.commitmentsSection h2 {
+  font-family: var(--font-playfair);
+  font-size: 2.2rem;
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.commitmentsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.commitmentCard {
+  padding: 2.5rem 2rem;
+  border-radius: var(--radius-md);
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.commitmentCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(89, 53, 46, 0.1);
+  border-color: var(--accent);
+}
+
+.icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+.commitmentCard h3 {
+  font-size: 1.3rem;
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+}
+
+.commitmentCard p {
+  color: #55443c;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* Visit Section */
+.visitSection {
+  text-align: center;
+}
+
+.visitCard {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 3rem;
+  border-radius: var(--radius-lg);
+}
+
+.visitCard h2 {
+  font-family: var(--font-playfair);
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
+}
+
+.visitCard p {
+  color: #55443c;
+  font-size: 1.05rem;
+  margin-bottom: 2rem;
+}
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  text-align: left;
+  border-top: 1px solid rgba(89, 53, 46, 0.1);
+  padding-top: 2rem;
+}
+
+.detailCol h4 {
+  font-size: 1.1rem;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.detailCol p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .commitmentsGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .detailsGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .title {
+    font-size: 2.8rem;
+  }
+
+  .storyCard, .visitCard {
+    padding: 2rem;
+  }
+}
