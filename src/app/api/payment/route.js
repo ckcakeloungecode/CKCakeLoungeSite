@@ -147,8 +147,8 @@ export async function POST(req) {
 
     // 🚨 4. THE MASTER MATH VERIFICATION 🚨
     const serverDiscountedSubtotal = Math.max(0, serverCartTotal - serverDiscountAmount);
-    const serverHstTax = (serverDiscountedSubtotal + serverDeliveryFee) * 0.13;
-    const serverGrandTotal = serverDiscountedSubtotal + serverDeliveryFee + serverHstTax;
+    const serverHstTax = 0;
+    const serverGrandTotal = serverDiscountedSubtotal + serverDeliveryFee;
 
     if (Math.abs(serverGrandTotal - amount) > 0.05) {
       console.warn(`SECURITY ALERT: Client amount ${amount} did not match server amount ${serverGrandTotal}`);

@@ -136,8 +136,8 @@ export default function CustomQuotePage() {
     setIsSubmitting(true);
 
     const subtotal = quoteItem ? quoteItem.price * quoteItem.quantity : 0;
-    const hstTax = (subtotal + deliveryFee) * 0.13;
-    const grandTotal = subtotal + deliveryFee + hstTax;
+    const hstTax = 0;
+    const grandTotal = subtotal + deliveryFee;
 
     try {
       const res = await fetch('/api/payment', {
@@ -196,8 +196,8 @@ export default function CustomQuotePage() {
   }
 
   const subtotal = quoteItem.price * quoteItem.quantity;
-  const hstTax = (subtotal + deliveryFee) * 0.13;
-  const grandTotal = subtotal + deliveryFee + hstTax;
+  const hstTax = 0;
+  const grandTotal = subtotal + deliveryFee;
 
   return (
     <main className={`container ${styles.checkoutContainer}`}>
@@ -310,10 +310,6 @@ export default function CustomQuotePage() {
             <div className={styles.totalRow}>
               <span>Est. Base Subtotal</span>
               <span>${subtotal.toFixed(2)}</span>
-            </div>
-            <div className={styles.totalRow}>
-              <span>HST (13%)</span>
-              <span>${hstTax.toFixed(2)}</span>
             </div>
             <div className={styles.grandTotalRow}>
               <span>Est. Starting Total</span>

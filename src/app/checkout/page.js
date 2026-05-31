@@ -141,8 +141,8 @@ export default function CheckoutPage() {
   // Dynamic Math (Tax is calculated AFTER the discount is applied to the subtotal)
   const discountAmount = appliedCoupon ? appliedCoupon.discountAmount : 0;
   const discountedSubtotal = Math.max(0, cartTotal - discountAmount);
-  const hstTax = (discountedSubtotal + deliveryFee) * 0.13;
-  const grandTotal = discountedSubtotal + deliveryFee + hstTax;
+  const hstTax = 0;
+  const grandTotal = discountedSubtotal + deliveryFee;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -558,10 +558,6 @@ export default function CheckoutPage() {
                 <span>${deliveryFee.toFixed(2)}</span>
               </div>
             )}
-            <div className={styles.totalRow}>
-              <span>HST (13%)</span>
-              <span>${hstTax.toFixed(2)}</span>
-            </div>
             <div className={styles.grandTotalRow}>
               <span>Total</span>
               <span>${grandTotal.toFixed(2)}</span>
