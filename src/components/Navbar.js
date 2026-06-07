@@ -24,22 +24,6 @@ export default function Navbar() {
 
   return (
     <header className={styles.header}>
-      {/* Top Bar announcement info matching Rashmi's Bakery style */}
-      <div className={styles.topBar}>
-        <div className={`container ${styles.topBarContainer}`}>
-          <div className={styles.topBarLeft}>
-            <span>📍 London, ON</span>
-            <span className={styles.separator}>•</span>
-            <span>⏰ Open Daily: 9 AM - 6 PM</span>
-          </div>
-          <div className={styles.topBarRight}>
-            <span>🥚 100% Eggless Facility</span>
-            <span className={styles.separator}>•</span>
-            <span>🌿 Vegan & 🌾 Gluten-Free Options</span>
-          </div>
-        </div>
-      </div>
-
       {/* Main Navigation */}
       <nav className={styles.navbar}>
         <div className={`container ${styles.navContainer}`}>
