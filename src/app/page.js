@@ -179,6 +179,10 @@ export default async function Home() {
             <div className={styles.bubbleCircle}>🥐</div>
             <span className={styles.bubbleLabel}>Everyday Treats</span>
           </Link>
+          <Link href="/ready-to-go-cakes" className={styles.bubbleCard}>
+            <div className={styles.bubbleCircle}>🍰</div>
+            <span className={styles.bubbleLabel}>Ready to Go Cakes</span>
+          </Link>
           <Link href="/cakes" className={styles.bubbleCard}>
             <div className={styles.bubbleCircle}>🎂</div>
             <span className={styles.bubbleLabel}>Custom Cakes</span>
