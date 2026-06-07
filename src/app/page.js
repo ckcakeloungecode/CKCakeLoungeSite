@@ -59,24 +59,24 @@ export default function Home() {
       <section className={`container ${styles.trustSection}`}>
         <div className={styles.trustGrid}>
           <div className={`glass-panel ${styles.trustCard}`}>
-            <span className={styles.trustIcon}>🥜</span>
-            <h4>100% Nut-Free Facility</h4>
-            <p>Baked in a dedicated peanut and tree nut-free environment. Safe for school events & family parties.</p>
+            <span className={styles.trustIcon}>🥚</span>
+            <h4>100% Eggless Facility</h4>
+            <p>Your safety is our absolute priority. We operate a strictly eggless facility with rigorous cross-contamination protocols. Parents and schools trust us for allergy-safe treats that never compromise on safety.</p>
           </div>
           <div className={`glass-panel ${styles.trustCard}`}>
             <span className={styles.trustIcon}>🌿</span>
-            <h4>Vegan Selections Available</h4>
-            <p>Exquisite dairy-free and egg-free plant-based recipe options that preserve our light textures.</p>
+            <h4>Inclusive Options</h4>
+            <p>We want everyone to join the celebration. We have designed exquisite Vegan and Gluten-Free recipes that capture the rich, moist texture and decadent taste of traditional recipes.</p>
           </div>
           <div className={`glass-panel ${styles.trustCard}`}>
             <span className={styles.trustIcon}>🌾</span>
-            <h4>Gluten-Free Options</h4>
-            <p>Crafted with premium gluten-free flour blends and meticulous cross-contamination prevention.</p>
+            <h4>Premium Ingredients</h4>
+            <p>We bake exclusively with natural, high-quality ingredients. From organic unbleached flours and farm-fresh dairy to premium Madagascar vanilla and rich Belgian cocoa, quality guides every selection.</p>
           </div>
           <div className={`glass-panel ${styles.trustCard}`}>
-            <span className={styles.trustIcon}>🚚</span>
-            <h4>Temperature-Controlled Transit</h4>
-            <p>Bespoke hand-delivery across London to guarantee your cakes arrive in pristine, perfect condition.</p>
+            <span className={styles.trustIcon}>🎂</span>
+            <h4>Bespoke Customization</h4>
+            <p>No catalog limit. Our custom quote pipeline lets you share reference images, sketch ideas, and specify shapes, sizes, and dietary configurations to construct your perfect celebration piece.</p>
           </div>
         </div>
       </section>

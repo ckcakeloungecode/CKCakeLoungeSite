@@ -2,7 +2,7 @@ import styles from './page.module.css';
 
 export const metadata = {
   title: "About Us | CK Cake Lounge",
-  description: "Learn more about CK Cake Lounge, our nut-free facility, dietary offerings, and our commitment to artisan craftsmanship.",
+  description: "Learn more about CK Cake Lounge, our eggless facility, dietary offerings, and our commitment to artisan craftsmanship.",
 };
 
 export default function AboutPage() {
@@ -42,10 +42,10 @@ export default function AboutPage() {
         <div className={styles.commitmentsGrid}>
           
           <div className={`glass-panel ${styles.commitmentCard}`}>
-            <span className={styles.icon}>🥜</span>
-            <h3>100% Nut-Free Facility</h3>
+            <span className={styles.icon}>🥚</span>
+            <h3>100% Eggless Facility</h3>
             <p>
-              Your safety is our absolute priority. We operate a strictly nut-free facility with rigorous cross-contamination protocols. Parents and schools trust us for allergy-safe treats that never compromise on safety.
+              Your safety is our absolute priority. We operate a strictly eggless facility with rigorous cross-contamination protocols. Parents and schools trust us for allergy-safe treats that never compromise on safety.
             </p>
           </div>
 

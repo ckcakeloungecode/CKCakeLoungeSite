@@ -33,7 +33,7 @@ export default function Navbar() {
             <span>⏰ Open Daily: 9 AM - 6 PM</span>
           </div>
           <div className={styles.topBarRight}>
-            <span>🥜 100% Nut-Free Facility</span>
+            <span>🥚 100% Eggless Facility</span>
             <span className={styles.separator}>•</span>
             <span>🌿 Vegan & 🌾 Gluten-Free Options</span>
           </div>
