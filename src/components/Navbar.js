@@ -78,6 +78,9 @@ export default function Navbar() {
                 <Link href="/international-flavors" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
                   International Flavors
                 </Link>
+                <Link href="/special-cakes" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                  Special Cakes
+                </Link>
               </div>
             </div>
 
