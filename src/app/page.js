@@ -123,32 +123,6 @@ export default async function Home() {
         <PromoCarousel />
       </section>
 
-      {/* Circular Shop by Category bubbles row */}
-      <section className={`container ${styles.bubblesSection}`}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>Shop by Category</h2>
-          <p className={styles.sectionSubtitle}>Quickly browse our collections to find your perfect treat</p>
-        </div>
-        <div className={styles.bubblesRow}>
-          <Link href="/menu" className={styles.bubbleCard}>
-            <div className={styles.bubbleCircle}>🥐</div>
-            <span className={styles.bubbleLabel}>Everyday Treats</span>
-          </Link>
-          <Link href="/cakes" className={styles.bubbleCard}>
-            <div className={styles.bubbleCircle}>🎂</div>
-            <span className={styles.bubbleLabel}>Custom Cakes</span>
-          </Link>
-          <Link href="/international-flavors" className={styles.bubbleCard}>
-            <div className={styles.bubbleCircle}>🌎</div>
-            <span className={styles.bubbleLabel}>International</span>
-          </Link>
-          <Link href="/special-cakes" className={styles.bubbleCard}>
-            <div className={styles.bubbleCircle}>✨</div>
-            <span className={styles.bubbleLabel}>Special Cakes</span>
-          </Link>
-        </div>
-      </section>
-
       {/* Signature India Sweets Cakes Showcase */}
       <section className={`container ${styles.showcaseSection}`}>
         <div className={styles.sectionHeader}>
@@ -191,6 +165,32 @@ export default async function Home() {
               </div>
             );
           })}
+        </div>
+      </section>
+
+      {/* Circular Shop by Category bubbles row */}
+      <section className={`container ${styles.bubblesSection}`}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>Shop by Category</h2>
+          <p className={styles.sectionSubtitle}>Quickly browse our collections to find your perfect treat</p>
+        </div>
+        <div className={styles.bubblesRow}>
+          <Link href="/menu" className={styles.bubbleCard}>
+            <div className={styles.bubbleCircle}>🥐</div>
+            <span className={styles.bubbleLabel}>Everyday Treats</span>
+          </Link>
+          <Link href="/cakes" className={styles.bubbleCard}>
+            <div className={styles.bubbleCircle}>🎂</div>
+            <span className={styles.bubbleLabel}>Custom Cakes</span>
+          </Link>
+          <Link href="/international-flavors" className={styles.bubbleCard}>
+            <div className={styles.bubbleCircle}>🌎</div>
+            <span className={styles.bubbleLabel}>International</span>
+          </Link>
+          <Link href="/special-cakes" className={styles.bubbleCard}>
+            <div className={styles.bubbleCircle}>✨</div>
+            <span className={styles.bubbleLabel}>Special Cakes</span>
+          </Link>
         </div>
       </section>
     </main>
