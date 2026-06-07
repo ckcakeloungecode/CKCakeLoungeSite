@@ -1,9 +1,45 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import PromoCarousel from '../components/PromoCarousel';
+import { supabase } from '../utils/supabaseClient';
 import styles from './page.module.css';
 
-export default function Home() {
+export default async function Home() {
+  // Fetch specific cakes for the India Sweets showcase
+  const targetNames = ['Gulab Jamun', 'Metha paan', 'Pistachio', 'Rasmalai bliss'];
+  let products = [];
+  
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .in('name', targetNames)
+      .eq('category', 'Ready to Go Cakes');
+      
+    if (!error && data) {
+      // Sort to match requested order exactly: Gulab Jamun, Metha paan, Pistachio, Rasmalai bliss
+      const orderMap = {
+        'Gulab Jamun': 1,
+        'Metha paan': 2,
+        'Pistachio': 3,
+        'Rasmalai bliss': 4
+      };
+      products = [...data].sort((a, b) => (orderMap[a.name] || 99) - (orderMap[b.name] || 99));
+    }
+  } catch (err) {
+    console.error("Failed to load signature cakes from DB:", err);
+  }
+
+  // Fallbacks in case DB isn't seeded or query fails
+  if (!products || products.length === 0) {
+    products = [
+      { id: 'fallback-gulab', name: 'Gulab Jamun', description: 'A luscious cardamom-spiced cake layers embedded with soft, sugar-soaked gulab jamun pieces and decorated with roasted pistachios.', price: 40, isFallback: true },
+      { id: 'fallback-paan', name: 'Metha paan', description: 'An exotic refreshing cake infused with real betel leaf extract, sweet gulkand (rose petal jam), and aromatic fennel seeds.', price: 40, isFallback: true },
+      { id: 'fallback-pistachio', name: 'Pistachio', description: 'Rich roasted pistachio cake layers finished with silky pistachio cream and white chocolate shavings.', price: 40, isFallback: true },
+      { id: 'fallback-rasmalai', name: 'Rasmalai bliss', description: 'Our crowd favorite signature cake soaked in rich saffron milk (rabri) and decorated with almonds, pistachios, and rose petals.', price: 45, isFallback: true }
+    ];
+  }
+
   return (
     <main className={styles.main}>
       {/* Premium background decorative shapes */}
@@ -113,53 +149,48 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Product Detail Grid Showcase */}
-      <section className={`container ${styles.categoriesSection}`}>
+      {/* Signature India Sweets Cakes Showcase */}
+      <section className={`container ${styles.showcaseSection}`}>
         <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>Detailed Offerings</h2>
-          <p className={styles.sectionSubtitle}>Select a catalog below to explore customization options and sizes</p>
+          <h2 className={styles.sectionTitle}>Signature India Sweets Cakes</h2>
+          <p className={styles.sectionSubtitle}>Indulge in our exquisite fusion of traditional Indian dessert flavors and premium cake layers</p>
         </div>
 
-        <div className={styles.categoryGrid}>
-          {/* Category 1: Everyday Treats */}
-          <div className={`glass-panel ${styles.categoryCard}`}>
-            <div className={styles.cardIcon}>🥐</div>
-            <h3>Everyday Treats</h3>
-            <p>Indulge in our daily selections of gourmet cupcakes, freshly-baked croissants, cookies, and sweet pastry bites.</p>
-            <Link href="/menu" className={styles.cardLink}>
-              View Selection <span>→</span>
-            </Link>
-          </div>
+        <div className={styles.productGrid}>
+          {products.map((product) => {
+            // Determine emoji based on name
+            let emoji = '🍰';
+            const nameLower = product.name.toLowerCase();
+            if (nameLower.includes('jamun')) emoji = '🍯';
+            else if (nameLower.includes('paan')) emoji = '🍃';
+            else if (nameLower.includes('pistachio')) emoji = '💚';
+            else if (nameLower.includes('rasmalai')) emoji = '🥛';
 
-          {/* Category 2: Custom Cakes */}
-          <div className={`glass-panel ${styles.categoryCard}`}>
-            <div className={styles.cardIcon}>🎂</div>
-            <h3>Custom Cakes</h3>
-            <p>Design a bespoke masterpiece for weddings, anniversaries, or birthdays. Tailor every layer, flavor, and frosting.</p>
-            <Link href="/cakes" className={styles.cardLink}>
-              Customize Cake <span>→</span>
-            </Link>
-          </div>
+            // Check if fallback URL is needed
+            const productUrl = product.isFallback 
+              ? '/ready-to-go-cakes' 
+              : `/product/${product.id}`;
 
-          {/* Category 3: International Flavors */}
-          <div className={`glass-panel ${styles.categoryCard}`}>
-            <div className={styles.cardIcon}>🌎</div>
-            <h3>International Flavors</h3>
-            <p>Take your palate on a global journey. Explore exotic recipe combinations inspired by European, Asian, and tropical styles.</p>
-            <Link href="/international-flavors" className={styles.cardLink}>
-              Explore Flavors <span>→</span>
-            </Link>
-          </div>
-
-          {/* Category 4: Special Cakes */}
-          <div className={`glass-panel ${styles.categoryCard}`}>
-            <div className={styles.cardIcon}>✨</div>
-            <h3>Special Cakes</h3>
-            <p>Select from our pre-designed, ready-to-order signature collection. Timeless designs for quick and effortless celebrations.</p>
-            <Link href="/special-cakes" className={styles.cardLink}>
-              Shop Collection <span>→</span>
-            </Link>
-          </div>
+            return (
+              <div key={product.id} className={`glass-panel ${styles.productCard}`}>
+                <div className={`${styles.imagePlaceholder} ${styles[nameLower.replace(/\s+/g, '')]}`}>
+                  <span className={styles.placeholderEmoji}>{emoji}</span>
+                  <span className={styles.placeholderText}>Photo Coming Soon</span>
+                </div>
+                <div className={styles.productCardContent}>
+                  <h3>{product.name}</h3>
+                  <p>{product.description}</p>
+                  <div className={styles.priceRow}>
+                    <span className={styles.priceLabel}>Starts from</span>
+                    <span className={styles.priceValue}>${product.price.toFixed(2)}</span>
+                  </div>
+                  <Link href={productUrl} className="btn-primary" style={{ width: '100%', textAlign: 'center', display: 'block' }}>
+                    View Sizes & Prices
+                  </Link>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
     </main>

@@ -297,12 +297,12 @@
   color: var(--accent);
 }
 
-/* Detailed Showcase Section */
-.categoriesSection {
+/* Signature Showcase Section */
+.showcaseSection {
   position: relative;
   z-index: 10;
-  padding-top: 3rem;
-  padding-bottom: 4rem;
+  padding-top: 3.5rem;
+  padding-bottom: 4.5rem;
 }
 
 .sectionHeader {
@@ -323,82 +323,123 @@
   color: #66554d;
 }
 
-.categoryGrid {
+.productGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
 }
 
-.categoryCard {
-  padding: 2.5rem 1.75rem;
+.productCard {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  align-items: flex-start;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(89, 53, 46, 0.08);
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   height: 100%;
 }
 
-.categoryCard:hover {
+.productCard:hover {
   transform: translateY(-8px);
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   border-color: rgba(217, 138, 75, 0.3);
-  box-shadow: 0 15px 45px -10px rgba(89, 53, 46, 0.18);
+  box-shadow: 0 20px 45px -10px rgba(89, 53, 46, 0.15);
 }
 
-.cardIcon {
-  font-size: 2.25rem;
-  background: var(--rose-light);
-  width: 60px;
-  height: 60px;
+.imagePlaceholder {
+  width: 100%;
+  height: 200px;
+  position: relative;
+  overflow: hidden;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  margin-bottom: 0.5rem;
+  gap: 0.5rem;
+  transition: all 0.4s ease;
 }
 
-.categoryCard h3 {
-  font-size: 1.35rem;
-  margin-bottom: 0;
+/* Color gradients for different Indian Sweets */
+.imagePlaceholder.gulabjamun {
+  background: linear-gradient(135deg, #fcecd0 0%, #f7c980 100%);
+}
+.imagePlaceholder.methapaan {
+  background: linear-gradient(135deg, #e3f5e3 0%, #a4dba4 100%);
+}
+.imagePlaceholder.pistachio {
+  background: linear-gradient(135deg, #ebf7e1 0%, #badfa1 100%);
+}
+.imagePlaceholder.rasmalaibliss {
+  background: linear-gradient(135deg, #fffbec 0%, #ffefa6 100%);
+}
+
+.placeholderEmoji {
+  font-size: 3rem;
+  transition: transform 0.6s ease;
+}
+
+.productCard:hover .placeholderEmoji {
+  transform: scale(1.2) rotate(8deg);
+}
+
+.placeholderText {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
   color: var(--primary);
+  opacity: 0.5;
+  letter-spacing: 0.08em;
 }
 
-.categoryCard p {
-  font-size: 0.95rem;
-  color: #5d4e46;
-  line-height: 1.6;
-  margin-bottom: 1rem;
+.productCardContent {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
   flex-grow: 1;
 }
 
-.cardLink {
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: var(--accent);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: gap 0.2s ease;
-}
-
-.categoryCard:hover .cardLink {
+.productCardContent h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0;
   color: var(--primary);
-  gap: 0.75rem;
+  font-weight: 750;
 }
 
-.cardLink span {
-  transition: transform 0.2s ease;
+.productCardContent p {
+  font-size: 0.88rem;
+  color: #66554d;
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+  flex-grow: 1;
 }
 
-.categoryCard:hover .cardLink span {
-  transform: translateX(3px);
+.priceRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px dashed rgba(89, 53, 46, 0.12);
+  padding-top: 0.8rem;
+  margin-bottom: 0.2rem;
+}
+
+.priceLabel {
+  font-size: 0.8rem;
+  color: #8c766b;
+  font-weight: 500;
+}
+
+.priceValue {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--accent);
 }
 
 /* Responsive Rules */
 @media (max-width: 1024px) {
-  .categoryGrid {
+  .productGrid {
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
   }
@@ -456,7 +497,7 @@
 }
 
 @media (max-width: 480px) {
-  .categoryGrid {
+  .productGrid {
     grid-template-columns: 1fr;
   }
 
