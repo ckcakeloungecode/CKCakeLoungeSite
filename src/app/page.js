@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import PromoCarousel from '../components/PromoCarousel';
 import styles from './page.module.css';
 
 export default function Home() {
@@ -79,6 +80,11 @@ export default function Home() {
             <p>No catalog limit. Our custom quote pipeline lets you share reference images, sketch ideas, and specify shapes, sizes, and dietary configurations to construct your perfect celebration piece.</p>
           </div>
         </div>
+      </section>
+
+      {/* Dynamic Promotion Carousel Widget */}
+      <section className="container">
+        <PromoCarousel />
       </section>
 
       {/* Circular Shop by Category bubbles row */}

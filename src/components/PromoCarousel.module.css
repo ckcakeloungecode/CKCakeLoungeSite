@@ -1,0 +1,261 @@
+.carouselContainer {
+  margin: 2rem auto;
+  width: 100%;
+  max-width: 1200px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 1.5rem 0.5rem 2rem;
+  min-height: 140px;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.slideWrapper {
+  flex-grow: 1;
+  overflow: hidden;
+  padding: 0 1rem;
+}
+
+.slide {
+  display: none;
+  width: 100%;
+  align-items: center;
+  gap: 2rem;
+  opacity: 0;
+  animation: fadeOut 0.4s ease forwards;
+}
+
+.activeSlide {
+  display: flex;
+  opacity: 1;
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.iconCol {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--rose-light);
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  box-shadow: 0 4px 15px rgba(226, 172, 158, 0.2);
+  border: 1px solid var(--accent-light);
+  transition: transform 0.3s ease;
+}
+
+.carouselContainer:hover .iconCol {
+  transform: scale(1.05) rotate(5deg);
+}
+
+.slideIcon {
+  font-size: 2.2rem;
+}
+
+.textCol {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.badge {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.1rem;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.description {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  margin: 0;
+  opacity: 0.85;
+}
+
+.ctaCol {
+  flex-shrink: 0;
+}
+
+.ctaBtn {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  padding: 0.7rem 1.4rem;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(89, 53, 46, 0.15);
+}
+
+.ctaBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(89, 53, 46, 0.25);
+}
+
+.navBtn {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-size: 2.5rem;
+  font-weight: 300;
+  cursor: pointer;
+  padding: 0 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.4;
+  transition: all 0.2s ease;
+  height: 80px;
+  user-select: none;
+}
+
+.navBtn:hover {
+  opacity: 0.9;
+  transform: scale(1.15);
+  color: var(--accent);
+}
+
+.indicatorsRow {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dots {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(89, 53, 46, 0.2);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dot:hover {
+  background: var(--accent);
+}
+
+.activeDot {
+  background: var(--primary);
+  width: 18px;
+  border-radius: 4px;
+}
+
+.progressBarWrapper {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(89, 53, 46, 0.04);
+}
+
+.progressBar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--rose));
+  width: 0%;
+  transition: width 0.05s linear;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+}
+
+/* Responsiveness */
+@media (max-width: 992px) {
+  .carouselContainer {
+    padding: 1.5rem 0.5rem 2.2rem;
+  }
+  .slide {
+    gap: 1.5rem;
+  }
+  .title {
+    font-size: 1.15rem;
+  }
+  .description {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .carouselContainer {
+    padding: 1.5rem 0.2rem 2.5rem;
+    min-height: auto;
+  }
+  .slide {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+    padding-bottom: 0.5rem;
+  }
+  .iconCol {
+    width: 50px;
+    height: 50px;
+  }
+  .slideIcon {
+    font-size: 1.8rem;
+  }
+  .textCol {
+    align-items: center;
+  }
+  .ctaCol {
+    width: 100%;
+    margin-top: 0.2rem;
+  }
+  .ctaBtn {
+    width: 100%;
+    justify-content: center;
+  }
+  .navBtn {
+    height: 50px;
+    font-size: 2rem;
+    padding: 0 0.5rem;
+  }
+}
