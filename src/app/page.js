@@ -62,7 +62,7 @@ export default async function Home() {
             </p>
             <div className={styles.buttonGroup}>
               <Link href="/menu" className="btn-primary">
-                Explore Everyday Treats
+                View Menu
               </Link>
               <Link href="/cakes" className={styles.btnSecondary}>
                 Order Custom Cake
