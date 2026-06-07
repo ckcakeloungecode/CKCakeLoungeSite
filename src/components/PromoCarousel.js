@@ -108,96 +108,99 @@ export default function PromoCarousel() {
   };
 
   return (
-    <div 
-      className={`glass-panel ${styles.carouselContainer}`}
-      onMouseEnter={() => setIsPlaying(false)}
-      onMouseLeave={() => {
-        setIsPlaying(true);
-        progressStartRef.current = Date.now() - (progress / 100) * 5000;
-      }}
-      aria-label="Promotions and Announcements"
-    >
-      {/* Slide Navigation Controls */}
-      <button 
-        className={styles.navBtn} 
-        onClick={handlePrev}
-        aria-label="Previous Slide"
+    <>
+      <div 
+        className={`glass-panel ${styles.carouselContainer}`}
+        onMouseEnter={() => setIsPlaying(false)}
+        onMouseLeave={() => {
+          setIsPlaying(true);
+          progressStartRef.current = Date.now() - (progress / 100) * 5000;
+        }}
+        aria-label="Promotions and Announcements"
       >
-        ‹
-      </button>
+        {/* Slide Navigation Controls */}
+        <button 
+          className={styles.navBtn} 
+          onClick={handlePrev}
+          aria-label="Previous Slide"
+        >
+          ‹
+        </button>
 
-      {/* Slide Content wrapper */}
-      <div className={styles.slideWrapper}>
-        {slides.map((slide, index) => {
-          const isActive = index === currentSlide;
-          return (
-            <div 
-              key={slide.id} 
-              className={`${styles.slide} ${isActive ? styles.activeSlide : ''}`}
-              aria-hidden={!isActive}
-            >
-              <div className={styles.iconCol}>
-                <span className={styles.slideIcon}>{slide.icon}</span>
+        {/* Slide Content wrapper */}
+        <div className={styles.slideWrapper}>
+          {slides.map((slide, index) => {
+            const isActive = index === currentSlide;
+            return (
+              <div 
+                key={slide.id} 
+                className={`${styles.slide} ${isActive ? styles.activeSlide : ''}`}
+                aria-hidden={!isActive}
+              >
+                <div className={styles.iconCol}>
+                  <span className={styles.slideIcon}>{slide.icon}</span>
+                </div>
+                <div className={styles.textCol}>
+                  <span className={styles.badge}>{slide.highlight}</span>
+                  <h3 className={styles.title}>{slide.title}</h3>
+                  <p className={styles.description}>{slide.description}</p>
+                </div>
+                <div className={styles.ctaCol}>
+                  {slide.action === "link" ? (
+                    <Link href={slide.url} className={`btn-primary ${styles.ctaBtn}`}>
+                      {slide.ctaText}
+                    </Link>
+                  ) : (
+                    <button 
+                      onClick={() => handleCTA(slide)} 
+                      className={`btn-primary ${styles.ctaBtn}`}
+                    >
+                      {slide.ctaText}
+                    </button>
+                  )}
+                </div>
               </div>
-              <div className={styles.textCol}>
-                <span className={styles.badge}>{slide.highlight}</span>
-                <h3 className={styles.title}>{slide.title}</h3>
-                <p className={styles.description}>{slide.description}</p>
-              </div>
-              <div className={styles.ctaCol}>
-                {slide.action === "link" ? (
-                  <Link href={slide.url} className={`btn-primary ${styles.ctaBtn}`}>
-                    {slide.ctaText}
-                  </Link>
-                ) : (
-                  <button 
-                    onClick={() => handleCTA(slide)} 
-                    className={`btn-primary ${styles.ctaBtn}`}
-                  >
-                    {slide.ctaText}
-                  </button>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
 
-      <button 
-        className={styles.navBtn} 
-        onClick={handleNext}
-        aria-label="Next Slide"
-      >
-        ›
-      </button>
+        <button 
+          className={styles.navBtn} 
+          onClick={handleNext}
+          aria-label="Next Slide"
+        >
+          ›
+        </button>
 
-      {/* Dots Indicator & Auto-play progress bar */}
-      <div className={styles.indicatorsRow}>
-        <div className={styles.dots}>
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              className={`${styles.dot} ${index === currentSlide ? styles.activeDot : ''}`}
-              onClick={() => handleDotClick(index)}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
+        {/* Dots Indicator & Auto-play progress bar */}
+        <div className={styles.indicatorsRow}>
+          <div className={styles.dots}>
+            {slides.map((_, index) => (
+              <button
+                key={index}
+                className={`${styles.dot} ${index === currentSlide ? styles.activeDot : ''}`}
+                onClick={() => handleDotClick(index)}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Running timer progress bar at the very bottom */}
+        <div className={styles.progressBarWrapper}>
+          <div 
+            className={styles.progressBar} 
+            style={{ width: `${isPlaying ? progress : 0}%` }}
+          />
         </div>
       </div>
 
-      {/* Running timer progress bar at the very bottom */}
-      <div className={styles.progressBarWrapper}>
-        <div 
-          className={styles.progressBar} 
-          style={{ width: `${isPlaying ? progress : 0}%` }}
-        />
-      </div>
-
-      {/* Auth Modal integration */}
+      {/* Auth Modal integration - Rendered outside the glass-panel to prevent containing block stacking context issues */}
       <AuthModal 
         isOpen={isAuthModalOpen} 
         onClose={() => setIsAuthModalOpen(false)} 
       />
-    </div>
+    </>
   );
+
 }
