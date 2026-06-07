@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useCart } from '../../../context/CartContext';
 import { supabase } from '../../../utils/supabaseClient';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import styles from './page.module.css';
 
 export default function ProductSelector({ product, variants }) {
@@ -153,7 +154,12 @@ export default function ProductSelector({ product, variants }) {
 
       {hasVariants && (
         <div className={styles.optionsGrid}>
-          {uniqueSizes.length > 1 && (
+          {uniqueSizes.length === 1 ? (
+            <div className={styles.optionGroup}>
+              <label>Size</label>
+              <span className={styles.staticSize}>{selectedSize}</span>
+            </div>
+          ) : uniqueSizes.length > 1 ? (
             <div className={styles.optionGroup}>
               <label>Size</label>
               <select 
@@ -166,7 +172,7 @@ export default function ProductSelector({ product, variants }) {
                 ))}
               </select>
             </div>
-          )}
+          ) : null}
 
           {uniqueFlavors.length > 0 && (uniqueFlavors.length > 1 || product.category === 'Cakes') && (
             <div className={styles.optionGroup}>
@@ -238,6 +244,12 @@ export default function ProductSelector({ product, variants }) {
         >
           {isUploading ? "Uploading Photo..." : isCustomCake ? "Get Quote" : `Add to Cart - $${formattedTotal}`}
         </button>
+
+        {product.category === 'Ready to Go Cakes' && (
+          <Link href="/cakes" className={styles.customizePromoBtn}>
+            Want a bigger size? Customize your cake
+          </Link>
+        )}
       </div>
     </div>
     </div>
