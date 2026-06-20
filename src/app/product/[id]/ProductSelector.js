@@ -148,7 +148,7 @@ export default function ProductSelector({ product, variants }) {
         <div className={styles.selectorContainer}>
       <h2 className={styles.price}>
         {isCustomCake 
-          ? `Starts from $${Number(product.price).toFixed(2)}` 
+          ? `Starts from $${formattedDisplayPrice}` 
           : `$${formattedDisplayPrice} each`}
       </h2>
 
