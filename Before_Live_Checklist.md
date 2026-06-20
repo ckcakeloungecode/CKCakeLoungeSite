@@ -43,3 +43,6 @@ Vercel needs to know all the secret keys to run your backend on the internet.
 ## 5. 📱 Business Operations
 - [ ] **WhatsApp Number:** Ensure the hardcoded phone number that receives the WhatsApp receipt links on the success page is your actual business phone number.
 - [ ] **Test Real Transaction:** Use your own real credit card to buy a $1 test item on the live site to ensure money hits your actual Square bank account before announcing the launch.
+
+<!-- Test commit validation -->
+
