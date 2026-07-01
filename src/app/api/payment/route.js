@@ -5,7 +5,7 @@ import { supabaseAdmin } from '../../../utils/supabaseAdmin';
 import { Resend } from 'resend';
 
 // Uses Sandbox for testing, Production for real money
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = !process.env.NEXT_PUBLIC_SQUARE_APP_ID?.startsWith('sandbox-');
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // In-Memory Rate Limiter Map

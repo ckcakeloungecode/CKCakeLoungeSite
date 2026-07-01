@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import { SquareClient, SquareEnvironment } from 'square';
 import crypto from 'crypto';
 
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = !process.env.NEXT_PUBLIC_SQUARE_APP_ID?.startsWith('sandbox-');
 
 // Helper to authenticate administrator against BAKERY_EMAIL
 async function authenticateAdmin(req) {
