@@ -271,6 +271,7 @@ export async function POST(req) {
       // --- 2. FIRE AUTOMATED EMAIL VIA RESEND ---
       try {
         const bakeryEmail = process.env.BAKERY_EMAIL;
+        const senderEmail = process.env.SENDER_EMAIL || 'onboarding@resend.dev';
         if (process.env.RESEND_API_KEY && bakeryEmail) {
           
           let itemsHtml = cartItems.map(item => {
@@ -321,7 +322,7 @@ export async function POST(req) {
             : `Total Paid: $${amount}`;
 
           await resend.emails.send({
-            from: 'Orders <onboarding@resend.dev>', // Free tier Resend sender
+            from: `Orders <${senderEmail}>`,
             to: bakeryEmail,
             subject: subjectLine,
             html: `
