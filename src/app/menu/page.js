@@ -9,14 +9,17 @@ export default async function Menu({ searchParams }) {
   let query = supabase
     .from('products')
     .select('*')
-    .eq('is_available', true)
-    .eq('is_special_cake', false)
-    .neq('category', 'Cakes')
-    .neq('category', 'International Flavors')
-    .neq('category', 'Ready to Go Cakes');
+    .eq('is_available', true);
 
   if (search) {
     query = query.ilike('name', `%${search}%`);
+  } else {
+    // Default Everyday Treats filters
+    query = query
+      .eq('is_special_cake', false)
+      .neq('category', 'Cakes')
+      .neq('category', 'International Flavors')
+      .neq('category', 'Ready to Go Cakes');
   }
 
   const { data: products, error } = await query;

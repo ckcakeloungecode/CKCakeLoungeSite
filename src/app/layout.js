@@ -2,6 +2,7 @@ import { Inter, Outfit } from "next/font/google";
 import { CartProvider } from "../context/CartContext";
 import { AuthProvider } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import FloatingCart from "../components/FloatingCart";
 import "./globals.css";
 
@@ -28,6 +29,7 @@ export default function RootLayout({ children }) {
           <CartProvider>
             <Navbar />
             {children}
+            <Footer />
             <FloatingCart />
           </CartProvider>
         </AuthProvider>

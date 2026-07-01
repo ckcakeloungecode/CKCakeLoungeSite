@@ -329,6 +329,22 @@
   gap: 1.5rem;
 }
 
+.productGridCentered {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.productGridCentered .productCard {
+  width: 285px;
+  max-width: 100%;
+  flex-shrink: 0;
+  height: auto;
+}
+
 .productCard {
   display: flex;
   flex-direction: column;
@@ -371,6 +387,37 @@
 }
 .imagePlaceholder.rasmalaibliss {
   background: linear-gradient(135deg, #fffbec 0%, #ffefa6 100%);
+}
+.imagePlaceholder.mango {
+  background: linear-gradient(135deg, #fff3d1 0%, #ffd066 100%);
+}
+.imagePlaceholder.tropicalpineapple {
+  background: linear-gradient(135deg, #fffde6 0%, #ffec80 100%);
+}
+.imagePlaceholder.gardenstrawberry {
+  background: linear-gradient(135deg, #ffeef0 0%, #ffa3ad 100%);
+}
+.imagePlaceholder.blueberry {
+  background: linear-gradient(135deg, #f0effc 0%, #adadff 100%);
+}
+.imagePlaceholder.mixfruit {
+  background: linear-gradient(135deg, #fdf1ef 0%, #f7c5ba 100%);
+}
+.imagePlaceholder.tiramissu {
+  background: linear-gradient(135deg, #efe5dd 0%, #c4ab97 100%);
+}
+.imagePlaceholder.cheesecake {
+  background: linear-gradient(135deg, #fffbeb 0%, #fde047 100%);
+}
+.imagePlaceholder.moussecake {
+  background: linear-gradient(135deg, #f5ebe6 0%, #cca391 100%);
+}
+.imagePlaceholder.piñatacake,
+.imagePlaceholder.pinatacake {
+  background: linear-gradient(135deg, #fae8ff 0%, #d8b4fe 100%);
+}
+.imagePlaceholder.dollcake {
+  background: linear-gradient(135deg, #fff1f2 0%, #fecdd3 100%);
 }
 
 .placeholderEmoji {

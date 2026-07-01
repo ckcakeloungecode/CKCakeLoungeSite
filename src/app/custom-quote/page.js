@@ -241,7 +241,7 @@ export default function CustomQuotePage() {
             <div className={styles.mockDistanceBox}>
               <strong>Pickup Location:</strong><br />
               CK Cake Lounge<br />
-              Evans Blvd, London, ON N6M 0A8
+              Evans Blvd, London, ON N6M 0A8, Canada
             </div>
           </div>
 
@@ -294,12 +294,19 @@ export default function CustomQuotePage() {
               <div className={styles.summaryItemDetails}>
                 <span className={styles.summaryItemName}>{quoteItem.quantity}x {quoteItem.name}</span>
                 <span className={styles.summaryItemMeta}>
-                  {`Flavor: ${quoteItem.flavor} • Size: Standard`}
+                  {`Flavor: ${quoteItem.flavor} • Size: ${quoteItem.size || 'Standard'}`}
                 </span>
                 {quoteItem.photoUrl && (
-                  <div style={{ fontSize: '0.85rem', color: '#16a34a', marginTop: '6px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                    Reference Photo Attached
+                  <div style={{ marginTop: '8px' }}>
+                    <div style={{ fontSize: '0.85rem', color: '#16a34a', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '6px' }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                      Reference Photo Attached
+                    </div>
+                    <img 
+                      src={quoteItem.photoUrl} 
+                      alt="Reference design" 
+                      style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '6px', border: '1px solid #c4b6b0', display: 'block' }}
+                    />
                   </div>
                 )}
               </div>

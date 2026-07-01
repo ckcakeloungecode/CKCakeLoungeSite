@@ -267,7 +267,7 @@ export default function SpecialEventsPage() {
           <p style={{ fontWeight: '600', color: '#4a3f39', marginBottom: '0.8rem' }}>Store Pickup Only</p>
           <div className={styles.infoBox}>
             <strong>Pickup Location:</strong>
-            <span>CK Cake Lounge, Evans Blvd, London, ON N6M 0A8</span>
+            <span>CK Cake Lounge, Evans Blvd, London, ON N6M 0A8, Canada</span>
           </div>
         </div>
 

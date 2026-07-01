@@ -42,12 +42,13 @@ export default function ProductSelector({ product, variants }) {
 
   const isCustomCake = product.category === 'Cakes';
 
-  // Photo option is only eligible for 1 Pound and 2 Pound sizes
+  // Photo option is always eligible for Custom Cakes (free upload), or if product allows photo and size is 1 or 2 Pound
   const isPhotoEligible = useMemo(() => {
+    if (isCustomCake) return true;
     if (!product.allows_photo) return false;
     const lowerSize = (selectedSize || '').toLowerCase();
     return lowerSize.includes('1 pound') || lowerSize.includes('2 pound');
-  }, [product.allows_photo, selectedSize]);
+  }, [isCustomCake, product.allows_photo, selectedSize]);
 
   // Dynamic photo fee: +$15.00 for 1 Pound, +$20.00 for 2 Pound
   const photoFee = useMemo(() => {

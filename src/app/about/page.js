@@ -87,7 +87,7 @@ export default function AboutPage() {
               <h4>📍 Address</h4>
               <p>
                 CK Cake Lounge<br />
-                Evans Blvd, London, ON N6M 0A8
+                Evans Blvd, London, ON N6M 0A8, Canada
               </p>
             </div>
             <div className={styles.detailCol}>
