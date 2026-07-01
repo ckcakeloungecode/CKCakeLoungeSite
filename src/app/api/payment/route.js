@@ -27,7 +27,9 @@ export async function POST(req) {
     const allowedOrigins = [
       'http://localhost:3000',
       'https://ckcakelounge.com',
-      'https://www.ckcakelounge.com'
+      'https://www.ckcakelounge.com',
+      'https://ckcakelounge.ca',
+      'https://www.ckcakelounge.ca'
     ];
     const origin = req.headers.get('origin');
     const referer = req.headers.get('referer');
