@@ -35,6 +35,7 @@ export default async function SpecialCakes({ searchParams }) {
           <Link href="/cakes" className={styles.tab}>Custom Cakes</Link>
           <Link href="/international-flavors" className={styles.tab}>International Flavors</Link>
           <Link href="/special-cakes" className={styles.activeTab}>Special Cakes</Link>
+          <Link href="/custom-designs" className={styles.tab}>Custom Designs Gallery</Link>
         </div>
 
         {search && (

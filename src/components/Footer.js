@@ -28,6 +28,7 @@ export default function Footer() {
             <ul className={styles.linksList}>
               <li><Link href="/menu">Full Menu</Link></li>
               <li><Link href="/ready-to-go-cakes">Ready to Go Cakes</Link></li>
+              <li><Link href="/custom-designs">Custom Design Gallery</Link></li>
               <li><Link href="/special-cakes">Special Cakes</Link></li>
               <li><Link href="/international-flavors">International Flavors</Link></li>
               <li><Link href="/custom-quote">Custom Cake Quote</Link></li>
