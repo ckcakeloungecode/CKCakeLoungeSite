@@ -79,8 +79,20 @@ export default function ProductSelector({ product, variants }) {
   const formattedDisplayPrice = Number(displayPrice).toFixed(2);
   const formattedTotal = Number(total).toFixed(2);
 
-  // Determine dynamic image based on selected flavor variant
-  const displayImage = (currentVariant && currentVariant.image_url) ? currentVariant.image_url : product.image_url;
+  // Determine dynamic image based on selected size for Custom Cakes (<= 5lb vs >= 6lb/tiered) or flavor variant
+  const displayImage = useMemo(() => {
+    if (isCustomCake || product.category === 'Cakes') {
+      const lowerSize = (selectedSize || '').toLowerCase();
+      const match = lowerSize.match(/(\d+(\.\d+)?)/);
+      const sizeNum = match ? parseFloat(match[1]) : null;
+
+      if (lowerSize.includes('2-tier') || lowerSize.includes('3-tier') || lowerSize.includes('tier') || (sizeNum && sizeNum >= 6)) {
+        return '/custom-cake-tiered.jpg';
+      }
+      return '/custom-cake-single.jpg';
+    }
+    return (currentVariant && currentVariant.image_url) ? currentVariant.image_url : (product.image_url || '/custom-cake-single.jpg');
+  }, [isCustomCake, product.category, product.image_url, selectedSize, currentVariant]);
 
   const { addToCart } = useCart();
 

@@ -53,7 +53,11 @@ export default async function Cakes({ searchParams }) {
           {products && products.map((product) => (
             <div key={product.id} className={`glass-panel ${styles.card}`}>
               <div className={styles.imagePlaceholder}>
-                 {/* Once you have real photos, an <img /> tag goes here */}
+                <img 
+                  src={product.image_url || '/custom-cake-single.jpg'} 
+                  alt={product.name} 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                />
               </div>
               <div className={styles.cardContent}>
                 <h2>{product.name}</h2>
