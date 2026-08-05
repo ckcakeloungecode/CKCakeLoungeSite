@@ -8,55 +8,68 @@ import styles from './page.module.css';
 // Pre-configured custom design showcase collection with placeholders ready for owner images
 const CUSTOM_DESIGNS = [
   {
-    id: 'design-1',
-    title: 'Royal Golden Floral Wedding Cake',
-    category: 'Wedding & Anniversary',
-    startingPrice: 160,
-    description: 'Multilayer luxury cake with edible gold foil accents, handcrafted sugar flowers, and smooth fondant finish.',
-    defaultSize: '2-Tier (Serves 20-25)',
-    availableSizes: ['2-Tier (Serves 20-25)', '3-Tier (Serves 40-50)', 'Single Tier (Serves 10-12)'],
-    availableFlavors: ['Vanilla Raspberry', 'Red Velvet', 'Carrot Cream Cheese', 'Chocolate Fudge'],
-    leadTime: '3 Days Notice',
-    imageUrl: '', // 👈 Edit this line to add image path, e.g. '/images/designs/wedding-gold.jpg'
-    placeholderCode: 'wedding-gold.jpg'
+    id: 'design-jurassic',
+    title: 'Jurassic World Dinosaur Birthday Cake',
+    category: 'Birthday Celebrations',
+    startingPrice: 110,
+    themeMessage: 'Roar into your next celebration with an epic Jurassic World dinosaur adventure theme!',
+    defaultSize: '2 Pound (Serves 10-12)',
+    availableSizes: ['1.5 Pound (Serves 6-8)', '2 Pound (Serves 10-12)', '3 Pound (Serves 15-18)', '2-Tier (Serves 20-25)'],
+    availableFlavors: ['Vanilla Bean', 'Chocolate Fudge', 'Red Velvet', 'Strawberry Delight'],
+    leadTime: '2 Days Notice',
+    imageUrl: '/designs/jurassic-world.jpg',
+    placeholderCode: 'jurassic-world.jpg'
   },
   {
     id: 'design-2',
-    title: 'Minimalist Pastel Macaron Drip Cake',
+    title: 'Minimalist Pastel Macaron Drip Birthday Cake',
     category: 'Birthday Celebrations',
     startingPrice: 85,
-    description: 'Chic drip cake featuring pastel buttercream swirls, French macarons, and chocolate pearls.',
+    themeMessage: 'Chic pastel buttercream swirls topped with delicate macarons and chocolate pearls.',
     defaultSize: '2 Pound (Serves 10-12)',
     availableSizes: ['1.5 Pound (Serves 6-8)', '2 Pound (Serves 10-12)', '3 Pound (Serves 15-18)'],
     availableFlavors: ['Strawberry Delight', 'Vanilla Bean', 'Chocolate Hazelnut', 'Mango Passion'],
     leadTime: '2 Days Notice',
-    imageUrl: '', // 👈 Edit this line to add image path, e.g. '/images/designs/pastel-drip.jpg'
+    imageUrl: '',
     placeholderCode: 'pastel-drip.jpg'
   },
   {
     id: 'design-3',
-    title: 'Elegantly Piped Vintage Lambeth Cake',
+    title: 'Elegantly Piped Vintage Lambeth Birthday Cake',
     category: 'Birthday Celebrations',
     startingPrice: 95,
-    description: 'Retro-inspired piping with intricate ruffle borders, maraschino cherries, and delicate scrollwork.',
+    themeMessage: 'Retro-inspired piping with intricate ruffle borders and classic birthday charm.',
     defaultSize: '2 Pound (Serves 10-12)',
     availableSizes: ['1.5 Pound (Serves 6-8)', '2 Pound (Serves 10-12)', '3 Pound (Serves 15-18)'],
     availableFlavors: ['Red Velvet', 'Black Forest', 'Vanilla Bean', 'Pineapple Delight'],
     leadTime: '2 Days Notice',
-    imageUrl: '', // 👈 Edit this line to add image path, e.g. '/images/designs/vintage-lambeth.jpg'
+    imageUrl: '',
     placeholderCode: 'vintage-lambeth.jpg'
+  },
+  {
+    id: 'design-1',
+    title: 'Royal Golden Floral Wedding Cake',
+    category: 'Wedding & Anniversary',
+    startingPrice: 160,
+    themeMessage: 'Luxury gold foil accents and sugar flowers crafted for memorable weddings & anniversaries.',
+    defaultSize: '2-Tier (Serves 20-25)',
+    availableSizes: ['2-Tier (Serves 20-25)', '3-Tier (Serves 40-50)', 'Single Tier (Serves 10-12)'],
+    availableFlavors: ['Vanilla Raspberry', 'Red Velvet', 'Carrot Cream Cheese', 'Chocolate Fudge'],
+    leadTime: '3 Days Notice',
+    imageUrl: '',
+    placeholderCode: 'wedding-gold.jpg'
   },
   {
     id: 'design-4',
     title: 'Enchanted Butterfly & Rose Celebration Cake',
     category: 'Baby Shower & Kids',
     startingPrice: 110,
-    description: 'Dreamy celebration cake with 3D wafer butterflies, fresh floral crowns, and subtle gradient buttercream.',
+    themeMessage: 'Dreamy wafer butterflies and fresh floral crowns for baby showers & kids celebrations.',
     defaultSize: '2-Tier (Serves 18-20)',
     availableSizes: ['2 Pound (Serves 10-12)', '2-Tier (Serves 18-20)', '3-Tier (Serves 35-40)'],
     availableFlavors: ['Vanilla Raspberry', 'Mango Mousse', 'Pistachio Kesar', 'Chocolate Fudge'],
     leadTime: '2 Days Notice',
-    imageUrl: '', // 👈 Edit this line to add image path, e.g. '/images/designs/butterfly-rose.jpg'
+    imageUrl: '',
     placeholderCode: 'butterfly-rose.jpg'
   },
   {
@@ -64,12 +77,12 @@ const CUSTOM_DESIGNS = [
     title: 'Nutella Chocolate Overload Festive Drip Cake',
     category: 'Festive Cakes',
     startingPrice: 90,
-    description: 'Decadent chocolate cake loaded with Ferrero Rocher, Kinder Bueno, rich ganache drip, and hazelnut cream for festive celebrations.',
+    themeMessage: 'Decadent chocolate ganache drip loaded with Ferrero Rocher and hazelnut cream.',
     defaultSize: '2 Pound (Serves 10-12)',
     availableSizes: ['1.5 Pound (Serves 6-8)', '2 Pound (Serves 10-12)', '3 Pound (Serves 15-18)'],
     availableFlavors: ['Chocolate Fudge', 'Nutella Crunch', 'Ferrero Chocolate', 'Black Forest'],
     leadTime: '2 Days Notice',
-    imageUrl: '', // 👈 Edit this line to add image path, e.g. '/images/designs/chocolate-overload.jpg'
+    imageUrl: '',
     placeholderCode: 'chocolate-overload.jpg'
   },
   {
@@ -77,12 +90,12 @@ const CUSTOM_DESIGNS = [
     title: 'Whimsical Woodland & Teddy Bear Cake',
     category: 'Baby Shower & Kids',
     startingPrice: 130,
-    description: 'Hand-sculpted fondant teddy bear, soft pastel cloud details, and golden stars for baby showers or 1st birthdays.',
+    themeMessage: 'Hand-sculpted teddy bear and soft pastel clouds perfect for 1st birthdays & baby showers.',
     defaultSize: '2-Tier (Serves 20-25)',
     availableSizes: ['2 Pound (Serves 10-12)', '2-Tier (Serves 20-25)'],
     availableFlavors: ['Vanilla Bean', 'Butterscotch', 'Carrot Cream Cheese', 'Strawberry'],
     leadTime: '3 Days Notice',
-    imageUrl: '', // 👈 Edit this line to add image path, e.g. '/images/designs/woodland-bear.jpg'
+    imageUrl: '',
     placeholderCode: 'woodland-bear.jpg'
   },
   {
@@ -90,26 +103,13 @@ const CUSTOM_DESIGNS = [
     title: 'Royal Indian Fusion Gulab Jamun Festive Cake',
     category: 'Festive Cakes',
     startingPrice: 105,
-    description: 'Cardamom & saffron infused sponge layered with authentic gulab jamun, crushed pistachios, and edible silver leaf.',
+    themeMessage: 'Cardamom & saffron sponge layered with authentic gulab jamun and pistachios.',
     defaultSize: '2 Pound (Serves 10-12)',
     availableSizes: ['1.5 Pound (Serves 6-8)', '2 Pound (Serves 10-12)', '3 Pound (Serves 15-18)'],
     availableFlavors: ['Kesar Pista', 'Gulab Jamun Fusion', 'Rasmalai Delight', 'Paan Kulfi'],
     leadTime: '2 Days Notice',
-    imageUrl: '', // 👈 Edit this line to add image path, e.g. '/images/designs/gulab-jamun-fusion.jpg'
+    imageUrl: '',
     placeholderCode: 'gulab-jamun-fusion.jpg'
-  },
-  {
-    id: 'design-8',
-    title: 'Rustic Botanical Fresh Berry & Floral Cake',
-    category: 'Wedding & Anniversary',
-    startingPrice: 125,
-    description: 'Semi-naked botanical cake topped with fresh organic berries, eucalyptus sprigs, and white chocolate drizzle.',
-    defaultSize: '2-Tier (Serves 20-25)',
-    availableSizes: ['2 Pound (Serves 10-12)', '2-Tier (Serves 20-25)', '3-Tier (Serves 40-50)'],
-    availableFlavors: ['Lemon Blueberry', 'Vanilla Raspberry', 'Carrot Walnut', 'White Chocolate'],
-    leadTime: '2 Days Notice',
-    imageUrl: '', // 👈 Edit this line to add image path, e.g. '/images/designs/rustic-botanical.jpg'
-    placeholderCode: 'rustic-botanical.jpg'
   }
 ];
 
@@ -261,18 +261,9 @@ export default function CustomDesignsGallery() {
                     <span className={styles.priceTag}>Starts ${design.startingPrice}</span>
                   </div>
 
-                  <p className={styles.description}>{design.description}</p>
-
-                  <div className={styles.specList}>
-                    <div className={styles.specItem}>
-                      <span className={styles.specIcon}>⏱️</span>
-                      <span>Required Lead Time: {design.leadTime}</span>
-                    </div>
-                    <div className={styles.specItem}>
-                      <span className={styles.specIcon}>✨</span>
-                      <span>100% Eggless Facility Guaranteed</span>
-                    </div>
-                  </div>
+                  <p className={styles.description}>
+                    {design.themeMessage || design.description}
+                  </p>
 
                   {/* Size Dropdown */}
                   <div className={styles.selectorGroup}>
@@ -308,7 +299,7 @@ export default function CustomDesignsGallery() {
                     className={styles.orderBtn}
                     onClick={() => handleOrderDesign(design)}
                   >
-                    <span>Order / Request Quote for This Design</span>
+                    <span>Select & Customize This Design</span>
                     <span>&rarr;</span>
                   </button>
                 </div>
