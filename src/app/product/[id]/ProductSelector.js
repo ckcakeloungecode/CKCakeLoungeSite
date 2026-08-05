@@ -26,6 +26,7 @@ export default function ProductSelector({ product, variants }) {
   // State to hold the user's current selections. Default to the first available option.
   const [selectedSize, setSelectedSize] = useState(uniqueSizes[0] || '');
   const [selectedFlavor, setSelectedFlavor] = useState(uniqueFlavors[0] || '');
+  const [selectedShape, setSelectedShape] = useState('Circle');
   
   const minQty = product.min_quantity || 1;
   const [quantity, setQuantity] = useState(minQty);
@@ -33,6 +34,9 @@ export default function ProductSelector({ product, variants }) {
   const [isPhotoCake, setIsPhotoCake] = useState(false);
   const [photoFile, setPhotoFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+
+  // Check if product is in a cake category eligible for shape choice
+  const isCakeCategory = product.category === 'Ready to Go Cakes' || product.category === 'Cakes' || product.category === 'Special Cakes';
 
   // Find the exact variant based on current selections
   const currentVariant = useMemo(() => {
@@ -110,6 +114,7 @@ export default function ProductSelector({ product, variants }) {
       name: product.name,
       size: selectedSize || 'Standard',
       flavor: selectedFlavor || 'Original',
+      shape: isCakeCategory ? selectedShape : null,
       price: displayPrice,
       quantity: quantity,
       isPhotoCake: isPhotoCake,
@@ -153,7 +158,7 @@ export default function ProductSelector({ product, variants }) {
           : `$${formattedDisplayPrice} each`}
       </h2>
 
-      {hasVariants && (
+      {(hasVariants || isCakeCategory) && (
         <div className={styles.optionsGrid}>
           {uniqueSizes.length === 1 ? (
             <div className={styles.optionGroup}>
@@ -186,6 +191,21 @@ export default function ProductSelector({ product, variants }) {
                 {uniqueFlavors.map(flavor => (
                   <option key={flavor} value={flavor}>{flavor}</option>
                 ))}
+              </select>
+            </div>
+          )}
+
+          {isCakeCategory && (
+            <div className={styles.optionGroup}>
+              <label>Cake Shape</label>
+              <select 
+                value={selectedShape} 
+                onChange={(e) => setSelectedShape(e.target.value)}
+                className={styles.dropdown}
+              >
+                <option value="Circle">Circle (Round)</option>
+                <option value="Square">Square</option>
+                <option value="Heart">Heart</option>
               </select>
             </div>
           )}

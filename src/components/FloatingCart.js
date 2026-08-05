@@ -50,7 +50,7 @@ export default function FloatingCart() {
                   
                   {/* Variant info: Only show size/flavor if they exist and aren't default "Standard/Original" if those aren't helpful, but let's just show them if they exist */}
                   <div className={styles.itemVariant}>
-                    {[item.size !== 'Standard' && item.size, item.flavor !== 'Original' && item.flavor].filter(Boolean).join(' • ')}
+                    {[item.size !== 'Standard' && item.size, item.flavor !== 'Original' && item.flavor, item.shape && `Shape: ${item.shape}`].filter(Boolean).join(' • ')}
                   </div>
                   
                   <div className={styles.itemPrice}>${Number(item.price).toFixed(2)}</div>

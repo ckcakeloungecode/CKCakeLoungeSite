@@ -26,7 +26,7 @@ export async function POST(request) {
     const isOriginAllowed = (url) => {
       if (!url) return false;
       if (allowedOrigins.some(allowed => url.startsWith(allowed))) return true;
-      if (url.includes('.vercel.app')) return true;
+      if (url.includes('.vercel.app') || url.includes('.onrender.com')) return true;
       return false;
     };
 

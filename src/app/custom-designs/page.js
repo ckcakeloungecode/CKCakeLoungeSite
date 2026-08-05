@@ -61,10 +61,10 @@ const CUSTOM_DESIGNS = [
   },
   {
     id: 'design-5',
-    title: 'Nutella Chocolate Overload Drip Cake',
-    category: 'Elegant Drip & Floral',
+    title: 'Nutella Chocolate Overload Festive Drip Cake',
+    category: 'Festive Cakes',
     startingPrice: 90,
-    description: 'Decadent chocolate cake loaded with Ferrero Rocher, Kinder Bueno, rich ganache drip, and hazelnut cream.',
+    description: 'Decadent chocolate cake loaded with Ferrero Rocher, Kinder Bueno, rich ganache drip, and hazelnut cream for festive celebrations.',
     defaultSize: '2 Pound (Serves 10-12)',
     availableSizes: ['1.5 Pound (Serves 6-8)', '2 Pound (Serves 10-12)', '3 Pound (Serves 15-18)'],
     availableFlavors: ['Chocolate Fudge', 'Nutella Crunch', 'Ferrero Chocolate', 'Black Forest'],
@@ -87,8 +87,8 @@ const CUSTOM_DESIGNS = [
   },
   {
     id: 'design-7',
-    title: 'Royal Indian Fusion Gulab Jamun Cake',
-    category: 'Specialty Theme',
+    title: 'Royal Indian Fusion Gulab Jamun Festive Cake',
+    category: 'Festive Cakes',
     startingPrice: 105,
     description: 'Cardamom & saffron infused sponge layered with authentic gulab jamun, crushed pistachios, and edible silver leaf.',
     defaultSize: '2 Pound (Serves 10-12)',
@@ -118,8 +118,7 @@ const CATEGORIES = [
   'Wedding & Anniversary',
   'Birthday Celebrations',
   'Baby Shower & Kids',
-  'Elegant Drip & Floral',
-  'Specialty Theme'
+  'Festive Cakes'
 ];
 
 export default function CustomDesignsGallery() {
@@ -259,7 +258,7 @@ export default function CustomDesignsGallery() {
                 <div className={styles.cardContent}>
                   <div className={styles.cardHeader}>
                     <h2 className={styles.cardTitle}>{design.title}</h2>
-                    <span className={styles.priceTag}>Starts $${design.startingPrice}</span>
+                    <span className={styles.priceTag}>Starts ${design.startingPrice}</span>
                   </div>
 
                   <p className={styles.description}>{design.description}</p>

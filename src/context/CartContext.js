@@ -36,6 +36,7 @@ export function CartProvider({ children }) {
         i.productId === item.productId && 
         i.size === item.size && 
         i.flavor === item.flavor && 
+        i.shape === item.shape &&
         i.isPhotoCake === item.isPhotoCake
       );
 
