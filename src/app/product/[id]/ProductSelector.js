@@ -149,12 +149,19 @@ export default function ProductSelector({ product, variants }) {
 
   return (
     <>
-      {/* Left Side: Image (Dynamically changes based on flavor!) */}
+      {/* Left Side: Image (Dynamically changes based on size/flavor!) */}
       <div className={styles.imageColumn}>
          <div 
            className={styles.imagePlaceholder}
-           style={{ backgroundImage: displayImage ? `url(${displayImage})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}
+           style={{ backgroundColor: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', padding: '15px' }}
          >
+           {displayImage ? (
+             <img 
+               src={displayImage} 
+               alt={product.name} 
+               style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} 
+             />
+           ) : null}
          </div>
       </div>
 
