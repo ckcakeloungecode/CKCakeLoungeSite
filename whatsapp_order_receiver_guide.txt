@@ -1,0 +1,87 @@
+====================================================================
+📱 WHATSAPP ORDER RECEIVER SETUP GUIDE (CK CAKE LOUNGE)
+====================================================================
+
+This guide walks you through setting up Automated WhatsApp Order Alerts using Meta's free WhatsApp Cloud API. Once configured, every customer order placed on the site will automatically trigger an instant WhatsApp message to your phone with full order details and reference photos.
+
+--------------------------------------------------------------------
+1. COST & PRICING
+--------------------------------------------------------------------
+- First 1,000 Conversations/Month: 100% FREE ($0/month).
+- Setup Cost: $0.
+- Requirements: Meta Developer Account & any mobile phone number capable of receiving SMS.
+
+--------------------------------------------------------------------
+2. STEP-BY-STEP SETUP GUIDE (10 MINUTES)
+--------------------------------------------------------------------
+
+STEP 1: ACCESS META DEVELOPER PORTAL
+1. Open your browser and go to https://developers.facebook.com
+2. Log in using your Facebook account (or the Bakery's Facebook account).
+3. Complete the quick registration to activate your Developer profile.
+
+STEP 2: CREATE A META APP
+1. Click "My Apps" in the top right corner and click "Create App".
+2. Select "Business" as the App Type and click Next.
+3. Name your app: "CK Cake Lounge Order Alerts".
+4. Enter your contact email and click Create App.
+
+STEP 3: ADD WHATSAPP PRODUCT
+1. On the App Dashboard, scroll down to "WhatsApp" and click "Set Up".
+2. Select or create a Meta Business Portfolio when prompted.
+3. You will be taken to the WhatsApp Getting Started page.
+
+STEP 4: ADD & VERIFY YOUR BAKERY PHONE NUMBER
+1. Under "To" (Recipient Phone Number) on the Getting Started screen, click the dropdown and select "Manage Phone Number List".
+2. Enter your Bakery Phone Number (including country code, e.g., +1 519-XXX-XXXX).
+3. Meta will send a 6-digit SMS verification code to your phone.
+4. Enter the verification code in Meta's dashboard. Your phone number is now verified!
+
+STEP 5: COPY YOUR 3 API CREDENTIALS
+Copy the following 3 values from your Meta Developer screen:
+1. WHATSAPP_PHONE_NUMBER_ID (Found under Step 1 on the WhatsApp Getting Started page)
+2. WHATSAPP_ACCESS_TOKEN (Found under Temporary Access Token or System Users)
+3. WHATSAPP_RECIPIENT_PHONE (Your bakery phone number in digits-only format, e.g., 15191234567)
+
+--------------------------------------------------------------------
+3. PASTE CREDENTIALS INTO ENVIRONMENT VARIABLES
+--------------------------------------------------------------------
+
+LOCAL DEVELOPMENT (.env.local):
+Paste the 3 copied values into your .env.local file:
+
+WHATSAPP_PHONE_NUMBER_ID=your_phone_number_id_here
+WHATSAPP_ACCESS_TOKEN=your_access_token_here
+WHATSAPP_RECIPIENT_PHONE=1519XXXXXXX
+
+PRODUCTION LIVE SITE (Vercel / Render Dashboard):
+1. Log in to your Vercel / Render Dashboard.
+2. Go to Project Settings -> Environment Variables.
+3. Add WHATSAPP_PHONE_NUMBER_ID, WHATSAPP_ACCESS_TOKEN, and WHATSAPP_RECIPIENT_PHONE.
+4. Trigger a fresh redeploy.
+
+--------------------------------------------------------------------
+4. WHAT THE WHATSAPP ALERT LOOKS LIKE
+--------------------------------------------------------------------
+Once set up, whenever a customer orders on the website, your WhatsApp will receive:
+
+🍰 NEW CK CAKE LOUNGE ORDER! 🍰
+
+Receipt Ticket: #TICKET-8492
+Customer: Jane Doe
+Phone: 519-555-0199
+Fulfillment: DELIVERY
+Date Needed: 2026-08-15 at 2:00 PM
+Delivery Address: 123 Evans Blvd, London, ON
+
+Items Ordered:
+• 1x Royal Golden Floral Wedding Cake (2-Tier - Vanilla Raspberry - Circle)
+• 2x Cupcake Box (Standard - Original)
+
+Total Paid: $185.00
+
+📷 Reference Photo: https://...supabase.co/storage/v1/object/public/cake-photos/custom-photo.jpg
+
+====================================================================
+Setup Complete!
+====================================================================
