@@ -38,6 +38,44 @@ export default async function Cakes({ searchParams }) {
           <Link href="/custom-designs" className={styles.tab}>Custom Designs Gallery</Link>
         </div>
 
+        {/* Premium Marketing Callout Banner for Custom Reference Photos */}
+        <div style={{
+          width: '100%',
+          maxWidth: '850px',
+          margin: '0 auto 3rem auto',
+          padding: '1.75rem 2rem',
+          borderRadius: '16px',
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.92) 0%, rgba(253,246,242,0.96) 100%)',
+          border: '1.5px dashed var(--accent)',
+          boxShadow: '0 10px 30px rgba(89, 53, 46, 0.08)',
+          textAlign: 'center',
+          backdropFilter: 'blur(10px)'
+        }}>
+          <div style={{ fontSize: '1.8rem', marginBottom: '0.4rem' }}>✨ 📸 🎨</div>
+          <h3 style={{ 
+            fontFamily: 'var(--font-playfair)', 
+            fontSize: '1.45rem', 
+            color: 'var(--primary)', 
+            marginBottom: '0.5rem',
+            fontWeight: '700'
+          }}>
+            Have a Specific Dream Design in Mind?
+          </h3>
+          <p style={{ 
+            color: '#6e5c54', 
+            fontSize: '1rem', 
+            lineHeight: '1.6', 
+            margin: '0 auto 1.2rem auto',
+            maxWidth: '680px'
+          }}>
+            Bring your vision to life! You can upload any reference photo, Pinterest inspiration, or custom sketch when customizing your cake size below or via our direct quote request form.
+          </p>
+          <Link href="/custom-quote" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.7rem 1.8rem' }}>
+            <span>Upload Reference Photo & Get Quote</span>
+            <span>&rarr;</span>
+          </Link>
+        </div>
+
         {search && (
           <div style={{ marginBottom: '2rem', textAlign: 'center', fontFamily: 'var(--font-heading)' }}>
             <p style={{ color: '#66554d', fontSize: '1.1rem' }}>
@@ -60,6 +98,9 @@ export default async function Cakes({ searchParams }) {
                 />
               </div>
               <div className={styles.cardContent}>
+                <span style={{ display: 'inline-block', fontSize: '0.78rem', fontWeight: '700', color: 'var(--primary)', background: 'var(--rose-light)', border: '1px solid var(--accent-light)', padding: '3px 10px', borderRadius: '12px', marginBottom: '0.5rem' }}>
+                  📷 Reference Photo Upload Allowed
+                </span>
                 <h2>{product.name}</h2>
                 <p>{product.description}</p>
                 <Link href={`/product/${product.id}`} className="btn-primary" style={{ background: 'var(--rose)', borderColor: 'var(--rose)' }}>
