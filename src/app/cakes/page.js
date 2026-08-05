@@ -84,27 +84,34 @@ export default async function Cakes({ searchParams }) {
         )}
 
         <div className={styles.grid}>
-          {products && products.map((product) => (
-            <div key={product.id} className={`glass-panel ${styles.card}`}>
-              <div className={styles.imagePlaceholder}>
-                <img 
-                  src={product.image_url || '/custom-cake-single.jpg'} 
-                  alt={product.name} 
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                />
+          {products && products.map((product) => {
+            const lowerName = (product.name || '').toLowerCase();
+            const match = lowerName.match(/(\d+(\.\d+)?)/);
+            const num = match ? parseFloat(match[1]) : null;
+            const isTiered = lowerName.includes('6 lb') || lowerName.includes('7 lb') || lowerName.includes('6lb') || lowerName.includes('7lb') || lowerName.includes('tier') || (num && num >= 6);
+            const cardImg = product.image_url || (isTiered ? '/custom-cake-tiered.jpg' : '/custom-cake-single.jpg');
+
+            return (
+              <div key={product.id} className={`glass-panel ${styles.card}`}>
+                <div className={styles.imagePlaceholder}>
+                  <img 
+                    src={cardImg} 
+                    alt={product.name} 
+                  />
+                </div>
+                <div className={styles.cardContent}>
+                  <span style={{ display: 'inline-block', fontSize: '0.78rem', fontWeight: '700', color: 'var(--primary)', background: 'var(--rose-light)', border: '1px solid var(--accent-light)', padding: '3px 10px', borderRadius: '12px', marginBottom: '0.5rem' }}>
+                    📷 Reference Photo Upload Allowed
+                  </span>
+                  <h2>{product.name}</h2>
+                  <p>{product.description}</p>
+                  <Link href={`/product/${product.id}`} className="btn-primary" style={{ background: 'var(--rose)', borderColor: 'var(--rose)' }}>
+                    Starts at ${product.price}
+                  </Link>
+                </div>
               </div>
-              <div className={styles.cardContent}>
-                <span style={{ display: 'inline-block', fontSize: '0.78rem', fontWeight: '700', color: 'var(--primary)', background: 'var(--rose-light)', border: '1px solid var(--accent-light)', padding: '3px 10px', borderRadius: '12px', marginBottom: '0.5rem' }}>
-                  📷 Reference Photo Upload Allowed
-                </span>
-                <h2>{product.name}</h2>
-                <p>{product.description}</p>
-                <Link href={`/product/${product.id}`} className="btn-primary" style={{ background: 'var(--rose)', borderColor: 'var(--rose)' }}>
-                  Starts at ${product.price}
-                </Link>
-              </div>
-            </div>
-          ))}
+            );
+          })}
           {(!products || products.length === 0) && (
             <div style={{ textAlign: 'center', width: '100%', padding: '3rem 0', gridColumn: '1 / -1' }}>
               <p style={{ fontSize: '1.1rem', color: '#66554d', marginBottom: '1rem' }}>No custom cakes found matching your search.</p>
