@@ -364,6 +364,26 @@ export async function POST(req) {
         console.error("Failed to send Resend email:", e);
       }
 
+      // 📱 Trigger Automated Meta WhatsApp Cloud Alert (if configured)
+      try {
+        const photoItem = cartItems.find(i => i.photoUrl || i.displayImage);
+        const firstPhotoUrl = photoItem ? (photoItem.photoUrl || photoItem.displayImage) : null;
+        await sendWhatsAppCloudAlert({
+          receiptId,
+          customerName: `${safeFirstName} ${safeLastName}`,
+          phone: safePhone,
+          orderType,
+          fulfillmentDate: formData.date,
+          fulfillmentTime: formData.time,
+          items: cartItems,
+          amount,
+          photoUrl: firstPhotoUrl,
+          address: orderType === 'delivery' ? `${safeAddress}, ${safeCity}, ${safePostalCode}` : null
+        });
+      } catch (waErr) {
+        console.error("WhatsApp dispatch error:", waErr);
+      }
+
       return NextResponse.json({ success: true, paymentId, receiptId }, { status: 200 });
 
   } catch (error) {
@@ -380,5 +400,70 @@ export async function POST(req) {
     }
     
     return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
+  }
+}
+
+// 📱 Automated Meta WhatsApp Cloud API Helper
+async function sendWhatsAppCloudAlert({
+  receiptId,
+  customerName,
+  phone,
+  orderType,
+  fulfillmentDate,
+  fulfillmentTime,
+  items,
+  amount,
+  photoUrl,
+  address
+}) {
+  const token = process.env.WHATSAPP_ACCESS_TOKEN;
+  const phoneId = process.env.WHATSAPP_PHONE_NUMBER_ID;
+  const recipient = process.env.WHATSAPP_RECIPIENT_PHONE;
+
+  if (!token || !phoneId || !recipient) {
+    // Silently skip if keys are not set up yet
+    return;
+  }
+
+  try {
+    const itemListStr = items
+      .map(i => `• ${i.quantity}x ${i.name} (${i.size || 'Standard'}${i.flavor ? ' - ' + i.flavor : ''}${i.shape ? ' - ' + i.shape : ''})`)
+      .join('\n');
+
+    let textBody = `🍰 *NEW CK CAKE LOUNGE ORDER!* 🍰\n\n` +
+      `*Receipt Ticket:* #${receiptId}\n` +
+      `*Customer:* ${customerName}\n` +
+      `*Phone:* ${phone}\n` +
+      `*Fulfillment:* ${orderType.toUpperCase()}\n` +
+      `*Date Needed:* ${fulfillmentDate} at ${fulfillmentTime}\n`;
+
+    if (orderType === 'delivery' && address) {
+      textBody += `*Delivery Address:* ${address}\n`;
+    }
+
+    textBody += `\n*Items Ordered:*\n${itemListStr}\n\n` +
+      `*Total Paid:* $${Number(amount).toFixed(2)}`;
+
+    if (photoUrl) {
+      textBody += `\n\n📷 *Reference Photo:* ${photoUrl}`;
+    }
+
+    const cleanRecipient = recipient.replace(/[^0-9]/g, '');
+
+    await fetch(`https://graph.facebook.com/v20.0/${phoneId}/messages`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        messaging_product: 'whatsapp',
+        to: cleanRecipient,
+        type: 'text',
+        text: { body: textBody }
+      })
+    });
+  } catch (err) {
+    console.error("Failed to send WhatsApp Cloud API alert:", err);
   }
 }
