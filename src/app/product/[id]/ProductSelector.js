@@ -153,13 +153,13 @@ export default function ProductSelector({ product, variants }) {
       <div className={styles.imageColumn}>
          <div 
            className={styles.imagePlaceholder}
-           style={{ position: 'relative', overflow: 'hidden', padding: 0, backgroundColor: '#ececee' }}
+           style={{ position: 'relative', overflow: 'hidden', padding: 0 }}
          >
            {displayImage ? (
              <img 
                src={displayImage} 
                alt={product.name} 
-               style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center', display: 'block', position: 'absolute', inset: 0 }} 
+               style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block', position: 'absolute', inset: 0 }} 
              />
            ) : null}
          </div>
