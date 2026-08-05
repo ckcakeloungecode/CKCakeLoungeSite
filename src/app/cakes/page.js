@@ -65,15 +65,11 @@ export default async function Cakes({ searchParams }) {
             color: '#6e5c54', 
             fontSize: '1rem', 
             lineHeight: '1.6', 
-            margin: '0 auto 1.2rem auto',
+            margin: '0 auto',
             maxWidth: '680px'
           }}>
-            Bring your vision to life! You can upload any reference photo, Pinterest inspiration, or custom sketch when customizing your cake size below or via our direct quote request form.
+            Bring your vision to life! Simply select your preferred cake size below to customize your flavor and upload your reference photo, Pinterest inspiration, or custom sketch directly.
           </p>
-          <Link href="/custom-quote" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.7rem 1.8rem' }}>
-            <span>Upload Reference Photo & Get Quote</span>
-            <span>&rarr;</span>
-          </Link>
         </div>
 
         {search && (
