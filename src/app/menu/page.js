@@ -56,20 +56,35 @@ export default async function Menu({ searchParams }) {
         )}
 
         <div className={styles.grid}>
-          {products && products.map((product) => (
-            <div key={product.id} className={`glass-panel ${styles.card}`}>
-              <div className={styles.imagePlaceholder}>
-                 {/* Once you have real photos, an <img /> tag goes here */}
+          {products && products.map((product) => {
+            const cardImg = product.image_url || (product.name.toLowerCase().includes('cupcake') ? '/cupcakes.jpg' : null);
+
+            return (
+              <div key={product.id} className={`glass-panel ${styles.card}`}>
+                <div className={styles.imagePlaceholder} style={{ position: 'relative', overflow: 'hidden', padding: 0 }}>
+                  {cardImg ? (
+                    <img 
+                      src={cardImg} 
+                      alt={product.name} 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block', position: 'absolute', inset: 0 }}
+                    />
+                  ) : (
+                    <div style={{ padding: '2rem', textAlign: 'center', color: '#8c766b' }}>
+                      <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '0.5rem' }}>🧁</span>
+                      <span style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>{product.name}</span>
+                    </div>
+                  )}
+                </div>
+                <div className={styles.cardContent}>
+                  <h2>{product.name}</h2>
+                  <p>{product.description}</p>
+                  <Link href={`/product/${product.id}`} className="btn-primary">
+                    Customize
+                  </Link>
+                </div>
               </div>
-              <div className={styles.cardContent}>
-                <h2>{product.name}</h2>
-                <p>{product.description}</p>
-                <Link href={`/product/${product.id}`} className="btn-primary">
-                  Customize
-                </Link>
-              </div>
-            </div>
-          ))}
+            );
+          })}
           {(!products || products.length === 0) && (
             <div style={{ textAlign: 'center', width: '100%', padding: '3rem 0', gridColumn: '1 / -1' }}>
               <p style={{ fontSize: '1.1rem', color: '#66554d', marginBottom: '1rem' }}>No products found matching your search.</p>
