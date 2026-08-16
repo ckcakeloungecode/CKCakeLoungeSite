@@ -534,8 +534,9 @@
   }
 
   .imageFrame {
-    width: 320px;
-    height: 400px;
+    width: 100%;
+    max-width: 320px;
+    height: 380px;
   }
   
   .bubblesRow {

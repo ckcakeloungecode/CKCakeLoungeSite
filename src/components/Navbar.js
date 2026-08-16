@@ -14,6 +14,7 @@ export default function Navbar() {
   const { toggleCart, cartCount, isLoaded } = useCart();
   const { user, signOut } = useAuth();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const router = useRouter();
   
   // Search and autocomplete suggestions state
@@ -66,12 +67,14 @@ export default function Navbar() {
     setSearchQuery('');
     setSuggestions([]);
     setShowSuggestions(false);
+    setMobileMenuOpen(false);
     router.push(`/product/${product.id}`);
   };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     setShowSuggestions(false);
+    setMobileMenuOpen(false);
     if (searchQuery.trim()) {
       router.push(`/menu?search=${encodeURIComponent(searchQuery.trim())}`);
     } else {
@@ -113,14 +116,52 @@ export default function Navbar() {
     };
   }, []);
 
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+    setDropdownOpen(false);
+  };
+
   return (
     <header className={styles.header}>
       {/* Main Navigation */}
       <nav className={styles.navbar}>
         <div className={`container ${styles.navContainer}`}>
-          <Link href="/" className={styles.logo}>
-            CK Cake Lounge
-          </Link>
+          
+          {/* Top Row Header Bar */}
+          <div className={styles.navTopRow}>
+            <Link href="/" className={styles.logo} onClick={closeMobileMenu}>
+              CK Cake Lounge
+            </Link>
+
+            <div className={styles.navActions}>
+              {/* Cart Icon */}
+              <button 
+                className={cartStyles.cartToggleBtn} 
+                onClick={toggleCart} 
+                aria-label="Open Cart" 
+                type="button"
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="9" cy="21" r="1"></circle>
+                  <circle cx="20" cy="21" r="1"></circle>
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                {isLoaded && cartCount > 0 && (
+                  <span className={cartStyles.cartBadge}>{cartCount}</span>
+                )}
+              </button>
+
+              {/* Hamburger Menu Button for Mobile */}
+              <button
+                className={styles.hamburgerBtn}
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Toggle navigation menu"
+                type="button"
+              >
+                {mobileMenuOpen ? '✕' : '☰'}
+              </button>
+            </div>
+          </div>
 
           {/* Dynamic Search Bar */}
           <form onSubmit={handleSearchSubmit} className={styles.searchForm} ref={searchRef}>
@@ -156,8 +197,9 @@ export default function Navbar() {
             </div>
           </form>
 
-          <div className={styles.navLinks}>
-            <Link href="/" className={styles.navLink}>
+          {/* Navigation Links */}
+          <div className={`${styles.navLinks} ${mobileMenuOpen ? styles.mobileMenuOpen : ''}`}>
+            <Link href="/" className={styles.navLink} onClick={closeMobileMenu}>
               Home
             </Link>
 
@@ -175,32 +217,32 @@ export default function Navbar() {
                 Our Products <span className={styles.dropdownArrow}>▼</span>
               </button>
               <div className={`${styles.dropdownMenu} ${dropdownOpen ? styles.showDropdown : ''}`}>
-                <Link href="/menu" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                <Link href="/menu" className={styles.dropdownItem} onClick={closeMobileMenu}>
                   Everyday Treats
                 </Link>
-                <Link href="/ready-to-go-cakes" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                <Link href="/ready-to-go-cakes" className={styles.dropdownItem} onClick={closeMobileMenu}>
                   Ready to Go Cakes
                 </Link>
-                <Link href="/cakes" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                <Link href="/cakes" className={styles.dropdownItem} onClick={closeMobileMenu}>
                   Custom Cakes
                 </Link>
-                <Link href="/international-flavors" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                <Link href="/international-flavors" className={styles.dropdownItem} onClick={closeMobileMenu}>
                   International Flavors
                 </Link>
-                <Link href="/special-cakes" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                <Link href="/special-cakes" className={styles.dropdownItem} onClick={closeMobileMenu}>
                   Special Cakes
                 </Link>
-                <Link href="/custom-designs" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
+                <Link href="/custom-designs" className={styles.dropdownItem} onClick={closeMobileMenu}>
                   Custom Design Gallery
                 </Link>
               </div>
             </div>
 
-            <Link href="/about" className={styles.navLink}>
+            <Link href="/about" className={styles.navLink} onClick={closeMobileMenu}>
               About Us
             </Link>
 
-            <Link href="/special-events" className={`${styles.navLink} ${styles.specialLink}`}>
+            <Link href="/special-events" className={`${styles.navLink} ${styles.specialLink}`} onClick={closeMobileMenu}>
               Events
             </Link>
             
@@ -209,28 +251,16 @@ export default function Navbar() {
               user ? (
                 <div className={styles.userMenu}>
                   <span className={styles.userName}>Hi, {user.user_metadata?.first_name || 'User'}</span>
-                  <button onClick={signOut} className={styles.logoutBtn} type="button">
+                  <button onClick={() => { signOut(); closeMobileMenu(); }} className={styles.logoutBtn} type="button">
                     Sign Out
                   </button>
                 </div>
               ) : (
-                <button onClick={() => setIsAuthModalOpen(true)} className={styles.loginBtn} type="button">
+                <button onClick={() => { setIsAuthModalOpen(true); closeMobileMenu(); }} className={styles.loginBtn} type="button">
                   Log In
                 </button>
               )
             )}
-
-            {/* Cart Icon */}
-            <button className={cartStyles.cartToggleBtn} onClick={toggleCart} aria-label="Open Cart" type="button">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="9" cy="21" r="1"></circle>
-                <circle cx="20" cy="21" r="1"></circle>
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-              </svg>
-              {isLoaded && cartCount > 0 && (
-                <span className={cartStyles.cartBadge}>{cartCount}</span>
-              )}
-            </button>
           </div>
         </div>
       </nav>
