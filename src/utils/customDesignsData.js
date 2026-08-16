@@ -11,6 +11,7 @@ export const ALL_CUSTOM_SIZES = [
 
 // Universal Custom Cake Flavors matching the Custom Cakes catalog
 export const ALL_CUSTOM_FLAVORS = [
+  'Mango Rasmalai',
   'Classic Vanilla',
   'Velvety Chocolate',
   'Red Velvet',
@@ -35,8 +36,30 @@ export const ALL_CUSTOM_FLAVORS = [
   'Carrot Cream Cheese'
 ];
 
-// Pre-configured custom design showcase collection with placeholders ready for owner images
+// Pre-configured custom design showcase collection
 export const CUSTOM_DESIGNS = [
+  {
+    id: 'design-mango-rasmalai',
+    title: 'Mango Rasmalai Fusion Celebration Cake',
+    category: 'Fusion Cakes',
+    startingPrice: 50,
+    themeMessage: 'Authentic saffron & cardamom sponge layered with rich mango cream, rasmalai, and roasted pistachios!',
+    defaultSize: '2 LB (Serves 10-13)',
+    leadTime: '2 Days Notice',
+    imageUrl: '/designs/mango-rasmalai.jpg',
+    placeholderCode: 'mango-rasmalai.jpg'
+  },
+  {
+    id: 'design-7',
+    title: 'Royal Indian Fusion Gulab Jamun Festive Cake',
+    category: 'Fusion Cakes',
+    startingPrice: 50,
+    themeMessage: 'Cardamom & saffron sponge layered with authentic gulab jamun and pistachios.',
+    defaultSize: '2 LB (Serves 10-13)',
+    leadTime: '2 Days Notice',
+    imageUrl: '',
+    placeholderCode: 'gulab-jamun-fusion.jpg'
+  },
   {
     id: 'design-jurassic',
     title: 'Jurassic World Dinosaur Birthday Cake',
@@ -113,22 +136,12 @@ export const CUSTOM_DESIGNS = [
     leadTime: '3 Days Notice',
     imageUrl: '',
     placeholderCode: 'woodland-bear.jpg'
-  },
-  {
-    id: 'design-7',
-    title: 'Royal Indian Fusion Gulab Jamun Festive Cake',
-    category: 'Festive Cakes',
-    startingPrice: 50,
-    themeMessage: 'Cardamom & saffron sponge layered with authentic gulab jamun and pistachios.',
-    defaultSize: '2 LB (Serves 10-13)',
-    leadTime: '2 Days Notice',
-    imageUrl: '',
-    placeholderCode: 'gulab-jamun-fusion.jpg'
   }
 ];
 
 export const CATEGORIES = [
   'All Designs',
+  'Fusion Cakes',
   'Wedding & Anniversary',
   'Birthday Celebrations',
   'Baby Shower & Kids',
