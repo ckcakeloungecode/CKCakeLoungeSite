@@ -3,7 +3,6 @@
 import { useState, useMemo, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { supabase } from '../../../utils/supabaseClient';
 import { CUSTOM_DESIGNS, ALL_CUSTOM_SIZES, ALL_CUSTOM_FLAVORS } from '../../../utils/customDesignsData';
 import styles from '../../product/[id]/page.module.css';
 
@@ -19,10 +18,6 @@ export default function CustomDesignDetailPage({ params }) {
   const [selectedSize, setSelectedSize] = useState(design?.defaultSize || ALL_CUSTOM_SIZES[1].label);
   const [selectedFlavor, setSelectedFlavor] = useState(ALL_CUSTOM_FLAVORS[0]);
   const [quantity, setQuantity] = useState(1);
-
-  const [isPhotoCake, setIsPhotoCake] = useState(false);
-  const [photoFile, setPhotoFile] = useState(null);
-  const [isUploading, setIsUploading] = useState(false);
 
   // Dynamic price calculation based on selected size
   const sizeObj = useMemo(() => {
@@ -56,28 +51,7 @@ export default function CustomDesignDetailPage({ params }) {
     );
   }
 
-  const handleGetQuote = async () => {
-    let finalPhotoUrl = design.imageUrl || null;
-
-    if (isPhotoCake && photoFile) {
-      setIsUploading(true);
-      const fileExt = photoFile.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const { data, error } = await supabase.storage
-        .from('cake_photos')
-        .upload(fileName, photoFile);
-
-      if (error) {
-        alert("Failed to upload reference photo. Please try again.");
-        setIsUploading(false);
-        return;
-      }
-
-      const { data: publicData } = supabase.storage.from('cake_photos').getPublicUrl(fileName);
-      finalPhotoUrl = publicData.publicUrl;
-      setIsUploading(false);
-    }
-
+  const handleGetQuote = () => {
     const item = {
       productId: `custom-design-${design.id}`,
       variantId: null,
@@ -86,8 +60,8 @@ export default function CustomDesignDetailPage({ params }) {
       flavor: selectedFlavor,
       price: displayPrice,
       quantity: quantity,
-      isPhotoCake: isPhotoCake,
-      photoUrl: finalPhotoUrl,
+      isPhotoCake: false,
+      photoUrl: design.imageUrl || null,
       displayImage: displayImage,
       category: 'Cakes',
       designCategory: design.category,
@@ -128,7 +102,7 @@ export default function CustomDesignDetailPage({ params }) {
                 Starts from ${formattedDisplayPrice}
               </h2>
 
-              {/* Size & Flavor Options Grid matching Image 3 */}
+              {/* Size & Flavor Options Grid */}
               <div className={styles.optionsGrid}>
                 {/* Size Dropdown */}
                 <div className={styles.optionGroup}>
@@ -159,37 +133,8 @@ export default function CustomDesignDetailPage({ params }) {
                 </div>
               </div>
 
-              {/* Reference Photo Upload Checkbox */}
-              <div className={styles.photoToggle}>
-                <label>
-                  <input 
-                    type="checkbox" 
-                    checked={isPhotoCake} 
-                    onChange={(e) => {
-                      setIsPhotoCake(e.target.checked);
-                      if (!e.target.checked) setPhotoFile(null);
-                    }} 
-                  />
-                  <span> 📷 Upload reference design photo (Free)</span>
-                </label>
-
-                {isPhotoCake && (
-                  <div style={{ marginTop: '10px', padding: '12px', border: '1px dashed #c4b6b0', borderRadius: '8px', background: 'rgba(255,255,255,0.5)' }}>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: '#6b5a52', fontWeight: 'bold' }}>
-                      Upload High-Res Photo (Optional)
-                    </label>
-                    <input 
-                      type="file" 
-                      accept="image/*" 
-                      onChange={(e) => setPhotoFile(e.target.files[0])}
-                      style={{ fontSize: '0.85rem', width: '100%' }}
-                    />
-                  </div>
-                )}
-              </div>
-
               {/* Action Row: Quantity + Get Quote button */}
-              <div className={styles.actionRow}>
+              <div className={styles.actionRow} style={{ marginTop: '2rem' }}>
                 <div className={styles.quantityControl}>
                   <button type="button" onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</button>
                   <span>{quantity}</span>
@@ -200,10 +145,9 @@ export default function CustomDesignDetailPage({ params }) {
                   type="button"
                   className={`btn-primary ${styles.addToCartBtn}`}
                   onClick={handleGetQuote}
-                  disabled={isUploading}
                   style={{ background: '#543b32', borderColor: '#543b32' }}
                 >
-                  {isUploading ? "Uploading Photo..." : "Get Quote"}
+                  Get Quote
                 </button>
               </div>
             </div>

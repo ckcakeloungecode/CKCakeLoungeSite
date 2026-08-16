@@ -85,19 +85,6 @@ export default function CustomDesignsGallery() {
 
                 {/* Card Details */}
                 <div className={styles.cardContent}>
-                  <span style={{ 
-                    display: 'inline-block', 
-                    fontSize: '0.78rem', 
-                    fontWeight: '700', 
-                    color: 'var(--primary)', 
-                    background: 'var(--rose-light)', 
-                    border: '1px solid var(--accent-light)', 
-                    padding: '3px 10px', 
-                    borderRadius: '12px', 
-                    marginBottom: '0.5rem' 
-                  }}>
-                    📷 Reference Photo Upload Allowed
-                  </span>
                   <h2 className={styles.cardTitle}>{design.title}</h2>
                   <p className={styles.description}>
                     {design.themeMessage}
