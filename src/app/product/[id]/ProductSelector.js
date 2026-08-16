@@ -214,20 +214,7 @@ export default function ProductSelector({ product, variants }) {
             </div>
           )}
 
-          {isCakeCategory && (
-            <div className={styles.optionGroup}>
-              <label>Cake Shape</label>
-              <select 
-                value={selectedShape} 
-                onChange={(e) => setSelectedShape(e.target.value)}
-                className={styles.dropdown}
-              >
-                <option value="Circle">Circle (Round)</option>
-                <option value="Square">Square</option>
-                <option value="Heart">Heart</option>
-              </select>
-            </div>
-          )}
+
         </div>
       )}
 

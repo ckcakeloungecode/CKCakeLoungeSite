@@ -5,17 +5,51 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import styles from './page.module.css';
 
+// Universal Custom Cake Sizes & Tier Prices matching the Custom Cakes database catalog
+const ALL_CUSTOM_SIZES = [
+  { label: '1 LB (Serves 5-7)', price: 30 },
+  { label: '2 LB (Serves 10-13)', price: 50 },
+  { label: '3 LB (Serves 15-22)', price: 85 },
+  { label: '4 LB (Serves 25-35)', price: 115 },
+  { label: '5 LB (Serves 35-45)', price: 145 },
+  { label: '6 LB 2-Tier (Serves 50-60)', price: 175 },
+  { label: '7 LB 2-Tier (Serves 65-80)', price: 205 },
+];
+
+// Universal Custom Cake Flavors matching the Custom Cakes database catalog
+const ALL_CUSTOM_FLAVORS = [
+  'Classic Vanilla',
+  'Velvety Chocolate',
+  'Red Velvet',
+  'Marble Fudge',
+  'Tiramisu',
+  'Dark Chocolate Truffle',
+  'Oreo Crunch',
+  'Lotus Biscoff',
+  'Butterscotch',
+  'Pistachio',
+  'Meetha Paan',
+  'Rainbow',
+  'Rasmalai Bliss',
+  'Gulab Jamun',
+  'Mango',
+  'Tropical Pineapple',
+  'Caramel',
+  'Coconut',
+  'Garden Strawberry',
+  'Blueberry',
+  'Mix Fruit',
+  'Carrot Cream Cheese'
+];
+
 // Pre-configured custom design showcase collection with placeholders ready for owner images
 const CUSTOM_DESIGNS = [
   {
     id: 'design-jurassic',
     title: 'Jurassic World Dinosaur Birthday Cake',
     category: 'Birthday Celebrations',
-    startingPrice: 110,
     themeMessage: 'Roar into your next celebration with an epic Jurassic World dinosaur adventure theme!',
-    defaultSize: '2 Pound (Serves 10-12)',
-    availableSizes: ['1.5 Pound (Serves 6-8)', '2 Pound (Serves 10-12)', '3 Pound (Serves 15-18)', '2-Tier (Serves 20-25)'],
-    availableFlavors: ['Vanilla Bean', 'Chocolate Fudge', 'Red Velvet', 'Strawberry Delight'],
+    defaultSize: '2 LB (Serves 10-13)',
     leadTime: '2 Days Notice',
     imageUrl: '/designs/jurassic-world.jpg',
     placeholderCode: 'jurassic-world.jpg'
@@ -24,11 +58,8 @@ const CUSTOM_DESIGNS = [
     id: 'design-2',
     title: 'Minimalist Pastel Macaron Drip Birthday Cake',
     category: 'Birthday Celebrations',
-    startingPrice: 85,
     themeMessage: 'Chic pastel buttercream swirls topped with delicate macarons and chocolate pearls.',
-    defaultSize: '2 Pound (Serves 10-12)',
-    availableSizes: ['1.5 Pound (Serves 6-8)', '2 Pound (Serves 10-12)', '3 Pound (Serves 15-18)'],
-    availableFlavors: ['Strawberry Delight', 'Vanilla Bean', 'Chocolate Hazelnut', 'Mango Passion'],
+    defaultSize: '2 LB (Serves 10-13)',
     leadTime: '2 Days Notice',
     imageUrl: '',
     placeholderCode: 'pastel-drip.jpg'
@@ -37,11 +68,8 @@ const CUSTOM_DESIGNS = [
     id: 'design-3',
     title: 'Elegantly Piped Vintage Lambeth Birthday Cake',
     category: 'Birthday Celebrations',
-    startingPrice: 95,
     themeMessage: 'Retro-inspired piping with intricate ruffle borders and classic birthday charm.',
-    defaultSize: '2 Pound (Serves 10-12)',
-    availableSizes: ['1.5 Pound (Serves 6-8)', '2 Pound (Serves 10-12)', '3 Pound (Serves 15-18)'],
-    availableFlavors: ['Red Velvet', 'Black Forest', 'Vanilla Bean', 'Pineapple Delight'],
+    defaultSize: '2 LB (Serves 10-13)',
     leadTime: '2 Days Notice',
     imageUrl: '',
     placeholderCode: 'vintage-lambeth.jpg'
@@ -50,11 +78,8 @@ const CUSTOM_DESIGNS = [
     id: 'design-1',
     title: 'Royal Golden Floral Wedding Cake',
     category: 'Wedding & Anniversary',
-    startingPrice: 160,
     themeMessage: 'Luxury gold foil accents and sugar flowers crafted for memorable weddings & anniversaries.',
-    defaultSize: '2-Tier (Serves 20-25)',
-    availableSizes: ['2-Tier (Serves 20-25)', '3-Tier (Serves 40-50)', 'Single Tier (Serves 10-12)'],
-    availableFlavors: ['Vanilla Raspberry', 'Red Velvet', 'Carrot Cream Cheese', 'Chocolate Fudge'],
+    defaultSize: '6 LB 2-Tier (Serves 50-60)',
     leadTime: '3 Days Notice',
     imageUrl: '',
     placeholderCode: 'wedding-gold.jpg'
@@ -63,11 +88,8 @@ const CUSTOM_DESIGNS = [
     id: 'design-4',
     title: 'Enchanted Butterfly & Rose Celebration Cake',
     category: 'Baby Shower & Kids',
-    startingPrice: 110,
     themeMessage: 'Dreamy wafer butterflies and fresh floral crowns for baby showers & kids celebrations.',
-    defaultSize: '2-Tier (Serves 18-20)',
-    availableSizes: ['2 Pound (Serves 10-12)', '2-Tier (Serves 18-20)', '3-Tier (Serves 35-40)'],
-    availableFlavors: ['Vanilla Raspberry', 'Mango Mousse', 'Pistachio Kesar', 'Chocolate Fudge'],
+    defaultSize: '6 LB 2-Tier (Serves 50-60)',
     leadTime: '2 Days Notice',
     imageUrl: '',
     placeholderCode: 'butterfly-rose.jpg'
@@ -76,11 +98,8 @@ const CUSTOM_DESIGNS = [
     id: 'design-5',
     title: 'Nutella Chocolate Overload Festive Drip Cake',
     category: 'Festive Cakes',
-    startingPrice: 90,
     themeMessage: 'Decadent chocolate ganache drip loaded with Ferrero Rocher and hazelnut cream.',
-    defaultSize: '2 Pound (Serves 10-12)',
-    availableSizes: ['1.5 Pound (Serves 6-8)', '2 Pound (Serves 10-12)', '3 Pound (Serves 15-18)'],
-    availableFlavors: ['Chocolate Fudge', 'Nutella Crunch', 'Ferrero Chocolate', 'Black Forest'],
+    defaultSize: '2 LB (Serves 10-13)',
     leadTime: '2 Days Notice',
     imageUrl: '',
     placeholderCode: 'chocolate-overload.jpg'
@@ -89,11 +108,8 @@ const CUSTOM_DESIGNS = [
     id: 'design-6',
     title: 'Whimsical Woodland & Teddy Bear Cake',
     category: 'Baby Shower & Kids',
-    startingPrice: 130,
     themeMessage: 'Hand-sculpted teddy bear and soft pastel clouds perfect for 1st birthdays & baby showers.',
-    defaultSize: '2-Tier (Serves 20-25)',
-    availableSizes: ['2 Pound (Serves 10-12)', '2-Tier (Serves 20-25)'],
-    availableFlavors: ['Vanilla Bean', 'Butterscotch', 'Carrot Cream Cheese', 'Strawberry'],
+    defaultSize: '6 LB 2-Tier (Serves 50-60)',
     leadTime: '3 Days Notice',
     imageUrl: '',
     placeholderCode: 'woodland-bear.jpg'
@@ -102,11 +118,8 @@ const CUSTOM_DESIGNS = [
     id: 'design-7',
     title: 'Royal Indian Fusion Gulab Jamun Festive Cake',
     category: 'Festive Cakes',
-    startingPrice: 105,
     themeMessage: 'Cardamom & saffron sponge layered with authentic gulab jamun and pistachios.',
-    defaultSize: '2 Pound (Serves 10-12)',
-    availableSizes: ['1.5 Pound (Serves 6-8)', '2 Pound (Serves 10-12)', '3 Pound (Serves 15-18)'],
-    availableFlavors: ['Kesar Pista', 'Gulab Jamun Fusion', 'Rasmalai Delight', 'Paan Kulfi'],
+    defaultSize: '2 LB (Serves 10-13)',
     leadTime: '2 Days Notice',
     imageUrl: '',
     placeholderCode: 'gulab-jamun-fusion.jpg'
@@ -131,8 +144,8 @@ export default function CustomDesignsGallery() {
     const initial = {};
     CUSTOM_DESIGNS.forEach(d => {
       initial[d.id] = {
-        size: d.defaultSize,
-        flavor: d.availableFlavors[0]
+        size: d.defaultSize || '2 LB (Serves 10-13)',
+        flavor: ALL_CUSTOM_FLAVORS[0]
       };
     });
     return initial;
@@ -153,16 +166,19 @@ export default function CustomDesignsGallery() {
     const matchesCategory = selectedCategory === 'All Designs' || design.category === selectedCategory;
     const matchesSearch = !searchQuery.trim() || 
       design.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      design.description.toLowerCase().includes(searchQuery.toLowerCase());
+      (design.themeMessage && design.themeMessage.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesCategory && matchesSearch;
   });
 
   // Handle direct order / quote request for a specific design
   const handleOrderDesign = (design) => {
     const choices = selectedChoices[design.id] || {
-      size: design.defaultSize,
-      flavor: design.availableFlavors[0]
+      size: design.defaultSize || '2 LB (Serves 10-13)',
+      flavor: ALL_CUSTOM_FLAVORS[0]
     };
+
+    const sizeObj = ALL_CUSTOM_SIZES.find(s => s.label === choices.size) || ALL_CUSTOM_SIZES[1];
+    const currentPrice = sizeObj ? sizeObj.price : 50;
 
     const quoteItem = {
       productId: `custom-design-${design.id}`,
@@ -170,7 +186,7 @@ export default function CustomDesignsGallery() {
       name: design.title,
       size: choices.size,
       flavor: choices.flavor,
-      price: design.startingPrice,
+      price: currentPrice,
       quantity: 1,
       isPhotoCake: false,
       photoUrl: design.imageUrl || null,
@@ -232,9 +248,12 @@ export default function CustomDesignsGallery() {
         <div className={styles.grid}>
           {filteredDesigns.map((design) => {
             const currentChoice = selectedChoices[design.id] || {
-              size: design.defaultSize,
-              flavor: design.availableFlavors[0]
+              size: design.defaultSize || '2 LB (Serves 10-13)',
+              flavor: ALL_CUSTOM_FLAVORS[0]
             };
+
+            const sizeObj = ALL_CUSTOM_SIZES.find(s => s.label === currentChoice.size) || ALL_CUSTOM_SIZES[1];
+            const currentPrice = sizeObj ? sizeObj.price : 50;
 
             return (
               <div key={design.id} className={styles.card}>
@@ -258,36 +277,36 @@ export default function CustomDesignsGallery() {
                 <div className={styles.cardContent}>
                   <div className={styles.cardHeader}>
                     <h2 className={styles.cardTitle}>{design.title}</h2>
-                    <span className={styles.priceTag}>Starts ${design.startingPrice}</span>
+                    <span className={styles.priceTag}>Starts ${currentPrice}</span>
                   </div>
 
                   <p className={styles.description}>
-                    {design.themeMessage || design.description}
+                    {design.themeMessage}
                   </p>
 
                   {/* Size Dropdown */}
                   <div className={styles.selectorGroup}>
-                    <label className={styles.selectorLabel}>Select Preferred Size</label>
+                    <label className={styles.selectorLabel}>SELECT PREFERRED SIZE</label>
                     <select
                       value={currentChoice.size}
                       onChange={(e) => handleChoiceChange(design.id, 'size', e.target.value)}
                       className={styles.dropdown}
                     >
-                      {design.availableSizes.map(sz => (
-                        <option key={sz} value={sz}>{sz}</option>
+                      {ALL_CUSTOM_SIZES.map(sz => (
+                        <option key={sz.label} value={sz.label}>{sz.label}</option>
                       ))}
                     </select>
                   </div>
 
                   {/* Flavor Dropdown */}
                   <div className={styles.selectorGroup}>
-                    <label className={styles.selectorLabel}>Select Cake Flavor</label>
+                    <label className={styles.selectorLabel}>SELECT CAKE FLAVOR</label>
                     <select
                       value={currentChoice.flavor}
                       onChange={(e) => handleChoiceChange(design.id, 'flavor', e.target.value)}
                       className={styles.dropdown}
                     >
-                      {design.availableFlavors.map(fl => (
+                      {ALL_CUSTOM_FLAVORS.map(fl => (
                         <option key={fl} value={fl}>{fl}</option>
                       ))}
                     </select>
