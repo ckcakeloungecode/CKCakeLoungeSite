@@ -1,0 +1,33 @@
+import fs from 'fs';
+
+// Perfectly centered, high-resolution 512x512 luxury circular emblem favicon
+const svgCircleContent = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Luxury dark chocolate circular badge -->
+  <circle cx="256" cy="256" r="240" fill="#4a2c1d"/>
+  <circle cx="256" cy="256" r="222" fill="none" stroke="#d49a46" stroke-width="8"/>
+  
+  <!-- Optically & mathematically centered CK Monogram -->
+  <text 
+    x="256" 
+    y="262" 
+    font-family="Georgia, 'Playfair Display', 'Times New Roman', serif" 
+    font-size="220" 
+    font-weight="bold" 
+    fill="#f9e8ce" 
+    stroke="#d49a46" 
+    stroke-width="2"
+    text-anchor="middle" 
+    dominant-baseline="central"
+    letter-spacing="-6"
+  >CK</text>
+</svg>`;
+
+// Write to all Next.js favicon locations
+fs.writeFileSync('src/app/icon.svg', svgCircleContent, 'utf8');
+fs.writeFileSync('public/icon.svg', svgCircleContent, 'utf8');
+fs.writeFileSync('src/app/icon.png', svgCircleContent, 'utf8');
+fs.writeFileSync('public/icon.png', svgCircleContent, 'utf8');
+fs.writeFileSync('src/app/favicon.ico', svgCircleContent, 'utf8');
+fs.writeFileSync('public/favicon.ico', svgCircleContent, 'utf8');
+
+console.log('Successfully created perfectly centered luxury circular CK favicon!');
