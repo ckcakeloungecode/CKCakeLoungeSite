@@ -20,7 +20,7 @@ export default function CustomDesignsGallery() {
     setVisibleCount(12);
   };
 
-  // Filter designs based on category and search
+  // Filter and sort designs alphabetically based on title
   const filteredDesigns = CUSTOM_DESIGNS.filter(design => {
     const matchesCategory = selectedCategory === 'All Designs' || 
       design.category === selectedCategory || 
@@ -29,7 +29,7 @@ export default function CustomDesignsGallery() {
       design.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (design.themeMessage && design.themeMessage.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesCategory && matchesSearch;
-  });
+  }).sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }));
 
   const visibleDesigns = filteredDesigns.slice(0, visibleCount);
   const hasMore = visibleCount < filteredDesigns.length;
