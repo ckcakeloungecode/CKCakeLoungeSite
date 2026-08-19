@@ -239,11 +239,23 @@ export default async function Home() {
               ? '/ready-to-go-cakes' 
               : `/product/${product.id}`;
 
+            const cardImg = product.image_url || ((nameLower.includes('jamun') || nameLower.includes('gulab')) ? '/gulab-jamun-cake.jpg' : (nameLower.includes('mango') ? '/mango-cake.jpg' : ((nameLower.includes('ras') || nameLower.includes('rasmalai')) ? '/rasmalai-cake.jpg' : null)));
+
             return (
               <div key={product.id} className={`glass-panel ${styles.productCard}`}>
-                <div className={`${styles.imagePlaceholder} ${styles[nameLower.replace(/\s+/g, '')]}`}>
-                  <span className={styles.placeholderEmoji}>{emoji}</span>
-                  <span className={styles.placeholderText}>Photo Coming Soon</span>
+                <div className={styles.imagePlaceholder} style={{ position: 'relative', overflow: 'hidden', padding: 0 }}>
+                  {cardImg ? (
+                    <img 
+                      src={cardImg} 
+                      alt={product.name} 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block', position: 'absolute', inset: 0 }}
+                    />
+                  ) : (
+                    <div className={styles[nameLower.replace(/\s+/g, '')]} style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                      <span className={styles.placeholderEmoji}>{emoji}</span>
+                      <span className={styles.placeholderText}>Photo Coming Soon</span>
+                    </div>
+                  )}
                 </div>
                 <div className={styles.productCardContent}>
                   <h3>{product.name}</h3>
@@ -281,11 +293,23 @@ export default async function Home() {
               ? '/special-cakes' 
               : `/product/${product.id}`;
 
+            const cardImg = product.image_url || ((nameLower.includes('pinata') || nameLower.includes('piñata')) ? '/pinata-cake.jpg' : null);
+
             return (
               <div key={product.id} className={`glass-panel ${styles.productCard}`}>
-                <div className={`${styles.imagePlaceholder} ${styles[nameLower.replace(/\s+/g, '').replace(/ñ/g, 'n')]}`}>
-                  <span className={styles.placeholderEmoji}>{emoji}</span>
-                  <span className={styles.placeholderText}>Photo Coming Soon</span>
+                <div className={styles.imagePlaceholder} style={{ position: 'relative', overflow: 'hidden', padding: 0 }}>
+                  {cardImg ? (
+                    <img 
+                      src={cardImg} 
+                      alt={product.name} 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block', position: 'absolute', inset: 0 }}
+                    />
+                  ) : (
+                    <div className={styles[nameLower.replace(/\s+/g, '').replace(/ñ/g, 'n')]} style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                      <span className={styles.placeholderEmoji}>{emoji}</span>
+                      <span className={styles.placeholderText}>Photo Coming Soon</span>
+                    </div>
+                  )}
                 </div>
                 <div className={styles.productCardContent}>
                   <h3>{product.name}</h3>
@@ -334,11 +358,23 @@ export default async function Home() {
               ? '/international-flavors' 
               : `/product/${product.id}`;
 
+            const cardImg = product.image_url || null;
+
             return (
               <div key={product.id} className={`glass-panel ${styles.productCard}`}>
-                <div className={`${styles.imagePlaceholder} ${styles[nameLower.replace(/\s+/g, '')]}`}>
-                  <span className={styles.placeholderEmoji}>{emoji}</span>
-                  <span className={styles.placeholderText}>Photo Coming Soon</span>
+                <div className={styles.imagePlaceholder} style={{ position: 'relative', overflow: 'hidden', padding: 0 }}>
+                  {cardImg ? (
+                    <img 
+                      src={cardImg} 
+                      alt={product.name} 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block', position: 'absolute', inset: 0 }}
+                    />
+                  ) : (
+                    <div className={styles[nameLower.replace(/\s+/g, '')]} style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                      <span className={styles.placeholderEmoji}>{emoji}</span>
+                      <span className={styles.placeholderText}>Photo Coming Soon</span>
+                    </div>
+                  )}
                 </div>
                 <div className={styles.productCardContent}>
                   <h3>{product.name}</h3>
@@ -383,6 +419,10 @@ export default async function Home() {
           <Link href="/special-cakes" className={styles.bubbleCard}>
             <div className={styles.bubbleCircle}>✨</div>
             <span className={styles.bubbleLabel}>Special Cakes</span>
+          </Link>
+          <Link href="/custom-designs" className={styles.bubbleCard}>
+            <div className={styles.bubbleCircle}>🎨</div>
+            <span className={styles.bubbleLabel}>Signature Cake Designs</span>
           </Link>
         </div>
       </section>

@@ -16,18 +16,15 @@ export default function CustomDesignDetailPage({ params }) {
 
   // Selections state
   const [selectedSize, setSelectedSize] = useState(design?.defaultSize || ALL_CUSTOM_SIZES[1].label);
-  const [selectedFlavor, setSelectedFlavor] = useState(ALL_CUSTOM_FLAVORS[0]);
+  const [selectedFlavor, setSelectedFlavor] = useState(design?.fixedFlavor || ALL_CUSTOM_FLAVORS[0]);
   const [quantity, setQuantity] = useState(1);
 
-  // Dynamic price calculation based on selected size
+  // Dynamic base calculation for internal order parsing
   const sizeObj = useMemo(() => {
     return ALL_CUSTOM_SIZES.find(s => s.label === selectedSize) || ALL_CUSTOM_SIZES[1];
   }, [selectedSize]);
 
   const displayPrice = sizeObj.price;
-  const total = displayPrice * quantity;
-  const formattedDisplayPrice = Number(displayPrice).toFixed(2);
-  const formattedTotal = Number(total).toFixed(2);
 
   // Image source
   const displayImage = useMemo(() => {
@@ -45,19 +42,21 @@ export default function CustomDesignDetailPage({ params }) {
         <div className="container" style={{ textAlign: 'center', padding: '5rem 2rem' }}>
           <h2>Custom Design Not Found</h2>
           <br />
-          <Link href="/custom-designs" className="btn-primary">Back to Custom Designs Showcase</Link>
+          <Link href="/custom-designs" className="btn-primary">Back to Signature Cake Designs</Link>
         </div>
       </main>
     );
   }
 
   const handleGetQuote = () => {
+    const finalFlavor = design.fixedFlavor || selectedFlavor;
+
     const item = {
       productId: `custom-design-${design.id}`,
       variantId: null,
       name: design.title,
       size: selectedSize,
-      flavor: selectedFlavor,
+      flavor: finalFlavor,
       price: displayPrice,
       quantity: quantity,
       isPhotoCake: false,
@@ -75,7 +74,7 @@ export default function CustomDesignDetailPage({ params }) {
   return (
     <main className={styles.main}>
       <div className={`container ${styles.productContainer}`}>
-        <Link href="/custom-designs" className={styles.backLink}>&larr; Back to Custom Designs</Link>
+        <Link href="/custom-designs" className={styles.backLink}>&larr; Back to Signature Cake Designs</Link>
 
         <div className={`glass-panel ${styles.productLayout}`}>
           {/* Left Side: Design Image */}
@@ -98,10 +97,6 @@ export default function CustomDesignDetailPage({ params }) {
             <p className={styles.description}>{design.themeMessage}</p>
 
             <div className={styles.selectorContainer}>
-              <h2 className={styles.price}>
-                Starts from ${formattedDisplayPrice}
-              </h2>
-
               {/* Size & Flavor Options Grid */}
               <div className={styles.optionsGrid}>
                 {/* Size Dropdown */}
@@ -118,22 +113,32 @@ export default function CustomDesignDetailPage({ params }) {
                   </select>
                 </div>
 
-                {/* Flavor Dropdown */}
+                {/* Flavor Option */}
                 <div className={styles.optionGroup}>
                   <label>Flavor</label>
-                  <select 
-                    value={selectedFlavor} 
-                    onChange={(e) => setSelectedFlavor(e.target.value)}
-                    className={styles.dropdown}
-                  >
-                    {ALL_CUSTOM_FLAVORS.map(flavor => (
-                      <option key={flavor} value={flavor}>{flavor}</option>
-                    ))}
-                  </select>
+                  {design.fixedFlavor ? (
+                    <input 
+                      type="text" 
+                      value={design.fixedFlavor} 
+                      readOnly 
+                      className={styles.dropdown}
+                      style={{ background: '#f8f4f0', color: 'var(--primary)', fontWeight: '600', cursor: 'default' }}
+                    />
+                  ) : (
+                    <select 
+                      value={selectedFlavor} 
+                      onChange={(e) => setSelectedFlavor(e.target.value)}
+                      className={styles.dropdown}
+                    >
+                      {ALL_CUSTOM_FLAVORS.map(flavor => (
+                        <option key={flavor} value={flavor}>{flavor}</option>
+                      ))}
+                    </select>
+                  )}
                 </div>
               </div>
 
-              {/* Action Row: Quantity + Get Quote button */}
+              {/* Action Row: Quantity + Get Custom Quote button */}
               <div className={styles.actionRow} style={{ marginTop: '2rem' }}>
                 <div className={styles.quantityControl}>
                   <button type="button" onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</button>
@@ -147,7 +152,7 @@ export default function CustomDesignDetailPage({ params }) {
                   onClick={handleGetQuote}
                   style={{ background: '#543b32', borderColor: '#543b32' }}
                 >
-                  Get Quote
+                  Get Custom Quote
                 </button>
               </div>
             </div>

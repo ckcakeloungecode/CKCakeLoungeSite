@@ -58,22 +58,32 @@ export default async function ReceiptPage({ params }) {
           <div className={styles.section}>
             <h3>Order Items</h3>
             <ul className={styles.itemList}>
-              {ticket.cart_items.map((item, idx) => (
-                <li key={idx} className={styles.itemRow}>
-                  <div className={styles.itemDetails}>
-                    <span className={styles.itemName}>{item.quantity}x {item.name}</span>
-                    <span className={styles.itemMeta}>
-                      {[item.size !== 'Standard' && item.size, item.flavor !== 'Original' && item.flavor, item.isPhotoCake && 'Photo Cake'].filter(Boolean).join(' • ')}
-                    </span>
-                    {item.photoUrl && (
-                      <a href={item.photoUrl} target="_blank" rel="noopener noreferrer" className={styles.photoLinkBtn}>
-                        📸 View High-Res Attached Photo
-                      </a>
+              {ticket.cart_items.map((item, idx) => {
+                const itemImg = item.displayImage || item.imageUrl || item.photoUrl;
+                return (
+                  <li key={idx} className={styles.itemRow} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    {itemImg && (
+                      <img 
+                        src={itemImg} 
+                        alt={item.name} 
+                        style={{ width: '64px', height: '64px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #e5d8cc', flexShrink: 0 }} 
+                      />
                     )}
-                  </div>
-                  <span className={styles.itemPrice}>${(item.price * item.quantity).toFixed(2)}</span>
-                </li>
-              ))}
+                    <div className={styles.itemDetails} style={{ flex: 1 }}>
+                      <span className={styles.itemName}>{item.quantity}x {item.name}</span>
+                      <span className={styles.itemMeta}>
+                        {[item.size !== 'Standard' && item.size, item.flavor !== 'Original' && item.flavor, item.isPhotoCake && 'Photo Cake'].filter(Boolean).join(' • ')}
+                      </span>
+                      {item.photoUrl && (
+                        <a href={item.photoUrl} target="_blank" rel="noopener noreferrer" className={styles.photoLinkBtn}>
+                          📸 View High-Res Attached Photo
+                        </a>
+                      )}
+                    </div>
+                    <span className={styles.itemPrice}>${(item.price * item.quantity).toFixed(2)}</span>
+                  </li>
+                );
+              })}
             </ul>
             
             {ticket.discount_amount > 0 && (

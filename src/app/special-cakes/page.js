@@ -1,5 +1,6 @@
 import { supabase } from '../../utils/supabaseClient';
 import Link from 'next/link';
+import SpecialCakeCard from './SpecialCakeCard';
 import styles from '../menu/page.module.css';
 
 export default async function SpecialCakes({ searchParams }) {
@@ -27,7 +28,7 @@ export default async function SpecialCakes({ searchParams }) {
     <main className={styles.main}>
       <div className={`container ${styles.menuContainer}`}>
         <h1 className={styles.title}>Special Cakes</h1>
-        <p className={styles.subtitle}>Custom, tiered, and spectacular cakes for your most important events.</p>
+        <p className={styles.subtitle}>Custom, tiered, smashable piñata, and spectacular cakes for your most important events.</p>
 
         <div className={styles.tabs}>
           <Link href="/menu" className={styles.tab}>Everyday Treats</Link>
@@ -35,7 +36,7 @@ export default async function SpecialCakes({ searchParams }) {
           <Link href="/cakes" className={styles.tab}>Custom Cakes</Link>
           <Link href="/international-flavors" className={styles.tab}>International Flavors</Link>
           <Link href="/special-cakes" className={styles.activeTab}>Special Cakes</Link>
-          <Link href="/custom-designs" className={styles.tab}>Custom Designs Gallery</Link>
+          <Link href="/custom-designs" className={styles.tab}>Signature Cake Designs</Link>
         </div>
 
         {search && (
@@ -51,18 +52,7 @@ export default async function SpecialCakes({ searchParams }) {
 
         <div className={styles.grid}>
           {products && products.map((product) => (
-            <div key={product.id} className={`glass-panel ${styles.card}`}>
-              <div className={styles.imagePlaceholder}>
-                 {/* Once you have real photos, an <img /> tag goes here */}
-              </div>
-              <div className={styles.cardContent}>
-                <h2>{product.name}</h2>
-                <p>{product.description}</p>
-                <Link href={`/product/${product.id}`} className="btn-primary" style={{ background: 'var(--rose)', borderColor: 'var(--rose)' }}>
-                  View Options
-                </Link>
-              </div>
-            </div>
+            <SpecialCakeCard key={product.id} product={product} />
           ))}
           {(!products || products.length === 0) && (
             <div style={{ textAlign: 'center', width: '100%', padding: '3rem 0', gridColumn: '1 / -1' }}>

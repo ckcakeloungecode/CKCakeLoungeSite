@@ -36,7 +36,7 @@ export default async function ReadyToGoCakes({ searchParams }) {
           <Link href="/cakes" className={styles.tab}>Custom Cakes</Link>
           <Link href="/international-flavors" className={styles.tab}>International Flavors</Link>
           <Link href="/special-cakes" className={styles.tab}>Special Cakes</Link>
-          <Link href="/custom-designs" className={styles.tab}>Custom Designs Gallery</Link>
+          <Link href="/custom-designs" className={styles.tab}>Signature Cake Designs</Link>
         </div>
 
         {search && (
@@ -52,7 +52,8 @@ export default async function ReadyToGoCakes({ searchParams }) {
 
         <div className={styles.grid}>
           {products && products.map((product) => {
-            const cardImg = product.image_url || (product.name.toLowerCase().includes('mango') ? '/mango-cake.jpg' : null);
+            const nameLower = (product.name || '').toLowerCase();
+            const cardImg = product.image_url || ((nameLower.includes('jamun') || nameLower.includes('gulab')) ? '/gulab-jamun-cake.jpg' : (nameLower.includes('mango') ? '/mango-cake.jpg' : ((nameLower.includes('ras') || nameLower.includes('rasmalai')) ? '/rasmalai-cake.jpg' : null)));
 
             return (
               <div key={product.id} className={`glass-panel ${styles.card}`}>

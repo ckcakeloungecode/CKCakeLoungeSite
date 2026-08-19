@@ -401,23 +401,22 @@ export default function CheckoutPage() {
           
           <div className={styles.summaryItems}>
             {cartItems.map(item => (
-              <div key={item.cartItemId} className={styles.summaryItem}>
-                <div className={styles.summaryItemDetails}>
+              <div key={item.cartItemId} className={styles.summaryItem} style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
+                {(item.displayImage || item.photoUrl || item.imageUrl) && (
+                  <img 
+                    src={item.displayImage || item.photoUrl || item.imageUrl} 
+                    alt={item.name} 
+                    style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #c4b6b0', flexShrink: 0 }}
+                  />
+                )}
+                <div className={styles.summaryItemDetails} style={{ flex: 1 }}>
                   <span className={styles.summaryItemName}>{item.quantity}x {item.name}</span>
                   <span className={styles.summaryItemMeta}>
                     {[item.size !== 'Standard' && item.size, item.flavor !== 'Original' && item.flavor, item.isPhotoCake && 'Photo Cake'].filter(Boolean).join(' • ')}
                   </span>
                   {item.photoUrl && (
-                    <div style={{ marginTop: '8px' }}>
-                      <div style={{ fontSize: '0.85rem', color: '#16a34a', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '6px' }}>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                        High-Res Photo Attached
-                      </div>
-                      <img 
-                        src={item.photoUrl} 
-                        alt="Reference design" 
-                        style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '6px', border: '1px solid #c4b6b0', display: 'block' }}
-                      />
+                    <div style={{ marginTop: '4px', fontSize: '0.85rem', color: '#16a34a', fontWeight: 'bold' }}>
+                      📸 Photo Attached
                     </div>
                   )}
                 </div>

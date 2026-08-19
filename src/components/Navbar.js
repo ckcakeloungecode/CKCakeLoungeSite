@@ -233,7 +233,7 @@ export default function Navbar() {
                   Special Cakes
                 </Link>
                 <Link href="/custom-designs" className={styles.dropdownItem} onClick={closeMobileMenu}>
-                  Custom Design Gallery
+                  Signature Cake Designs
                 </Link>
               </div>
             </div>

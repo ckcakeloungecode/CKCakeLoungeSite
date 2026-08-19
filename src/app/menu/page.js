@@ -19,7 +19,12 @@ export default async function Menu({ searchParams }) {
       .eq('is_special_cake', false)
       .neq('category', 'Cakes')
       .neq('category', 'International Flavors')
-      .neq('category', 'Ready to Go Cakes');
+      .neq('category', 'Ready to Go Cakes')
+      .neq('category', 'Festive Cakes')
+      .neq('category', 'Birthday Celebrations')
+      .neq('category', 'Wedding & Anniversary')
+      .neq('category', 'Fusion Cakes')
+      .neq('category', 'Baby Shower & Kids');
   }
 
   const { data: products, error } = await query;
@@ -41,7 +46,7 @@ export default async function Menu({ searchParams }) {
           <Link href="/cakes" className={styles.tab}>Custom Cakes</Link>
           <Link href="/international-flavors" className={styles.tab}>International Flavors</Link>
           <Link href="/special-cakes" className={styles.tab}>Special Cakes</Link>
-          <Link href="/custom-designs" className={styles.tab}>Custom Designs Gallery</Link>
+          <Link href="/custom-designs" className={styles.tab}>Signature Cake Designs</Link>
         </div>
 
         {search && (
@@ -57,7 +62,7 @@ export default async function Menu({ searchParams }) {
 
         <div className={styles.grid}>
           {products && products.map((product) => {
-            const cardImg = product.image_url || (product.name.toLowerCase().includes('cupcake') ? '/cupcakes.jpg' : null);
+            const cardImg = product.image_url || (product.name.toLowerCase().includes('cupcake') ? '/cupcakes.jpg' : (product.name.toLowerCase().includes('dry') ? '/dry-cakes.jpg' : null));
 
             return (
               <div key={product.id} className={`glass-panel ${styles.card}`}>

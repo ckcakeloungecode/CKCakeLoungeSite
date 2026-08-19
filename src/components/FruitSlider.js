@@ -139,12 +139,25 @@ export default function FruitSlider({ products }) {
               ? '/ready-to-go-cakes' 
               : `/product/${product.id}`;
 
+            const cardImg = product.image_url || (nameLower.includes('mango') ? '/mango-cake.jpg' : ((nameLower.includes('ras') || nameLower.includes('rasmalai')) ? '/rasmalai-cake.jpg' : null));
+
             return (
               <div key={product.id} className={styles.sliderCardWrapper}>
                 <div className={`glass-panel ${styles.productCard}`}>
-                  <div className={`${styles.imagePlaceholder} ${styles[nameLower.replace(/\s+/g, '')]}`}>
-                    <span className={styles.placeholderEmoji}>{emoji}</span>
-                    <span className={styles.placeholderText}>Photo Coming Soon</span>
+                  <div className={styles.imagePlaceholder} style={{ position: 'relative', overflow: 'hidden', padding: 0 }}>
+                    {cardImg ? (
+                      <img 
+                        src={cardImg} 
+                        alt={product.name} 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block', position: 'absolute', inset: 0 }}
+                        draggable="false"
+                      />
+                    ) : (
+                      <div className={styles[nameLower.replace(/\s+/g, '')]} style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                        <span className={styles.placeholderEmoji}>{emoji}</span>
+                        <span className={styles.placeholderText}>Photo Coming Soon</span>
+                      </div>
+                    )}
                   </div>
                   <div className={styles.productCardContent}>
                     <h3>{product.name}</h3>

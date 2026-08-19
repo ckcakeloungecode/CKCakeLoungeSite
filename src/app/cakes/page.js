@@ -35,7 +35,7 @@ export default async function Cakes({ searchParams }) {
           <Link href="/cakes" className={styles.activeTab}>Custom Cakes</Link>
           <Link href="/international-flavors" className={styles.tab}>International Flavors</Link>
           <Link href="/special-cakes" className={styles.tab}>Special Cakes</Link>
-          <Link href="/custom-designs" className={styles.tab}>Custom Designs Gallery</Link>
+          <Link href="/custom-designs" className={styles.tab}>Signature Cake Designs</Link>
         </div>
 
         {/* Premium Marketing Callout Banner for Custom Reference Photos */}

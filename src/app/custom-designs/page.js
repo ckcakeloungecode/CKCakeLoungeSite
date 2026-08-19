@@ -8,20 +8,36 @@ import { CUSTOM_DESIGNS, CATEGORIES } from '../../utils/customDesignsData';
 export default function CustomDesignsGallery() {
   const [selectedCategory, setSelectedCategory] = useState('All Designs');
   const [searchQuery, setSearchQuery] = useState('');
+  const [visibleCount, setVisibleCount] = useState(12);
+
+  const handleCategoryChange = (cat) => {
+    setSelectedCategory(cat);
+    setVisibleCount(12);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setVisibleCount(12);
+  };
 
   // Filter designs based on category and search
   const filteredDesigns = CUSTOM_DESIGNS.filter(design => {
-    const matchesCategory = selectedCategory === 'All Designs' || design.category === selectedCategory;
+    const matchesCategory = selectedCategory === 'All Designs' || 
+      design.category === selectedCategory || 
+      (Array.isArray(design.categories) && design.categories.includes(selectedCategory));
     const matchesSearch = !searchQuery.trim() || 
       design.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (design.themeMessage && design.themeMessage.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesCategory && matchesSearch;
   });
 
+  const visibleDesigns = filteredDesigns.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredDesigns.length;
+
   return (
     <main className={styles.main}>
       <div className={`container ${styles.galleryContainer}`}>
-        <h1 className={styles.title}>Custom Design Showcase</h1>
+        <h1 className={styles.title}>Signature Cake Designs</h1>
         <p className={styles.subtitle}>
           Browse our bespoke cake creations! Select any design below to choose your custom size and flavor.
         </p>
@@ -33,7 +49,7 @@ export default function CustomDesignsGallery() {
           <Link href="/cakes" className={styles.tab}>Custom Cakes</Link>
           <Link href="/international-flavors" className={styles.tab}>International Flavors</Link>
           <Link href="/special-cakes" className={styles.tab}>Special Cakes</Link>
-          <Link href="/custom-designs" className={styles.activeTab}>Custom Designs Gallery</Link>
+          <Link href="/custom-designs" className={styles.activeTab}>Signature Cake Designs</Link>
         </div>
 
         {/* Category Pill Filters & Search */}
@@ -44,7 +60,7 @@ export default function CustomDesignsGallery() {
                 key={cat}
                 type="button"
                 className={`${styles.pillBtn} ${selectedCategory === cat ? styles.activePillBtn : ''}`}
-                onClick={() => setSelectedCategory(cat)}
+                onClick={() => handleCategoryChange(cat)}
               >
                 {cat}
               </button>
@@ -56,7 +72,7 @@ export default function CustomDesignsGallery() {
               type="text"
               placeholder="Search custom designs (e.g. Wedding, Drip, Vintage)..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearchChange}
               className={styles.searchInput}
             />
           </div>
@@ -64,7 +80,7 @@ export default function CustomDesignsGallery() {
 
         {/* Gallery Grid - Clean Cards matching Custom Cakes layout */}
         <div className={styles.grid}>
-          {filteredDesigns.map((design) => {
+          {visibleDesigns.map((design) => {
             return (
               <div key={design.id} className={styles.card}>
                 {/* Image or Placeholder Frame */}
@@ -110,6 +126,31 @@ export default function CustomDesignsGallery() {
             );
           })}
         </div>
+
+        {/* Load More Button */}
+        {hasMore && (
+          <div style={{ textAlign: 'center', marginTop: '3rem', marginBottom: '1rem' }}>
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={() => setVisibleCount(prev => prev + 6)}
+              style={{
+                padding: '0.9rem 2.2rem',
+                fontSize: '1rem',
+                background: '#543b32',
+                borderColor: '#543b32',
+                color: '#ffffff',
+                boxShadow: '0 4px 14px rgba(84, 59, 50, 0.25)',
+                cursor: 'pointer',
+                borderRadius: '50px',
+                fontWeight: '600',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              Load More Cakes
+            </button>
+          </div>
+        )}
 
         {filteredDesigns.length === 0 && (
           <div style={{ textAlign: 'center', padding: '3rem', color: '#6e5c54' }}>
