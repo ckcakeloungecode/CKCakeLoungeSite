@@ -19,6 +19,11 @@ const outfit = Outfit({
 export const metadata = {
   title: "CK Cake Lounge",
   description: "Artisan cakes and pastries delivered fresh.",
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/favicon.ico",
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({ children }) {
