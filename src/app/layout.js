@@ -21,11 +21,11 @@ export const metadata = {
   description: "Artisan cakes and pastries delivered fresh.",
   icons: {
     icon: [
-      { url: "/icon.svg?v=3", type: "image/svg+xml" },
-      { url: "/icon.png?v=3", type: "image/png" }
+      { url: "/icon.png?v=4", type: "image/png" },
+      { url: "/favicon.ico?v=4", type: "image/x-icon" }
     ],
-    shortcut: "/icon.svg?v=3",
-    apple: "/icon.png?v=3",
+    shortcut: "/favicon.ico?v=4",
+    apple: "/icon.png?v=4",
   },
 };
 
@@ -33,9 +33,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
       <head>
-        <link rel="icon" href="/icon.svg?v=3" type="image/svg+xml" />
-        <link rel="icon" href="/icon.png?v=3" type="image/png" />
-        <link rel="apple-touch-icon" href="/icon.png?v=3" />
+        <link rel="icon" href="/favicon.ico?v=4" sizes="any" />
+        <link rel="icon" href="/icon.png?v=4" type="image/png" />
+        <link rel="apple-touch-icon" href="/icon.png?v=4" />
       </head>
       <body>
         <AuthProvider>
