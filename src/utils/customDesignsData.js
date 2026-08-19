@@ -248,6 +248,17 @@ export const CUSTOM_DESIGNS = [
     "placeholderCode": "pink-marble-love-anniversary.jpg"
   },
   {
+    "id": "design-red-rose-tier-birthday",
+    "title": "Red Rose & Gold Two-Tier Birthday Cake",
+    "category": "Birthday Celebrations",
+    "startingPrice": 175,
+    "themeMessage": "Stunning two-tier celebration cake featuring a white buttercream top tier and hot pink bottom tier, decorated with vibrant red roses, gold leaf accents, gold pearls, and acrylic gold Happy Birthday lettering.",
+    "defaultSize": "6 LB 2-Tier (Serves 50-60)",
+    "leadTime": "3 Days Notice",
+    "imageUrl": "/designs/red-rose-tier-birthday.jpg",
+    "placeholderCode": "red-rose-tier-birthday.jpg"
+  },
+  {
     "id": "design-ribbon-couple-valentines",
     "title": "Romantic Ribbon Couple Valentine’s Cake",
     "category": "Festive Cakes",
@@ -393,17 +404,6 @@ export const CUSTOM_DESIGNS = [
     "leadTime": "2 Days Notice",
     "imageUrl": "/designs/crimson-rose-date-anniversary.jpg",
     "placeholderCode": "crimson-rose-date-anniversary.jpg"
-  },
-  {
-    "id": "design-red-rose-tier-birthday",
-    "title": "Velvet Red Rose & Gold Two-Tier Birthday Cake",
-    "category": "Birthday Celebrations",
-    "startingPrice": 175,
-    "themeMessage": "Stunning two-tier celebration cake featuring a white buttercream top tier and hot pink bottom tier, decorated with vibrant red roses, gold leaf accents, gold pearls, and acrylic gold Happy Birthday lettering.",
-    "defaultSize": "6 LB 2-Tier (Serves 50-60)",
-    "leadTime": "3 Days Notice",
-    "imageUrl": "/designs/red-rose-tier-birthday.jpg",
-    "placeholderCode": "red-rose-tier-birthday.jpg"
   },
   {
     "id": "design-vintage-black-ribbon-heart",
