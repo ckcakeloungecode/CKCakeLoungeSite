@@ -20,8 +20,11 @@ export const metadata = {
   title: "CK Cake Lounge",
   description: "Artisan cakes and pastries delivered fresh.",
   icons: {
-    icon: "/icon.png",
-    shortcut: "/favicon.ico",
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon.png", type: "image/png" }
+    ],
+    shortcut: "/icon.svg",
     apple: "/icon.png",
   },
 };
