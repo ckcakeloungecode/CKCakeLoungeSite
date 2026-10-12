@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import PromoCarousel from '../components/PromoCarousel';
 import FruitSlider from '../components/FruitSlider';
+import { ShieldCheckIcon, CakeSelectionIcon, LeafIngredientsIcon, PaletteCustomIcon } from '../components/TrustIcons';
 import { supabase } from '../utils/supabaseClient';
 import styles from './page.module.css';
 
@@ -104,7 +105,7 @@ export default async function Home() {
     products = [
       { id: 'fallback-gulab', name: 'Gulab Jamun', description: 'A luscious cardamom-spiced cake layers embedded with soft, sugar-soaked gulab jamun pieces and decorated with roasted pistachios.', price: 40, isFallback: true },
       { id: 'fallback-paan', name: 'Metha paan', description: 'An exotic refreshing cake infused with real betel leaf extract, sweet gulkand (rose petal jam), and aromatic fennel seeds.', price: 40, isFallback: true },
-      { id: 'fallback-pistachio', name: 'Pistachio', description: 'Rich roasted pistachio cake layers finished with silky pistachio cream and white chocolate shavings.', price: 40, isFallback: true },
+      { id: 'fallback-pistachio', name: 'Pistachio', description: 'Rich roasted pistachio cake layers finished with silky pistachio cream and white chocolate shavings.', price: 40, isFallback: true, image_url: '/pistachio-cake.jpg' },
       { id: 'fallback-rasmalai', name: 'Rasmalai bliss', description: 'Our crowd favorite signature cake soaked in rich saffron milk (rabri) and decorated with almonds, pistachios, and rose petals.', price: 45, isFallback: true }
     ];
   }
@@ -112,17 +113,17 @@ export default async function Home() {
   if (!fruitProducts || fruitProducts.length === 0) {
     fruitProducts = [
       { id: 'fallback-mango', name: 'Mango', description: 'Fresh, succulent mango pieces layered with moist vanilla sponge cake and light cream.', price: 35, isFallback: true },
-      { id: 'fallback-pineapple', name: 'Tropical pineapple', description: 'Classic tropical recipe with crushed sweet pineapple layered with soft cake and fluffy whipped cream.', price: 35, isFallback: true },
-      { id: 'fallback-strawberry', name: 'Garden Strawberry', description: 'Bursting with fresh farm-picked strawberries and sweet whipped cream layers.', price: 40, isFallback: true },
-      { id: 'fallback-blueberry', name: 'Blue berry', description: 'Sweet, tangy wild blueberries layered between rich cream and moist sponge cake.', price: 40, isFallback: true },
-      { id: 'fallback-mixfruit', name: 'Mix fruit', description: 'An elegant vanilla cake packed with a fresh medley of seasonal fruits and berries.', price: 40, isFallback: true }
+      { id: 'fallback-pineapple', name: 'Tropical pineapple', description: 'Classic tropical recipe with crushed sweet pineapple layered with soft cake and fluffy whipped cream.', price: 35, isFallback: true, image_url: '/tropical-pineapple-cake.jpg' },
+      { id: 'fallback-strawberry', name: 'Garden Strawberry', description: 'Bursting with fresh farm-picked strawberries and sweet whipped cream layers.', price: 40, isFallback: true, image_url: '/garden-strawberry-cake.jpg' },
+      { id: 'fallback-blueberry', name: 'Blue berry', description: 'Sweet, tangy wild blueberries layered between rich cream and moist sponge cake.', price: 40, isFallback: true, image_url: '/blueberry-cake.jpg' },
+      { id: 'fallback-mixfruit', name: 'Mix fruit', description: 'An elegant vanilla cake packed with a fresh medley of seasonal fruits and berries.', price: 40, isFallback: true, image_url: '/mix-fruit-cake.jpg' }
     ];
   }
 
   if (!intlProducts || intlProducts.length === 0) {
     intlProducts = [
       { id: 'fallback-tiramisu', name: 'Tiramissu', description: 'A classic Italian dessert made with espresso-soaked ladyfingers and rich mascarpone cream.', price: 39.99, isFallback: true },
-      { id: 'fallback-cheesecake', name: 'Cheese Cake', description: 'Rich, creamy, and decadent cheese cakes in a variety of premium flavors.', price: 24.99, isFallback: true },
+      { id: 'fallback-cheesecake', name: 'Cheese Cake', description: 'Rich, creamy, and decadent cheese cakes in a variety of premium flavors.', price: 24.99, isFallback: true, image_url: '/lemon-cheese-cake.jpg' },
       { id: 'fallback-moussecake', name: 'Mousse Cake', description: 'Light, airy, and beautifully layered mousse cakes.', price: 19.99, isFallback: true }
     ];
   }
@@ -186,28 +187,36 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Allergen & Dietary Trust Grid - Rashmi's Bakery Inspired */}
+      {/* Allergen & Dietary Trust Grid */}
       <section className={`container ${styles.trustSection}`}>
         <div className={styles.trustGrid}>
           <div className={`glass-panel ${styles.trustCard}`}>
-            <span className={styles.trustIcon}>🥚</span>
+            <div className={styles.trustIconBadge}>
+              <ShieldCheckIcon size={26} />
+            </div>
             <h4>100% Eggless Facility</h4>
-            <p>Your safety is our absolute priority. We operate a strictly eggless facility with rigorous cross-contamination protocols. Parents and schools trust us for allergy-safe treats that never compromise on safety.</p>
+            <p>Baking 100% eggless is at the heart of our kitchen. We maintain a strictly egg-free bakehouse with dedicated care, so families, parents, and schools can celebrate with complete peace of mind.</p>
           </div>
           <div className={`glass-panel ${styles.trustCard}`}>
-            <span className={styles.trustIcon}>🌿</span>
-            <h4>Inclusive Options</h4>
-            <p>We want everyone to join the celebration. We have designed exquisite Vegan and Gluten-Free recipes that capture the rich, moist texture and decadent taste of traditional recipes.</p>
+            <div className={styles.trustIconBadge}>
+              <CakeSelectionIcon size={26} />
+            </div>
+            <h4>Wide Selection of Products</h4>
+            <p>From ready-to-go daily favorites and rich cheesecakes to exotic Indian sweets fusions and tea-time dry cakes, there is always a fresh confection waiting to make your celebration special.</p>
           </div>
           <div className={`glass-panel ${styles.trustCard}`}>
-            <span className={styles.trustIcon}>🌾</span>
+            <div className={styles.trustIconBadge}>
+              <LeafIngredientsIcon size={26} />
+            </div>
             <h4>Premium Ingredients</h4>
-            <p>We bake exclusively with natural, high-quality ingredients. From organic unbleached flours and farm-fresh dairy to premium Madagascar vanilla and rich Belgian cocoa, quality guides every selection.</p>
+            <p>We believe great baking starts with honest ingredients. Farm-fresh dairy, slow-roasted nuts, velvety cocoa, and real fruit compotes — every batch is prepared fresh with nothing artificial.</p>
           </div>
           <div className={`glass-panel ${styles.trustCard}`}>
-            <span className={styles.trustIcon}>🎂</span>
+            <div className={styles.trustIconBadge}>
+              <PaletteCustomIcon size={26} />
+            </div>
             <h4>Bespoke Customization</h4>
-            <p>No catalog limit. Our custom quote pipeline lets you share reference images, sketch ideas, and specify shapes, sizes, and dietary configurations to construct your perfect celebration piece.</p>
+            <p>Have a dream design in mind? Share your Pinterest pins, sketches, or event colors with us. We hand-craft custom multi-tier tiers, personalized toppers, and unique flavor pairings just for you.</p>
           </div>
         </div>
       </section>
@@ -239,7 +248,7 @@ export default async function Home() {
               ? '/ready-to-go-cakes' 
               : `/product/${product.id}`;
 
-            const cardImg = product.image_url || ((nameLower.includes('jamun') || nameLower.includes('gulab')) ? '/gulab-jamun-cake.jpg' : (nameLower.includes('mango') ? '/mango-cake.jpg' : ((nameLower.includes('ras') || nameLower.includes('rasmalai')) ? '/rasmalai-cake.jpg' : null)));
+            const cardImg = product.image_url || ((nameLower.includes('jamun') || nameLower.includes('gulab')) ? '/gulab-jamun-cake.jpg' : (nameLower.includes('mango') ? '/mango-cake.jpg' : ((nameLower.includes('ras') || nameLower.includes('rasmalai')) ? '/rasmalai-cake.jpg' : (nameLower.includes('pistachio') ? '/pistachio-cake.jpg' : null))));
 
             return (
               <div key={product.id} className={`glass-panel ${styles.productCard}`}>
@@ -358,7 +367,7 @@ export default async function Home() {
               ? '/international-flavors' 
               : `/product/${product.id}`;
 
-            const cardImg = product.image_url || null;
+            const cardImg = product.image_url || ((nameLower.includes('tiramisu') || nameLower.includes('tiramissu')) ? '/tiramisu-cake.jpg' : (nameLower.includes('cheese') ? '/lemon-cheese-cake.jpg' : null));
 
             return (
               <div key={product.id} className={`glass-panel ${styles.productCard}`}>

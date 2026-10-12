@@ -139,7 +139,7 @@ export default function FruitSlider({ products }) {
               ? '/ready-to-go-cakes' 
               : `/product/${product.id}`;
 
-            const cardImg = product.image_url || (nameLower.includes('mango') ? '/mango-cake.jpg' : ((nameLower.includes('ras') || nameLower.includes('rasmalai')) ? '/rasmalai-cake.jpg' : null));
+            const cardImg = product.image_url || (nameLower.includes('mango') ? '/mango-cake.jpg' : ((nameLower.includes('ras') || nameLower.includes('rasmalai')) ? '/rasmalai-cake.jpg' : ((nameLower.includes('mix fruit') || nameLower.includes('fruit')) ? '/mix-fruit-cake.jpg' : (nameLower.includes('coconut') ? '/coconut-cake.jpg' : (nameLower.includes('pineapple') ? '/tropical-pineapple-cake.jpg' : ((nameLower.includes('blue berry') || nameLower.includes('blueberry')) ? '/blueberry-cake.jpg' : (nameLower.includes('strawberry') ? '/garden-strawberry-cake.jpg' : null)))))));
 
             return (
               <div key={product.id} className={styles.sliderCardWrapper}>

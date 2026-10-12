@@ -80,10 +80,27 @@
   border-color: var(--accent);
 }
 
-.icon {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  display: inline-block;
+.iconBadge {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(217, 138, 75, 0.12), rgba(226, 172, 158, 0.18));
+  border: 1px solid rgba(217, 138, 75, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  box-shadow: 0 4px 14px rgba(217, 138, 75, 0.12);
+  transition: all 0.35s ease;
+  margin-bottom: 1.25rem;
+}
+
+.commitmentCard:hover .iconBadge {
+  transform: scale(1.08) translateY(-2px);
+  background: linear-gradient(135deg, rgba(217, 138, 75, 0.22), rgba(226, 172, 158, 0.3));
+  border-color: var(--accent);
+  color: var(--primary);
+  box-shadow: 0 6px 18px rgba(217, 138, 75, 0.22);
 }
 
 .commitmentCard h3 {

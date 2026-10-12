@@ -1,5 +1,6 @@
 import { supabase } from '../../utils/supabaseClient';
 import Link from 'next/link';
+import RotatingCardImage from '../../components/RotatingCardImage';
 import styles from './page.module.css';
 
 export default async function Menu({ searchParams }) {
@@ -62,12 +63,21 @@ export default async function Menu({ searchParams }) {
 
         <div className={styles.grid}>
           {products && products.map((product) => {
-            const cardImg = product.image_url || (product.name.toLowerCase().includes('cupcake') ? '/cupcakes.jpg' : (product.name.toLowerCase().includes('dry') ? '/dry-cakes.jpg' : null));
+            const nameLower = (product.name || '').toLowerCase();
+            const isDessertCups = nameLower.includes('cup') && (nameLower.includes('desert') || nameLower.includes('dessert'));
+            const dessertCupImages = ['/dessert-cake-cups-1.jpg', '/dessert-cake-cups-2.jpg', '/dessert-cake-cups-3.jpg'];
+            const cardImg = product.image_url || (nameLower.includes('cupcake') ? '/cupcakes.jpg' : (nameLower.includes('dry') ? '/dry-cakes.jpg' : (isDessertCups ? '/dessert-cake-cups-1.jpg' : null)));
 
             return (
               <div key={product.id} className={`glass-panel ${styles.card}`}>
                 <div className={styles.imagePlaceholder} style={{ position: 'relative', overflow: 'hidden', padding: 0 }}>
-                  {cardImg ? (
+                  {isDessertCups ? (
+                    <RotatingCardImage
+                      images={dessertCupImages}
+                      alt={product.name}
+                      intervalMs={3500}
+                    />
+                  ) : cardImg ? (
                     <img 
                       src={cardImg} 
                       alt={product.name} 

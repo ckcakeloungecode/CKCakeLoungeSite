@@ -50,20 +50,37 @@ export default async function InternationalFlavors({ searchParams }) {
         )}
 
         <div className={styles.grid}>
-          {products && products.map((product) => (
-            <div key={product.id} className={`glass-panel ${styles.card}`}>
-              <div className={styles.imagePlaceholder}>
-                 {/* Images will go here */}
+          {products && products.map((product) => {
+            const nameLower = (product.name || '').toLowerCase();
+            const cardImg = product.image_url || ((nameLower.includes('tiramisu') || nameLower.includes('tiramissu')) ? '/tiramisu-cake.jpg' : (nameLower.includes('cheese') ? '/lemon-cheese-cake.jpg' : null));
+            const emoji = nameLower.includes('cheese') ? '🧀' : (nameLower.includes('mousse') ? '🍫' : '☕');
+
+            return (
+              <div key={product.id} className={`glass-panel ${styles.card}`}>
+                <div className={styles.imagePlaceholder} style={{ position: 'relative', overflow: 'hidden', padding: 0 }}>
+                  {cardImg ? (
+                    <img 
+                      src={cardImg} 
+                      alt={product.name} 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block', position: 'absolute', inset: 0 }}
+                    />
+                  ) : (
+                    <div style={{ padding: '2rem', textAlign: 'center', color: '#8c766b' }}>
+                      <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '0.5rem' }}>{emoji}</span>
+                      <span style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>{product.name}</span>
+                    </div>
+                  )}
+                </div>
+                <div className={styles.cardContent}>
+                  <h2>{product.name}</h2>
+                  <p>{product.description}</p>
+                  <Link href={`/product/${product.id}`} className="btn-primary" style={{ background: 'var(--rose)', borderColor: 'var(--rose)' }}>
+                    Customize
+                  </Link>
+                </div>
               </div>
-              <div className={styles.cardContent}>
-                <h2>{product.name}</h2>
-                <p>{product.description}</p>
-                <Link href={`/product/${product.id}`} className="btn-primary">
-                  Customize
-                </Link>
-              </div>
-            </div>
-          ))}
+            );
+          })}
           {(!products || products.length === 0) && (
             <div style={{ textAlign: 'center', width: '100%', padding: '3rem 0', gridColumn: '1 / -1' }}>
               <p style={{ fontSize: '1.1rem', color: '#66554d', marginBottom: '1rem' }}>No international flavors found matching your search.</p>

@@ -1,5 +1,6 @@
 import { supabase } from '../../utils/supabaseClient';
 import Link from 'next/link';
+import RotatingCardImage from '../../components/RotatingCardImage';
 import styles from '../menu/page.module.css';
 
 export default async function ReadyToGoCakes({ searchParams }) {
@@ -53,12 +54,20 @@ export default async function ReadyToGoCakes({ searchParams }) {
         <div className={styles.grid}>
           {products && products.map((product) => {
             const nameLower = (product.name || '').toLowerCase();
-            const cardImg = product.image_url || ((nameLower.includes('jamun') || nameLower.includes('gulab')) ? '/gulab-jamun-cake.jpg' : (nameLower.includes('mango') ? '/mango-cake.jpg' : ((nameLower.includes('ras') || nameLower.includes('rasmalai')) ? '/rasmalai-cake.jpg' : null)));
+            const isDessertCups = nameLower.includes('cup') || nameLower.includes('desert') || nameLower.includes('dessert');
+            const dessertCupImages = ['/dessert-cake-cups-1.jpg', '/dessert-cake-cups-2.jpg', '/dessert-cake-cups-3.jpg'];
+            const cardImg = product.image_url || ((nameLower.includes('jamun') || nameLower.includes('gulab')) ? '/gulab-jamun-cake.jpg' : (nameLower.includes('mango') ? '/mango-cake.jpg' : ((nameLower.includes('ras') || nameLower.includes('rasmalai')) ? '/rasmalai-cake.jpg' : ((nameLower.includes('tiramisu') || nameLower.includes('tiramissu')) ? '/tiramisu-cake.jpg' : ((nameLower.includes('mix fruit') || nameLower.includes('fruit')) ? '/mix-fruit-cake.jpg' : ((nameLower.includes('truffle') || nameLower.includes('dark chocolate')) ? '/dark-chocolate-truffle.jpg' : (nameLower.includes('coconut') ? '/coconut-cake.jpg' : (nameLower.includes('pineapple') ? '/tropical-pineapple-cake.jpg' : (nameLower.includes('velvety') ? '/velvety-chocolate-cake.jpg' : (nameLower.includes('vanilla') ? '/classic-vanilla-cake.jpg' : ((nameLower.includes('blue berry') || nameLower.includes('blueberry')) ? '/blueberry-cake.jpg' : ((nameLower.includes('biscoff') || nameLower.includes('lotus')) ? '/lotus-biscoff-cake.jpg' : ((nameLower.includes('strawberry')) ? '/garden-strawberry-cake.jpg' : ((nameLower.includes('caramel')) ? '/caramel-cake.jpg' : (nameLower.includes('pistachio') ? '/pistachio-cake.jpg' : (isDessertCups ? '/dessert-cake-cups-1.jpg' : null))))))))))))))));
 
             return (
               <div key={product.id} className={`glass-panel ${styles.card}`}>
                 <div className={styles.imagePlaceholder} style={{ position: 'relative', overflow: 'hidden', padding: 0 }}>
-                  {cardImg ? (
+                  {isDessertCups ? (
+                    <RotatingCardImage
+                      images={dessertCupImages}
+                      alt={product.name}
+                      intervalMs={3500}
+                    />
+                  ) : cardImg ? (
                     <img 
                       src={cardImg} 
                       alt={product.name} 

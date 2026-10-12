@@ -1,4 +1,5 @@
 import styles from './page.module.css';
+import { ShieldCheckIcon, CakeSelectionIcon, LeafIngredientsIcon, PaletteCustomIcon } from '../../components/TrustIcons';
 
 export const metadata = {
   title: "About Us | CK Cake Lounge",
@@ -42,34 +43,42 @@ export default function AboutPage() {
         <div className={styles.commitmentsGrid}>
           
           <div className={`glass-panel ${styles.commitmentCard}`}>
-            <span className={styles.icon}>🥚</span>
+            <div className={styles.iconBadge}>
+              <ShieldCheckIcon size={28} />
+            </div>
             <h3>100% Eggless Facility</h3>
             <p>
-              Your safety is our absolute priority. We operate a strictly eggless facility with rigorous cross-contamination protocols. Parents and schools trust us for allergy-safe treats that never compromise on safety.
+              Baking 100% eggless is at the heart of our kitchen. We maintain a strictly egg-free bakehouse with dedicated care, so families, parents, and schools can celebrate with complete peace of mind.
             </p>
           </div>
 
           <div className={`glass-panel ${styles.commitmentCard}`}>
-            <span className={styles.icon}>🌿</span>
-            <h3>Inclusive Options</h3>
+            <div className={styles.iconBadge}>
+              <CakeSelectionIcon size={28} />
+            </div>
+            <h3>Wide Selection of Products</h3>
             <p>
-              We want everyone to join the celebration. We have designed exquisite Vegan and Gluten-Free recipes that capture the rich, moist texture and decadent taste of traditional recipes.
+              From ready-to-go daily favorites and rich cheesecakes to exotic Indian sweets fusions and tea-time dry cakes, there is always a fresh confection waiting to make your celebration special.
             </p>
           </div>
 
           <div className={`glass-panel ${styles.commitmentCard}`}>
-            <span className={styles.icon}>🌾</span>
+            <div className={styles.iconBadge}>
+              <LeafIngredientsIcon size={28} />
+            </div>
             <h3>Premium Ingredients</h3>
             <p>
-              We bake exclusively with natural, high-quality ingredients. From organic unbleached flours and farm-fresh dairy to premium Madagascar vanilla and rich Belgian cocoa, quality guides every selection.
+              We believe great baking starts with honest ingredients. Farm-fresh dairy, slow-roasted nuts, velvety cocoa, and real fruit compotes — every batch is prepared fresh with nothing artificial.
             </p>
           </div>
 
           <div className={`glass-panel ${styles.commitmentCard}`}>
-            <span className={styles.icon}>🎂</span>
+            <div className={styles.iconBadge}>
+              <PaletteCustomIcon size={28} />
+            </div>
             <h3>Bespoke Customization</h3>
             <p>
-              No catalog limit. Our custom quote pipeline lets you share reference images, sketch ideas, and specify shapes, sizes, and dietary configurations to construct your perfect celebration piece.
+              Have a dream design in mind? Share your Pinterest pins, sketches, or event colors with us. We hand-craft custom multi-tier tiers, personalized toppers, and unique flavor pairings just for you.
             </p>
           </div>
 

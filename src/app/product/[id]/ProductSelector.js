@@ -15,6 +15,11 @@ export default function ProductSelector({ product, variants }) {
     return product.name?.toLowerCase().includes('pinata') || product.name?.toLowerCase().includes('piñata');
   }, [product.name]);
 
+  const isDessertCups = useMemo(() => {
+    const nameLower = product.name?.toLowerCase() || '';
+    return nameLower.includes('cup') || nameLower.includes('desert') || nameLower.includes('dessert');
+  }, [product.name]);
+
   // Extract unique sizes and flavors/designs from the variants data
   const uniqueSizes = useMemo(() => {
     if (!hasVariants) return [];
@@ -39,8 +44,8 @@ export default function ProductSelector({ product, variants }) {
   const [isUploading, setIsUploading] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Check if product is in a cake category eligible for shape choice
-  const isCakeCategory = product.category === 'Ready to Go Cakes' || product.category === 'Cakes' || product.category === 'Special Cakes';
+  // Check if product is in a cake category eligible for shape choice (excluded for dessert cups)
+  const isCakeCategory = (product.category === 'Ready to Go Cakes' || product.category === 'Cakes' || product.category === 'Special Cakes') && !isDessertCups;
 
   // Find the exact variant based on current selections
   const currentVariant = useMemo(() => {
@@ -102,13 +107,44 @@ export default function ProductSelector({ product, variants }) {
         ? '/mango-cake.jpg'
         : ((nameLower.includes('ras') || nameLower.includes('rasmalai'))
           ? '/rasmalai-cake.jpg'
-          : '/custom-cake-single.jpg'));
+          : ((nameLower.includes('tiramisu') || nameLower.includes('tiramissu'))
+            ? '/tiramisu-cake.jpg'
+            : ((nameLower.includes('mix fruit') || nameLower.includes('fruit'))
+              ? '/mix-fruit-cake.jpg'
+              : ((nameLower.includes('truffle') || nameLower.includes('dark chocolate'))
+                ? '/dark-chocolate-truffle.jpg'
+                : (nameLower.includes('coconut')
+                  ? '/coconut-cake.jpg'
+                  : (nameLower.includes('pineapple')
+                    ? '/tropical-pineapple-cake.jpg'
+                    : (nameLower.includes('velvety')
+                      ? '/velvety-chocolate-cake.jpg'
+                      : (nameLower.includes('vanilla')
+                        ? '/classic-vanilla-cake.jpg'
+                        : ((nameLower.includes('blue berry') || nameLower.includes('blueberry'))
+                          ? '/blueberry-cake.jpg'
+                          : ((nameLower.includes('biscoff') || nameLower.includes('lotus'))
+                            ? '/lotus-biscoff-cake.jpg'
+                            : ((nameLower.includes('strawberry'))
+                              ? '/garden-strawberry-cake.jpg'
+                              : (nameLower.includes('caramel')
+                                ? '/caramel-cake.jpg'
+                                : (nameLower.includes('cheese')
+                                  ? '/lemon-cheese-cake.jpg'
+                                  : (nameLower.includes('pistachio')
+                                    ? '/pistachio-cake.jpg'
+                                    : ((nameLower.includes('cup') || nameLower.includes('desert'))
+                                      ? '/dessert-cake-cups-1.jpg'
+                                      : '/custom-cake-single.jpg'))))))))))))))));
 
     return (currentVariant && currentVariant.image_url) ? currentVariant.image_url : (product.image_url || fallbackImg);
   }, [isCustomCake, product.category, product.name, product.image_url, selectedSize, currentVariant]);
 
-  // Gallery slider images for multi-photo products like Piñata Cake
+  // Gallery slider images for multi-photo products like Piñata Cake and Dessert Cake Cups
   const galleryImages = useMemo(() => {
+    if (isDessertCups) {
+      return ['/dessert-cake-cups-1.jpg', '/dessert-cake-cups-2.jpg', '/dessert-cake-cups-3.jpg'];
+    }
     if (isPinata && variants && variants.length > 0) {
       const vImgs = variants.map(v => v.image_url).filter(Boolean);
       if (vImgs.length > 0) return vImgs;
@@ -117,7 +153,7 @@ export default function ProductSelector({ product, variants }) {
       return ['/pinata-cake.jpg', '/pinata-cake-2.jpg'];
     }
     return [displayImage];
-  }, [isPinata, variants, displayImage]);
+  }, [isDessertCups, isPinata, variants, displayImage]);
 
   // Handle slide changes via arrows / dots
   const handleSelectImageIndex = (idx) => {
@@ -127,9 +163,11 @@ export default function ProductSelector({ product, variants }) {
     }
   };
 
-  // Auto-cycle slideshow every 5 seconds if there are multiple images
+  // Auto-cycle slideshow: 3.5 seconds for Dessert Cake Cups, 5 seconds for Piñata Cake
   useEffect(() => {
     if (galleryImages.length <= 1) return;
+
+    const intervalTime = isDessertCups ? 3500 : 5000;
 
     const timer = setInterval(() => {
       setCurrentImageIndex((prev) => {
@@ -139,10 +177,10 @@ export default function ProductSelector({ product, variants }) {
         }
         return nextIdx;
       });
-    }, 5000);
+    }, intervalTime);
 
     return () => clearInterval(timer);
-  }, [galleryImages.length, isPinata, variants]);
+  }, [galleryImages.length, isPinata, isDessertCups, variants]);
 
   const { addToCart } = useCart();
 
@@ -175,7 +213,7 @@ export default function ProductSelector({ product, variants }) {
       name: product.name,
       size: selectedSize || 'Standard',
       flavor: selectedFlavor || 'Standard',
-      shape: (isCakeCategory && !isPinata) ? selectedShape : 'Heart',
+      shape: (isCakeCategory && !isPinata) ? selectedShape : null,
       price: displayPrice,
       quantity,
       isPhotoCake,
@@ -312,15 +350,15 @@ export default function ProductSelector({ product, variants }) {
 
           {(hasVariants || isCakeCategory) && (
             <div className={styles.optionsGrid}>
-              {/* Size Selector */}
+              {/* Size / Quantity Selector */}
               {uniqueSizes.length === 1 ? (
                 <div className={styles.optionGroup}>
-                  <label>Size</label>
+                  <label>{(isDessertCups || (selectedSize && selectedSize.toLowerCase().includes('piece'))) ? 'Quantity' : 'Size'}</label>
                   <span className={styles.staticSize}>{selectedSize}</span>
                 </div>
               ) : uniqueSizes.length > 1 ? (
                 <div className={styles.optionGroup}>
-                  <label>Size</label>
+                  <label>{(isDessertCups || (selectedSize && selectedSize.toLowerCase().includes('piece'))) ? 'Quantity' : 'Size'}</label>
                   <select 
                     value={selectedSize} 
                     onChange={(e) => setSelectedSize(e.target.value)}
